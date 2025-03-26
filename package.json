@@ -19,7 +19,7 @@
     "@react-router/fs-routes": "^7.0.1",
     "hono": "^4.6.9",
     "hono-react-router-adapter": "^0.6.5",
-    "isbot": "^4.1.0",
+    "isbot": "^5.1.25",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.0.1"
