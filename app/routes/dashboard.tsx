@@ -1,7 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 export default function Dashboard() { 
   return (
-    <div>dashboard</div>
+    <div>
+      <nav>Dashboard</nav>
+      <Link to="/">Home</Link>
+    </div>
   )
 }
