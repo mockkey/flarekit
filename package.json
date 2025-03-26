@@ -19,13 +19,13 @@
     "@react-router/fs-routes": "^7.0.1",
     "hono": "^4.6.9",
     "hono-react-router-adapter": "^0.6.5",
-    "isbot": "^4.1.0",
+    "isbot": "^5.1.25",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.0.1"
   },
   "devDependencies": {
-    "@hono/vite-dev-server": "^0.18.1",
+    "@hono/vite-dev-server": "^0.19.0",
     "@playwright/test": "^1.48.2",
     "@react-router/dev": "^7.0.1",
     "@types/react": "^19.0.0",
