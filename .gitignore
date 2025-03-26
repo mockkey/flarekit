@@ -1,0 +1,11 @@
+node_modules
+
+test-results
+
+/.cache
+/build
+.env
+.dev.vars
+.react-router
+
+.wrangler
