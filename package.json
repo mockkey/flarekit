@@ -28,7 +28,7 @@
     "@hono/vite-dev-server": "^0.18.1",
     "@playwright/test": "^1.48.2",
     "@react-router/dev": "^7.0.1",
-    "@types/react": "^18.2.20",
+    "@types/react": "^19.0.12",
     "@types/react-dom": "^18.2.7",
     "playwright": "^1.47.0",
     "typescript": "^5.1.6",
