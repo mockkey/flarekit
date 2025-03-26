@@ -23,4 +23,8 @@ app.get('/api', (c) => {
   })
 })
 
+app.get('/ping',(c)=>{
+  return c.json({ message: 'pong' })
+})
+
 export default app
