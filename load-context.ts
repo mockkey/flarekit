@@ -1,11 +1,17 @@
 import type { Context } from 'hono'
 import type { PlatformProxy } from 'wrangler'
 
+export type EnvType = {
+  MY_VAR: string
+  DB: D1Database
+  BETTER_AUTH_URL: string
+  GITHUB_CLIENT_ID: string
+  GITHUB_CLIENT_SECRET: string
+}
+
+
 type Env = {
-  Bindings: {
-    MY_VAR: string
-    DB: D1Database
-  }
+  Bindings: EnvType
   Variables: {
     MY_VAR_IN_VARIABLES: string
   }

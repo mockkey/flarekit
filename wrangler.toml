@@ -6,10 +6,14 @@ assets = { directory = "./build/client" }
 
 [vars]
 MY_VAR = "My Value"
+BETTER_AUTH_SECRET = "518e273c9b1351795a7831c3f73808f0"
+BETTER_AUTH_URL = http://localhost:5173
+GITHUB_CLIENT_ID = "..."
+GITHUB_CLIENT_SECRET = "..."
 
 
 [[d1_databases]]
 binding = "DB"
-database_name = "YOUR_DB_NAME"
-database_id = "YOUR_DB_ID"
+database_name = "sass-kit"
+database_id = "id"
 migrations_dir = "drizzle"
