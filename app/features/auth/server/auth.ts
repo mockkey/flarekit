@@ -15,6 +15,9 @@ export const serverAuth =  (env:EnvType) =>{
             database: drizzleAdapter(db, {
                 provider: "sqlite",
             }),
+            emailAndPassword: {  
+                enabled: true
+            },
             socialProviders:{
                 github: {
                     clientId: env.GITHUB_CLIENT_ID || "",

@@ -14,7 +14,7 @@ export default function SignInCard() {
   const socialSignHandle = (platform:Platform) => {
     signIn.social({
       provider: platform,
-      callbackURL: "/",
+      callbackURL: "/dashboard",
     })
   }
 

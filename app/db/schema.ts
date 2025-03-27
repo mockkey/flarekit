@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { createId } from '@paralleldrive/cuid2'
 
-export const User = sqliteTable("user", {
+export const user = sqliteTable("user", {
     id: text("id").$defaultFn(()=>createId()).primaryKey(),
     name: text("name").notNull(),
     email: text("email").notNull().unique(),
@@ -11,9 +11,9 @@ export const User = sqliteTable("user", {
     updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull()
 })
 
-export const Session = sqliteTable("session", {
+export const session = sqliteTable("session", {
     id: text("id").$defaultFn(()=>createId()).primaryKey(),
-    userId: text("userId").notNull().references(() => User.id),
+    userId: text("userId").notNull().references(() => user.id),
     token: text("token").notNull().unique(),
     expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
     ipAddress: text("ipAddress"),
@@ -23,13 +23,13 @@ export const Session = sqliteTable("session", {
 })
 
 
-export const Account = sqliteTable(
+export const account = sqliteTable(
   "account",
   {
     id: text("id").primaryKey(),
     userId: text("userId")
       .notNull()
-      .references(() => User.id),
+      .references(() => user.id),
     accountId: text("accountId").notNull(),
     providerId: text("providerId").notNull(),
     accessToken: text("accessToken"),

@@ -10,6 +10,9 @@ import {
 
 export default [
     index('routes/home.tsx'),
-    route('dashboard','routes/dashboard.tsx'),
+    layout('routes/dashboard/layout.tsx',[
+      route('dashboard','routes/dashboard.tsx'),
+    ]), 
     route('auth/sign-in','routes/auth/sign-in.tsx'),
+
 ] satisfies RouteConfig;
