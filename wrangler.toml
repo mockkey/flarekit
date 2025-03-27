@@ -6,3 +6,10 @@ assets = { directory = "./build/client" }
 
 [vars]
 MY_VAR = "My Value"
+
+
+[[d1_databases]]
+binding = "DB"
+database_name = "YOUR_DB_NAME"
+database_id = "YOUR_DB_ID"
+migrations_dir = "drizzle"

@@ -4,6 +4,7 @@ import type { PlatformProxy } from 'wrangler'
 type Env = {
   Bindings: {
     MY_VAR: string
+    DB: D1Database
   }
   Variables: {
     MY_VAR_IN_VARIABLES: string

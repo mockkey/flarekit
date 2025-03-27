@@ -1,5 +1,5 @@
+"use client"
 import SignInCard from "~/features/auth/components/sign-ip-card";
-
 
 export default function SignIn() {
   return (
