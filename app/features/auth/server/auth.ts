@@ -7,9 +7,7 @@ import * as schema from "~/db/schema";
 let _auth: ReturnType<typeof betterAuth>
 
 export const serverAuth =  (env:EnvType) =>{
-    console.log('env',)
     const db = drizzle(env.DB, { schema })
-    
     if (!_auth) {
         _auth = betterAuth({
             baseUrl: env.BETTER_AUTH_URL,

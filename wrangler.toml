@@ -7,7 +7,7 @@ assets = { directory = "./build/client" }
 [vars]
 MY_VAR = "My Value"
 BETTER_AUTH_SECRET = "518e273c9b1351795a7831c3f73808f0"
-BETTER_AUTH_URL = http://localhost:5173
+BETTER_AUTH_URL = "http://localhost:5173"
 GITHUB_CLIENT_ID = "..."
 GITHUB_CLIENT_SECRET = "..."
 
