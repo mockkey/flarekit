@@ -9,6 +9,7 @@ import {
 
 
 export default [
-    index('routes/home.tsx')
+    index('routes/home.tsx'),
+    route('dashboard','routes/dashboard.tsx'),
 
 ] satisfies RouteConfig;
