@@ -23,7 +23,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@flarekit/ui': resolve(__dirname, 'packages/ui/src')
+      '@flarekit/ui': resolve(__dirname, './packages/ui/src')
     }
   }
 })
