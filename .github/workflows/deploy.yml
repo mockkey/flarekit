@@ -1,4 +1,4 @@
-name: 🔍 PR Code deploy 
+name: Deploy to Cloudflare Workers 
 
 concurrency:
   group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
@@ -21,14 +21,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-    
+      - uses: actions/checkout@v4
+      - run:
+         cp wrangler.toml.example wrangler.toml
+         sed -i "s/{BETTER_AUTH_SECRET}/${{BETTER_AUTH_SECRET}}/g" wrangler.toml    
+         sed -i "s/{BETTER_AUTH_SECRET}/${{BETTER_AUTH_URL}}/g" wrangler.toml
+         sed -i "s/{GITHUB_CLIENT_ID}/${{GITHUB_CLIENT_ID}}/g" wrangler.toml
+         sed -i "s/{GITHUB_CLIENT_SECRET}/${{GITHUB_CLIENT_SECRET}}/g" wrangler.toml    
+         sed -i "s/{GITHUB_REDIRECT_URL}/${{GITHUB_REDIRECT_URL}}/g" wrangler.toml
+         sed -i "s/{DATABASE_NAME}/${{DATABASE_ID}}/g" wrangler.toml   
 
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.5
+          version: 10.5.0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -39,12 +45,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build project
-        run: pnpm build
-
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: publish 
+          run: pnpm run deploy 
