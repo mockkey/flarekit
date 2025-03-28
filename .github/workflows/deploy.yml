@@ -25,14 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run:
-         cp wrangler.toml.example wrangler.toml
-         sed -i 's/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "${{ BETTER_AUTH_SECRET }}"/g' wrangler.toml    
-         sed -i 's/BETTER_AUTH_URL = ""/BETTER_AUTH_URL= "${{ BETTER_AUTH_URL }}"/g' wrangler.toml
-         sed -i 's/GITAUTH_CLIENT_ID = ""/GITAUTH_CLIENT_ID = "${{ GITAUTH_CLIENT_ID }}"/g' wrangler.toml
-         sed -i 's/GITAUTH_CLIENT_SECRET = ""/ GITAUTH_CLIENT_SECRET = "${{ GITAUTH_CLIENT_SECRET }}"/g' wrangler.toml    
-         sed -i 's/database_name = ""/$database_name = "{{ DATABASE_NAME }}"/g' wrangler.toml   
-         sed -i 's/database_id = ""/$database_id = "{{ DATABASE_ID }}"/g' wrangler.toml   
+      - name: Copy Wrangler Config
+        run: cp wrangler.toml.example wrangler.toml
+
+      - name: Replace Variables in Wrangler Config
+        run: |
+          sed -i 's/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "'"$BETTER_AUTH_SECRET"'"/g' wrangler.toml
+          sed -i 's/BETTER_AUTH_URL = ""/BETTER_AUTH_URL = "'"$BETTER_AUTH_URL"'"/g' wrangler.toml
+          sed -i 's/GITAUTH_CLIENT_ID = ""/GITAUTH_CLIENT_ID = "'"$GITAUTH_CLIENT_ID"'"/g' wrangler.toml
+          sed -i 's/GITAUTH_CLIENT_SECRET = ""/GITAUTH_CLIENT_SECRET = "'"$GITAUTH_CLIENT_SECRET"'"/g' wrangler.toml
+          sed -i 's/database_name = ""/database_name = "'"$DATABASE_NAME"'"/g' wrangler.toml
+          sed -i 's/database_id = ""/database_id = "'"$DATABASE_ID"'"/g' wrangler.toml  
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
         with:
