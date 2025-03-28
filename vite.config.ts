@@ -7,6 +7,7 @@ import serverAdapter from 'hono-react-router-adapter/vite'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { getLoadContext } from './load-context'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
@@ -19,5 +20,10 @@ export default defineConfig({
       entry: 'server/index.ts',
     }),
     tsconfigPaths(),
-  ]
+  ],
+  resolve: {
+    alias: {
+      '@flarekit/ui': resolve(__dirname, 'packages/ui/src')
+    }
+  }
 })
