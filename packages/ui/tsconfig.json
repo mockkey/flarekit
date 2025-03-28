@@ -1,0 +1,10 @@
+{
+  "extends":"@flarekit/config-typescript/base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@flarekit/ui/*": ["./src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

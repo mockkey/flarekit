@@ -15,5 +15,5 @@ GITHUB_CLIENT_SECRET = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "sass-kit"
-database_id = ""
+database_id = "357f974f-5833-4052-8500-7ed93e4b5f3f"
 migrations_dir = "drizzle"

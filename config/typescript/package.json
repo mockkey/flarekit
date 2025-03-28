@@ -1,0 +1,12 @@
+{
+  "name": "@flarekit/config-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "files": [
+    "base.json"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.0"
+}

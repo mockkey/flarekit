@@ -1,10 +1,9 @@
-import { Button } from "~/components/ui/button";
-
+import { Button } from "@flarekit/ui/components/Button";
 
 export default function Home() {
   return (
     <div>
-      <Button>Home</Button>
+       <Button>Button</Button>
     </div>
   )
 }

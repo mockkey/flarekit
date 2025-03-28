@@ -1,6 +1,6 @@
 import { Links, LinksFunction, Outlet, Scripts } from 'react-router'
 
-import stylesheet from "./styles/app.css?url";
+import stylesheet from "@flarekit/ui/app.css?url";
 
 
 export const links:LinksFunction = () => {

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/app.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@flarekit/ui/components",
+    "utils": "@flarekit/ui/lib/utils",
+    "ui": "@flarekit/ui/components/ui",
+    "lib": "@flarekit/ui/lib",
+    "hooks": "@flarekit/ui/hooks"
+  },
+  "iconLibrary": "lucide"
+}
