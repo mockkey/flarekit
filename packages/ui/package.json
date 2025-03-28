@@ -67,7 +67,7 @@
   "exports": {
       "./app.css": "./src/styles/app.css",
     "./lib/*": "./src/lib/*.ts",
-    "./components/*": "./src/components/ui/*.tsx",
+    "./components/*": "./src/components/*.tsx",
     "./hooks/*": "./src/hooks/*.ts"
   }
 }

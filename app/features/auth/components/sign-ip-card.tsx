@@ -1,9 +1,9 @@
 "use client"
 import React from 'react'
-import { Button } from '@flarekit/ui/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@flarekit/ui/components/card'
-import { Input } from '@flarekit/ui/components/input'
-import { Label } from '@flarekit/ui/components/label'
+import { Button } from '@flarekit/ui/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@flarekit/ui/components/ui/card'
+import { Input } from '@flarekit/ui/components/ui/input'
+import { Label } from '@flarekit/ui/components/ui/label'
 import { signIn } from '../client/auth'
 
 type Platform  = "github" | "google" 

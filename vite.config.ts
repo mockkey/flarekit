@@ -19,5 +19,5 @@ export default defineConfig({
       entry: 'server/index.ts',
     }),
     tsconfigPaths(),
-  ],
+  ]
 })

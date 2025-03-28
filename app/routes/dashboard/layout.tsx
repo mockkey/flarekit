@@ -1,6 +1,6 @@
 import { serverAuth } from '~/features/auth/server/auth'
 import { Outlet, redirect } from 'react-router'
-import { Avatar, AvatarImage } from '@flarekit/ui/components/avatar'
+import { Avatar, AvatarImage } from '@flarekit/ui/components/ui/avatar'
 import type { Route } from "../dashboard/+types/layout";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
