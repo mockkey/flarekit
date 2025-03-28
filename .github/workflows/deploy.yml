@@ -32,8 +32,9 @@ jobs:
          sed -i 's/BETTER_AUTH_URL = ""/BETTER_AUTH_URL= "${{ secrets.BETTER_AUTH_URL }}"/g' wrangler.toml
          sed -i 's/GITAUTH_CLIENT_ID = ""/GITAUTH_CLIENT_ID = "${{ secrets.GITAUTH_CLIENT_ID }}"/g' wrangler.toml
          sed -i 's/GITAUTH_CLIENT_SECRET = ""/ GITAUTH_CLIENT_SECRET = "${{ secrets.GITAUTH_CLIENT_SECRET }}"/g' wrangler.toml    
-         sed -i 's/database_name = ""/$database_name = "{{ secrets.DATABASE_NAME }}"/g' wrangler.toml   
-         sed -i 's/database_id = ""/$database_id = "{{ secrets.DATABASE_ID }}"/g' wrangler.toml   
+         sed -i 's/database_name = ""/database_name = "${{ secrets.DATABASE_NAME }}"/g' wrangler.toml   
+         sed -i 's/database_id = ""/database_id = "${{ secrets.DATABASE_ID }}"/g' wrangler.toml   
+      
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -53,4 +54,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          run: deploy 
+          command: deploy 
