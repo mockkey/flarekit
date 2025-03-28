@@ -27,13 +27,12 @@ jobs:
       - uses: actions/checkout@v4
       - run:
          cp wrangler.toml.example wrangler.toml
-         sed -i "s/{BETTER_AUTH_SECRET}/${{BETTER_AUTH_SECRET}}/g" wrangler.toml    
-         sed -i "s/{BETTER_AUTH_SECRET}/${{BETTER_AUTH_URL}}/g" wrangler.toml
-         sed -i "s/{GITHUB_CLIENT_ID}/${{GITHUB_CLIENT_ID}}/g" wrangler.toml
-         sed -i "s/{GITHUB_CLIENT_SECRET}/${{GITHUB_CLIENT_SECRET}}/g" wrangler.toml    
-         sed -i "s/{GITHUB_REDIRECT_URL}/${{GITHUB_REDIRECT_URL}}/g" wrangler.toml
-         sed -i "s/{DATABASE_NAME}/${{DATABASE_ID}}/g" wrangler.toml   
-
+         sed -i "s/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "${{BETTER_AUTH_SECRET}}"/g" wrangler.toml    
+         sed -i "s/BETTER_AUTH_URL = ""/BETTER_AUTH_URL= "${{BETTER_AUTH_URL}}"/g" wrangler.toml
+         sed -i "s/GITAUTH_CLIENT_ID = ""/GITAUTH_CLIENT_ID = "${{GITAUTH_CLIENT_ID}}"/g" wrangler.toml
+         sed -i "s/GITAUTH_CLIENT_SECRET = ""/ GITAUTH_CLIENT_SECRET = "${{GITAUTH_CLIENT_SECRET}}"/g" wrangler.toml    
+         sed -i "s/database_name = ""/$database_name = "{{DATABASE_NAME}}"/g" wrangler.toml   
+         sed -i "s/database_id = ""/$database_id = "{{DATABASE_ID}}"/g" wrangler.toml   
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
         with:

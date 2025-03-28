@@ -6,14 +6,14 @@ assets = { directory = "./build/client" }
 
 [vars]
 MY_VAR = "My Value"
-BETTER_AUTH_SECRET = "{BETTER_AUTH_SECRET}"
-BETTER_AUTH_URL = "{BETTER_AUTH_URL}"
-GITHUB_CLIENT_ID = "{GITAUTH_CLIENT_ID}"
-GITHUB_CLIENT_SECRET = "{GITAUTH_CLIENT_SECRET}"
+BETTER_AUTH_SECRET = ""
+BETTER_AUTH_URL = ""
+GITHUB_CLIENT_ID = ""
+GITHUB_CLIENT_SECRET = ""
 
 
 [[d1_databases]]
 binding = "DB"
-database_name = "{DATABASE_NAME}"
-database_id = "{DATABASE_ID}"
+database_name = ""
+database_id = ""
 migrations_dir = "drizzle"
