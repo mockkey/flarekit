@@ -9,3 +9,4 @@ test-results
 .react-router
 
 .wrangler
+wrangler.toml
