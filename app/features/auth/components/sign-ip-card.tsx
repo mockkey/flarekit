@@ -1,4 +1,4 @@
-"use client"
+
 import { Button } from '@flarekit/ui/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@flarekit/ui/components/ui/card'
 import { Input } from '@flarekit/ui/components/ui/input'
