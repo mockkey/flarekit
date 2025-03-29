@@ -22,7 +22,7 @@ jobs:
          cp wrangler.toml.example wrangler.toml
          sed -i 's/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "${{ secrets.BETTER_AUTH_SECRET }}"/g' wrangler.toml    
          sed -i 's/BETTER_AUTH_URL = ""/BETTER_AUTH_URL= "${{ secrets.BETTER_AUTH_URL }}"/g' wrangler.toml
-         sed -i 's/GITHUB_CLIENT_ID = ""/GITHUB_CLIENT_SECRET = "${{ secrets.GITAUTH_CLIENT_ID }}"/g' wrangler.toml
+         sed -i 's/GITHUB_CLIENT_ID = ""/GITHUB_CLIENT_ID = "${{ secrets.GITAUTH_CLIENT_ID }}"/g' wrangler.toml
          sed -i 's/GITHUB_CLIENT_SECRET = ""/ GITHUB_CLIENT_SECRET = "${{ secrets.GITAUTH_CLIENT_SECRET }}"/g' wrangler.toml    
          sed -i 's/database_name = ""/database_name = "${{ secrets.DATABASE_NAME }}"/g' wrangler.toml   
          sed -i 's/database_id = ""/database_id = "${{ secrets.DATABASE_ID }}"/g' wrangler.toml   
