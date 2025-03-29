@@ -24,7 +24,7 @@ export default defineConfig({
   ],
   resolve:{
     alias:{
-      '@flarekit/ui/components/': path.resolve(__dirname, './packages/ui/src/components/'),
+      '@flarekit/ui/components/': path.resolve(__dirname, '/packages/ui/src/components/'),
     }
   }
 })
