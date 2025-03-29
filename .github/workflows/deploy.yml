@@ -19,6 +19,8 @@ on:
       - "*.tsx"
       - "package.json"
       - "pnpm-lock.yaml"
+      - "packages"
+      - "config"
 
 jobs:
   deploy:
@@ -51,6 +53,9 @@ jobs:
 
       - name: pwd
         run: pwd  
+
+      - name: ls
+        run: ls
 
       - name: Build application
         run: pnpm  build
