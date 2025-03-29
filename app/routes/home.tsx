@@ -1,4 +1,4 @@
-import { Button } from "packages/ui/src/components/ui/button";
+import { Button } from "@flarekit/ui/components/ui/button";
 
 
 export default function Home() {

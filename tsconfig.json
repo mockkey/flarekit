@@ -20,7 +20,8 @@
     "paths": {
       "~/*": [
         "./app/*",
-      ]
+      ],
+      "@flarekit/ui/components":["packages/ui/src/components"]
     },
     "noEmit": true
   }
