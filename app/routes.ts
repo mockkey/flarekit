@@ -9,7 +9,11 @@ import {
 
 
 export default [
-    index('routes/home.tsx'),
+    
+    layout('routes/layout.tsx',[
+      index('routes/landing.tsx')
+    ]),
+
     layout('routes/dashboard/layout.tsx',[
       route('dashboard','routes/dashboard.tsx'),
     ]), 
