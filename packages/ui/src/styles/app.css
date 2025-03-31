@@ -3,7 +3,7 @@
 
 @plugin "tailwindcss-animate";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is([data-theme="dark"] *));
 
 
 
@@ -75,7 +75,7 @@
   --sidebar-ring: oklch(0.7 0.15 250);
 }
 
-.dark {
+[data-theme="dark"] {
 
   --background: oklch(0.15 0.02 255);
 

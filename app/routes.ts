@@ -15,8 +15,11 @@ export default [
     ]),
 
     layout('routes/dashboard/layout.tsx',[
-      route('dashboard','routes/dashboard.tsx'),
+      route('dashboard','routes/dashboard/dashboard.tsx'),
     ]), 
     route('auth/sign-in','routes/auth/sign-in.tsx'),
+
+    // actions
+    route('action/set-theme','routes/action.set-theme.tsx'),
 
 ] satisfies RouteConfig;

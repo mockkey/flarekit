@@ -1,6 +1,8 @@
-import { Links, LinksFunction, Outlet, Scripts } from 'react-router'
+import { Links, LinksFunction, LoaderFunctionArgs, Outlet, Scripts, useLoaderData } from 'react-router'
 
 import stylesheet from "@flarekit/ui/app.css?url";
+import { ThemeProvider, useTheme } from 'remix-themes';
+import { themeSessionResolver } from './server.session';
 
 
 export const links:LinksFunction = () => {
@@ -10,22 +12,46 @@ export const links:LinksFunction = () => {
 }
 
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { getTheme } = await themeSessionResolver(request)
+  return {
+    theme: getTheme()
+  }
+}
+
+
+
+export function App() {
+  const data = useLoaderData()
+  const [theme] = useTheme()
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='en'  data-theme={theme ?? ""} suppressHydrationWarning>
       <head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <Links />
       </head>
       <body className='h-[100vh]' suppressHydrationWarning>
-        {children}
+        <Outlet />
         <Scripts />
       </body>
     </html>
   )
 }
 
-export default function App() {
-  return <Outlet />
+// export default function App() {
+//   return <Outlet />
+// }
+
+export default function AppWithProviders() {
+  const data = useLoaderData();
+  return (
+    <ThemeProvider
+      specifiedTheme={data.theme}
+      themeAction="/action/set-theme"
+      disableTransitionOnThemeChange={true}
+    >
+      <App />
+    </ThemeProvider>
+  );
 }
