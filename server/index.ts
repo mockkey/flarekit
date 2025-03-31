@@ -23,7 +23,7 @@ app.get('/api', (c) => {
   })
 })
 
-app.get('/ping',(c)=>{
+app.get('/api/ping',(c)=>{
   return c.json({ message: 'pong' })
 })
 
