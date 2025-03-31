@@ -1,10 +1,11 @@
+import HreoSection from "~/components/langing/hreo-section";
 
 
 
 export default function Landing() {
     return (
       <div>
-        <h1>Dashboard</h1>
+        <HreoSection />
       </div>
     )
   }

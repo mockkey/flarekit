@@ -4,21 +4,41 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@flar
 import { Input } from '@flarekit/ui/components/ui/input'
 import { Label } from '@flarekit/ui/components/ui/label'
 import { signIn } from '../client/auth'
+import { useActionState } from 'react'
+
+
 
 type Platform  = "github" | "google" 
 
 
+
+export async function  SignInHandle(previousState:unknown, formData:FormData) {
+  console.log('111',formData.get('email'))
+  await new Promise((resolve)=>{
+    setTimeout(resolve, 1000)
+  })
+
+  return {message:'error'}
+}
+
+
+
 export default function SignInCard() {
 
+  const [data,action,ispending] = useActionState(SignInHandle,null,'/api/sign')
   const socialSignHandle = (platform:Platform) => {
     signIn.social({
       provider: platform,
       callbackURL: "/dashboard",
     })
   }
+  
+
+ console.log('console.log(data)',data)
+
 
   return (
-     <Card className='flex flex-col gap-6'>
+     <Card className='flex flex-col gap-6' >
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription>
@@ -26,7 +46,7 @@ export default function SignInCard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form method="post"  action={action} >
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
 
@@ -48,6 +68,7 @@ export default function SignInCard() {
                   <Input
                     id="email"
                     type="email"
+                    name="email"
                     placeholder="m@example.com"
                     required
                   />
@@ -64,7 +85,7 @@ export default function SignInCard() {
                   </div>
                   <Input id="password" type="password" required />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full"  disabled={ispending}>
                   Login
                 </Button>
               </div>
@@ -75,7 +96,7 @@ export default function SignInCard() {
                 </a>
               </div>
             </div>
-          </form>
+          </form >
         </CardContent>
       </Card>
   )

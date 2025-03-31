@@ -15,7 +15,7 @@ export default function Layout() {
                 <ThemeToggle />
                 <Button variant="link">GitHub</Button>
                 <Link to="/auth/sign-in" >
-                    <Button >Get Started</Button>
+                    <Button className="cursor-pointer">Sign in</Button>
                 </Link>
             </div>
         </nav>

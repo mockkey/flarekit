@@ -1,7 +1,20 @@
 
 import SignInCard from "~/features/auth/components/sign-ip-card";
+import type { Route } from "../auth/+types/sign-in";
+
+
+
+export const meta:Route.MetaFunction = () => [
+  {
+    title: "Sign In",
+    description: "Sign in to your account",
+  }
+]
+
+
 
 export default function SignIn() {
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -10,7 +23,7 @@ export default function SignIn() {
           </div>
           Sass Inc.
         </a>
-        <SignInCard />
+        <SignInCard  />
       </div>
     </div>
   )
