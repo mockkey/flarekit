@@ -1,4 +1,4 @@
-import { Route } from '../+types/root'
+import { Route } from '../../+types/root'
 import { serverAuth } from '~/features/auth/server/auth'
 import { Link, Outlet } from 'react-router'
 import { Button } from '@flarekit/ui/components/ui/button'
@@ -8,8 +8,8 @@ import ThemeToggle from '~/components/theme-toggle'
 export default function Layout() {
   return (
     <>
-      <header className="py-6  border-b">
-        <nav className="container mx-auto flex justify-between items-center">
+      <header className="h-[65px] border-b  bg-white/80 dark:bg-black/80 px-4">
+        <nav className="h-full container mx-auto flex justify-between items-center">
             <h1 className="text-2xl font-bold">Flare Kit</h1>
             <div className="flex items-center space-x-6">
                 <ThemeToggle />
