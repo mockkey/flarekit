@@ -67,7 +67,7 @@
     "isbot": "^5.1.25",
     "lucide-react": "^0.484.0",
     "next-themes": "^0.4.6",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-day-picker": "9.6.4",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
