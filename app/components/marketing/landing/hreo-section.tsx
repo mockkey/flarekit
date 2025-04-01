@@ -23,13 +23,13 @@ export default function HreoSection() {
           className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white animate-gradient-x pb-2"
         >
           Build Faster with <br className="hidden sm:block" />
-          Next Starter
+          React Router Kit
         </h1>
         <p
           className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
         >
-          Launch your SaaS in minutes with our production-ready Next.js starter
-          kit. Everything you need, from auth to payments.
+          Launch your web application in minutes with our production-ready React Router and
+          Cloudflare starter kit. Everything you need, from auth to edge computing.
         </p>
         <div
           className="flex flex-wrap justify-center items-center gap-4 pt-4"
@@ -45,7 +45,7 @@ export default function HreoSection() {
           </Link>
 
           <Link
-            to="https://github.com/michaelshimeles/nextjs14-starter-template"
+            to="https://github.com/yourusername/react-router-cloudflare-starter"
             target="_blank"
             className="flex items-center gap-2 rounded-full px-6 py-2 h-12 border-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="View on GitHub"
