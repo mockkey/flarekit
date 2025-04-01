@@ -11,6 +11,8 @@ Build an app template for React Router v7 and Better Auth and Hono to run on Clo
 - Language: TypeScript
 - Package Manager: pnpm
 
+
+
 ## Getting Started
 
 Install the dependencies:
@@ -46,10 +48,17 @@ migrations_dir = ""
 ### Development
 
 ```bash
-npm run db:local
+pnpm  db:generate
+pnpm  db:local
 
 ```
 
 ```bash
-npm run dev
+pnpm  dev
+```
+
+### deploy
+
+```bash
+pnpm deploy
 ```
