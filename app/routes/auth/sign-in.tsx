@@ -1,4 +1,4 @@
-import { Form, redirect } from "react-router";
+import { Form, Link, redirect } from "react-router";
 import type { Route } from "../auth/+types/sign-in";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
@@ -130,9 +130,11 @@ export default function SignIn() {
           </Form>
           <div className="text-center text-sm">
             Don&apos;t have an account?{" "}
-            <a href="#" className="underline underline-offset-4">
-              Sign up
-            </a>
+            <Link  to='/auth/sign-up'>
+              <Button variant={'link'} className="p-0" >
+                Sign up
+              </Button>
+            </Link>
           </div>
         </div>
     </CardContent>

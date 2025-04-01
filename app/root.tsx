@@ -4,6 +4,7 @@ import stylesheet from "@flarekit/ui/app.css?url";
 import { ThemeProvider, useTheme } from 'remix-themes';
 import { themeSessionResolver } from './server.session';
 import { ProgressBar } from '~/components/progress-bar';
+import { Toaster } from 'sonner';
 
 
 export const links:LinksFunction = () => {
@@ -35,6 +36,13 @@ export function App() {
       </head>
       <body className='h-[100vh]' suppressHydrationWarning>
         <ProgressBar />
+        <Toaster 
+          position="top-right"
+          theme={theme as "light" | "dark"}
+          closeButton
+          richColors
+          expand={false}
+        />
         <Outlet />
         <Scripts />
       </body>

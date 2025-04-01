@@ -16,7 +16,8 @@ export const serverAuth =  (env:EnvType) =>{
                 provider: "sqlite",
             }),
             emailAndPassword: {  
-                enabled: true
+                enabled: true,
+                autoSignIn:false,
             },
             socialProviders:{
                 github: {
