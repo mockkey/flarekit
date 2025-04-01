@@ -3,6 +3,7 @@ import { Links, LinksFunction, LoaderFunctionArgs, Meta, Outlet, Scripts, useLoa
 import stylesheet from "@flarekit/ui/app.css?url";
 import { ThemeProvider, useTheme } from 'remix-themes';
 import { themeSessionResolver } from './server.session';
+import { ProgressBar } from '~/components/progress-bar';
 
 
 export const links:LinksFunction = () => {
@@ -33,6 +34,7 @@ export function App() {
         <Links />
       </head>
       <body className='h-[100vh]' suppressHydrationWarning>
+        <ProgressBar />
         <Outlet />
         <Scripts />
       </body>
