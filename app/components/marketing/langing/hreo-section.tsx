@@ -1,7 +1,7 @@
 import { Button } from '@flarekit/ui/components/ui/button'
-import { ArrowRight, Github, Section } from 'lucide-react'
-import React from 'react'
+import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
+import { RiGithubFill } from "@remixicon/react";
 
 export default function HreoSection() {
   return (
@@ -50,7 +50,7 @@ export default function HreoSection() {
             className="flex items-center gap-2 rounded-full px-6 py-2 h-12 border-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="View on GitHub"
           >
-            <Github className="size-5" />
+            <RiGithubFill />
             <span>Star on GitHub</span>
           </Link>
         </div>

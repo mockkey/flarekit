@@ -10,8 +10,8 @@ import {
 
 export default [
     
-    layout('routes/layout.tsx',[
-      index('routes/landing.tsx')
+    layout('routes/marketing/layout.tsx',[
+      index('routes/marketing/landing.tsx')
     ]),
 
     layout('routes/dashboard/layout.tsx',[

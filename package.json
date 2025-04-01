@@ -53,6 +53,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@react-router/cloudflare": "^7.0.1",
     "@react-router/fs-routes": "^7.0.1",
+    "@remixicon/react": "^4.6.0",
     "better-auth": "^1.2.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

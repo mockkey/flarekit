@@ -1,4 +1,4 @@
-import HreoSection from "~/components/langing/hreo-section";
+import HreoSection from "~/components/marketing/langing/hreo-section";
 
 
 
