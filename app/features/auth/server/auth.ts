@@ -17,7 +17,7 @@ export const serverAuth =  (env:EnvType) =>{
             }),
             emailAndPassword: {  
                 enabled: true,
-                autoSignIn:false,
+                autoSignIn:true,
             },
             socialProviders:{
                 github: {

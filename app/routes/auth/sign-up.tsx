@@ -10,6 +10,7 @@ import { Spinner } from "~/components/spinner";
 import { toast } from 'sonner';
 import { useEffect } from "react";
 import { serverAuth } from "~/features/auth/server/auth";
+import { signUpSchema } from "~/features/auth/schemas";
 
 export const meta: Route.MetaFunction = () => [
   {
@@ -21,7 +22,7 @@ export const meta: Route.MetaFunction = () => [
 interface ActionData {
   error?: {
     message: string;
-    field?: string;
+    path: string[];
   };
   success?: boolean;
 }
@@ -29,9 +30,10 @@ interface ActionData {
 export async function action({request}: Route.ActionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
+  const email = formData.get("email") as string;
+
   try {
     if (intent === 'github') {
-        
       return signIn.social({
         provider: 'github',
         callbackURL: "/dashboard",
@@ -39,20 +41,20 @@ export async function action({request}: Route.ActionArgs) {
     }
 
     const { data, error } = await signUp.email({
-      email: formData.get("email") as string,
+      email,
       password: formData.get("password") as string,
       name: formData.get("name") as string,
     });
 
     if (error) {
-      console.log('error',error)  
       return { error: {
         message: error.message,
         field: error.field
       }};
     }
 
-    return redirect('/dashboard');
+    // 将邮箱地址作为 URLSearchParams 传递
+    return redirect(`/auth/sign-up/success?email=${encodeURIComponent(email)}`);
   } catch (error) {
     return {
       error: {
@@ -66,13 +68,33 @@ export async function action({request}: Route.ActionArgs) {
 export async function clientAction({
   request,
 }: Route.ClientActionArgs){
-    const formData = await request.formData()
-    console.log('formData',formData)
-
-    return {
-        error:{
-            message:'error'
+    const formData =  await request.formData()
+    const intent = formData.get('intent')
+    switch(intent){
+      case 'github':
+        signIn.social({
+          provider:'github',
+          callbackURL:'/dashboard'
+        })
+        break;
+      case 'email':
+        const formPayload = Object.fromEntries(formData)
+        const subscriber = signUpSchema.safeParse(formPayload)
+        if(subscriber.error){
+          return {
+            error:subscriber.error.errors[0]
+          }
+        }else{
+          const signUpRes = await signUp.email({
+            ...subscriber.data,
+             callbackURL: "/dashboard"
+          })
+          if(signUpRes.error){
+            return signUpRes
+          }
+          return   redirect('/dashboard')
         }
+        break;
     }
 }
 
@@ -84,6 +106,7 @@ export default function SignUp() {
   useEffect(() => {
     if (actionData?.error) {
         if(actionData.error.message){
+           console.log(actionData.error)
             toast.error(actionData.error.message)
         }
     }
@@ -128,7 +151,7 @@ export default function SignUp() {
                 label="Full Name"
                 name="name"
                 placeholder="John Doe"
-                error={actionData?.error?.field === 'name'}
+                error={actionData?.error?.path[0] === 'name'}
                 disabled={isPending}
               />
               <InputField
@@ -136,16 +159,17 @@ export default function SignUp() {
                 name="email"
                 type="email"
                 placeholder="you@example.com"
-                error={actionData?.error?.field === 'email'}
+                error={actionData?.error?.path[0] === 'email'}
                 disabled={isPending}
               />
               <InputField
                 label="Password"
                 name="password"
                 type="password"
-                error={actionData?.error?.field === 'password'}
+                error={actionData?.error?.path[0] === 'password'}
                 disabled={isPending}
               />
+
             </div>
 
             <Button 

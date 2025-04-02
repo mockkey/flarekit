@@ -20,7 +20,8 @@ export default [
 
     layout('routes/auth/layout.tsx',[
       route('auth/sign-in','routes/auth/sign-in.tsx'),
-      route('auth/sign-up','routes/auth/sign-up.tsx')
+      route('auth/sign-up','routes/auth/sign-up.tsx'),
+      route('auth/sign-up/success','routes/auth/sign-up.success.tsx')
     ]),
 
    

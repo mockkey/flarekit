@@ -8,8 +8,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const session = await auth.api.getSession({
       headers: request.headers,
     })
+    console.log('session',session)
+
     if(!session) {
         throw redirect('/auth/sign-in')
+    }
+    if(session.user.emailVerified=== false){
+        throw redirect('/auth/sign-up/success')
     }
     return { session }
 }
