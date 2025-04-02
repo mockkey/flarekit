@@ -12,12 +12,25 @@ export const serverAuth =  (env:EnvType) =>{
         _auth = betterAuth({
             baseUrl: env.BETTER_AUTH_URL,
             trustedOrigins: [env.BETTER_AUTH_URL],
+            
             database: drizzleAdapter(db, {
                 provider: "sqlite",
             }),
             emailAndPassword: {  
                 enabled: true,
                 autoSignIn:true,
+                requireEmailVerification:true,
+                // resetPasswordTokenExpiresIn:300,
+                sendResetPassword: async ({ user, url, token }, request) => {
+                    console.log({ user, url, token }, request)
+                }
+            },
+            emailVerification:{
+                sendOnSignUp:true,
+                sendVerificationEmail:async ({ user, token })=>{
+                    const verificationUrl = `${env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${'/dashboard'}`;
+                    console.log('{ user, token }',{ user, token },verificationUrl)
+                }
             },
             socialProviders:{
                 github: {

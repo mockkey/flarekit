@@ -5,6 +5,7 @@ import { RiMailLine, RiArrowLeftLine } from "@remixicon/react";
 import { Route } from "./+types/sign-up.success";
 import { serverAuth } from "~/features/auth/server/auth";
 import { toast } from "sonner";
+import { authClient } from "~/features/auth/client/auth";
 
 export const meta: Route.MetaFunction = () => [
   {
@@ -29,10 +30,6 @@ export const loader = async ({ request, context }: Route.LoaderArgs) =>{
 
       return session
 
-}
-
-export const action = () =>{
-  
 }
 
 
@@ -65,9 +62,17 @@ export default function SignUpSuccess({
             <Button 
               variant="link" 
               className="h-auto p-0"
-              onClick={() => {
-                // 实现重新发送邮件的逻辑
-                toast.info(`Verification email sent to ${email}`)
+              onClick={ async () => {
+                const {data,error} = await authClient.sendVerificationEmail({
+                  email:user.email,
+                  callbackURL:'/'
+                })
+                if(error){
+                  toast.error(error.message)
+                }
+                if(data?.status){
+                  toast.info(`Verification email sent to ${user.email}`)
+                }
               }}
             >
               click here to resend verification email

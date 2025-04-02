@@ -1,16 +1,15 @@
-import { Form, Link, redirect, useActionData, useNavigation } from "react-router";
+import {  Form, Link, redirect, useActionData, useNavigation } from "react-router";
 import type { Route } from "../auth/+types/sign-up";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
-import { Label } from "@flarekit/ui/components/ui/label";
-import { Input } from "@flarekit/ui/components/ui/input";
 import { signIn, signUp } from "~/features/auth/client/auth";
 import { RiGithubFill } from "@remixicon/react";
 import { Spinner } from "~/components/spinner";
 import { toast } from 'sonner';
 import { useEffect } from "react";
-import { serverAuth } from "~/features/auth/server/auth";
 import { signUpSchema } from "~/features/auth/schemas";
+import InputField from "~/features/auth/components/input-filed";
+import { serverAuth } from "~/features/auth/server/auth";
 
 export const meta: Route.MetaFunction = () => [
   {
@@ -19,50 +18,56 @@ export const meta: Route.MetaFunction = () => [
   }
 ];
 
-interface ActionData {
+interface ActionData  {
   error?: {
     message: string;
-    path: string[];
+    field: string;
   };
   success?: boolean;
 }
 
-export async function action({request}: Route.ActionArgs) {
+export async function action({request,context}: Route.ActionArgs  ) {
+  const auth = serverAuth(context.cloudflare.env)
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const email = formData.get("email") as string;
-
   try {
-    if (intent === 'github') {
-      return signIn.social({
-        provider: 'github',
-        callbackURL: "/dashboard",
-      });
-    }
-
-    const { data, error } = await signUp.email({
-      email,
-      password: formData.get("password") as string,
-      name: formData.get("name") as string,
-    });
-
-    if (error) {
-      return { error: {
-        message: error.message,
-        field: error.field
-      }};
-    }
-
-    // 将邮箱地址作为 URLSearchParams 传递
-    return redirect(`/auth/sign-up/success?email=${encodeURIComponent(email)}`);
+    switch(intent){
+      case 'github':
+        const socialRes = await auth.api.signInSocial({
+          header:request.headers,
+          body:{
+            provider:'github',
+            callbackURL:'/dashboard'
+          }
+        })
+        if(socialRes.url){
+          return  redirect(socialRes.url)
+        }
+        break;
+      case 'email':
+        return {
+          error: {
+            message: 'Something went wrong. Please try again.',
+          }
+        }
+        break;
+    } 
+    
   } catch (error) {
+    let message = 'Something went wrong. Please try again.'
+    if(error instanceof Error){
+      message = error.message
+    }
     return {
       error: {
-        message: 'Something went wrong. Please try again.',
+        message: message,
       }
-    };
+    }
   }
 }
+
+
+
 
 
 export async function clientAction({
@@ -81,8 +86,12 @@ export async function clientAction({
         const formPayload = Object.fromEntries(formData)
         const subscriber = signUpSchema.safeParse(formPayload)
         if(subscriber.error){
+          const issue = subscriber.error.issues[0]
           return {
-            error:subscriber.error.errors[0]
+            error:{
+              ...issue,
+              field:issue.path[0]
+            }
           }
         }else{
           const signUpRes = await signUp.email({
@@ -99,18 +108,17 @@ export async function clientAction({
 }
 
 export default function SignUp() {
-  const navigation = useNavigation();
-  const actionData = useActionData<ActionData>();
+  const navigation = useNavigation()
+  const actionData:ActionData | undefined = useActionData()
   const isPending = navigation.state === "submitting";
 
   useEffect(() => {
     if (actionData?.error) {
         if(actionData.error.message){
-           console.log(actionData.error)
             toast.error(actionData.error.message)
         }
     }
-  }, [actionData]);
+  }, [actionData])
 
   return (
     <Card className='flex flex-col gap-6'>
@@ -151,7 +159,7 @@ export default function SignUp() {
                 label="Full Name"
                 name="name"
                 placeholder="John Doe"
-                error={actionData?.error?.path[0] === 'name'}
+                error={actionData?.error?.field === 'name' }
                 disabled={isPending}
               />
               <InputField
@@ -159,14 +167,14 @@ export default function SignUp() {
                 name="email"
                 type="email"
                 placeholder="you@example.com"
-                error={actionData?.error?.path[0] === 'email'}
+                error={actionData?.error?.field === 'email'}
                 disabled={isPending}
               />
               <InputField
                 label="Password"
                 name="password"
                 type="password"
-                error={actionData?.error?.path[0] === 'password'}
+                error={actionData?.error?.field === 'password'}
                 disabled={isPending}
               />
 
@@ -199,37 +207,5 @@ export default function SignUp() {
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function InputField({
-  label,
-  name,
-  type = "text",
-  placeholder,
-  error,
-  disabled
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder?: string;
-  error?: boolean;
-  disabled?: boolean;
-}) {
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
-      <Input
-        id={name}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        required
-        disabled={disabled}
-        aria-invalid={error}
-        className={error ? "border-red-500" : undefined}
-      />
-    </div>
-  );
+  )
 }
