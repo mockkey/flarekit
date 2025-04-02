@@ -27,9 +27,4 @@ app.get('/api/ping',(c)=>{
   return c.json({ message: 'pong' })
 })
 
-
-app.on(["POST", "GET"], "/api/auth/**",  (c) => {
-  return serverAuth(c.env).handler(c.req.raw)
-});
-
 export default app
