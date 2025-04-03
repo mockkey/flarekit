@@ -16,7 +16,9 @@ export default function Layout() {
               Flare Kit</h1>
             <div className="flex items-center space-x-6">
                 <ThemeToggle />
-                <Button variant="link">GitHub</Button>
+                <Link to="https://github.com/mockkey/flarekit" target="_blank">
+                  <Button variant="link">GitHub</Button>
+                </Link>
                 <Link to="/auth/sign-in" >
                     <Button className="cursor-pointer">Sign in</Button>
                 </Link>

@@ -45,7 +45,7 @@ export default function HreoSection() {
           </Link>
 
           <Link
-            to="https://github.com/yourusername/react-router-cloudflare-starter"
+            to="https://github.com/mockkey/flarekit"
             target="_blank"
             className="flex items-center gap-2 rounded-full px-6 py-2 h-12 border-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="View on GitHub"
