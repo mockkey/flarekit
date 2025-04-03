@@ -49,17 +49,17 @@ migrations_dir = ""
 ### Development
 
 ```bash
-pnpm  db:generate
-pnpm  db:local
+pnpm run  db:generate
+pnpm run db:local
 
 ```
 
 ```bash
-pnpm  dev
+pnpm run dev
 ```
 
 ### deploy
 
 ```bash
-pnpm deploy
+pnpm run deploy
 ```

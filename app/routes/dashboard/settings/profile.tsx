@@ -3,11 +3,11 @@ import { Form } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { AvatarFallback } from "@flarekit/ui/components/ui/avatar";
-import { Separator } from "@flarekit/ui/components/ui/separator";
 import InputField from "~/features/auth/components/input-filed";
-import { Badge } from "@flarekit/ui/components/ui/badge";
 import { RiGithubFill, RiUploadCloud2Line } from "@remixicon/react";
 import { toast } from "sonner";
+import { authClient } from "~/features/auth/client/auth";
+import ActiveSessions from "~/components/settings/active-sessions";
 
 export const meta = () => [
   {
@@ -15,7 +15,9 @@ export const meta = () => [
   }
 ]
 
-export const clientLoader = () =>{  
+export const clientLoader = async () =>{  
+    const sessions = await authClient.listSessions()
+    console.log('sessions',sessions)
     toast.info('developing...')
 }
 
@@ -116,50 +118,7 @@ export default function ProfileSettings() {
       </Card>
 
       {/* Active Sessions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Active Sessions</CardTitle>
-          <CardDescription>
-            Manage your active sessions
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <p className="font-medium">Chrome on Windows</p>
-                  <Badge variant="secondary">Current</Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Last active: 2 minutes ago
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  IP: 192.168.1.1
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" disabled>
-                Current Session
-              </Button>
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Safari on iPhone</p>
-                <p className="text-sm text-muted-foreground">
-                  Last active: 2 hours ago
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  IP: 192.168.1.2
-                </p>
-              </div>
-              <Button variant="destructive" size="sm">
-                Log Out
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <ActiveSessions />
     </div>
   );
 }
