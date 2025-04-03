@@ -16,6 +16,9 @@ export default [
 
     layout('routes/dashboard/layout.tsx',[
       route('dashboard','routes/dashboard/dashboard.tsx'),
+      ...prefix('settings',[
+        index('routes/dashboard/settings/profile.tsx')
+      ]) 
     ]), 
 
 

@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { RiLogoutCircleLine, RiSettings4Line, RiUser3Line } from '@remixicon/react'
 import { type User } from 'better-auth'
 import { useTransition } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { authClient } from '~/features/auth/client/auth'
 
@@ -52,13 +52,17 @@ export default function UserNav({user}:UserNavProps) {
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <DropdownMenuItem>
-          <RiUser3Line className="mr-2 size-4" />
-          Profile
+        <DropdownMenuItem asChild>
+          <Link to="/settings">
+            <RiUser3Line className="mr-2 size-4" />
+            Profile
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <RiSettings4Line className="mr-2 size-4" />
-          Settings
+        <DropdownMenuItem asChild>
+          <Link to="/settings">
+            <RiSettings4Line className="mr-2 size-4" />
+            Settings
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
@@ -67,7 +71,7 @@ export default function UserNav({user}:UserNavProps) {
       disabled={isPending}
       className="text-red-600 dark:text-red-400">
         <RiLogoutCircleLine className="mr-2 size-4" />
-          Log out
+          Log Out
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
