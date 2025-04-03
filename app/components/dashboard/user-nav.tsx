@@ -3,12 +3,27 @@ import { Button } from '@flarekit/ui/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@flarekit/ui/components/ui/dropdown-menu'
 import { RiLogoutCircleLine, RiSettings4Line, RiUser3Line } from '@remixicon/react'
 import { type User } from 'better-auth'
+import { useTransition } from 'react'
+import { useNavigate } from 'react-router'
+import { toast } from 'sonner'
+import { authClient } from '~/features/auth/client/auth'
 
 interface UserNavProps {
     user:User
 }
 
 export default function UserNav({user}:UserNavProps) {
+  let navigate = useNavigate()
+  const [isPending, startTransition] = useTransition()
+  const LogOutHandle = () => {
+    startTransition(async () => {
+      const {error} = await authClient.signOut()
+      if (error) {
+        toast.error(error.message)
+      }
+      navigate("/auth/sign-in")
+    })
+  }
   return (
     <DropdownMenu>
     <DropdownMenuTrigger asChild>
@@ -47,9 +62,12 @@ export default function UserNav({user}:UserNavProps) {
         </DropdownMenuItem>
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
-      <DropdownMenuItem className="text-red-600 dark:text-red-400">
+      <DropdownMenuItem 
+      onClick={LogOutHandle}
+      disabled={isPending}
+      className="text-red-600 dark:text-red-400">
         <RiLogoutCircleLine className="mr-2 size-4" />
-        Log out
+          Log out
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

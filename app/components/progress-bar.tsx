@@ -8,9 +8,9 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ showSpinner = true }: ProgressBarProps) {
-    const transition = useNavigation();
-    const busy = transition.state !== "idle";
-    const [delayedPending, setDelayedPending] = useState(false);
+    const transition = useNavigation()
+    const busy = transition.state !== "idle"
+    const [delayedPending, setDelayedPending] = useState(false)
     
     useEffect(() => {
         if (busy) {
