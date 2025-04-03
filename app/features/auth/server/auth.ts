@@ -26,7 +26,7 @@ export const serverAuth =  (env:EnvType) =>{
                 sendResetPassword: async ({ user, url }) => {
                     const resend = new Resend(env.RESEND_API_KEY)
                     const { data, error } = await resend.emails.send({
-                        from: 'Acme <onboarding@mockkey.com>',
+                        from: 'Flarekit <reset@mockkey.com>',
                         to: [user.email],
                         subject: 'Reset Your Password',
                         react: ResetPasswordEmail({
@@ -42,7 +42,7 @@ export const serverAuth =  (env:EnvType) =>{
                     const verificationUrl = `${env.BETTER_AUTH_URL}/api/auth/verify-email?token=${token}&callbackURL=${'/dashboard'}`;
                     const resend = new Resend(env.RESEND_API_KEY)
                     const { data, error } = await  resend.emails.send({
-                        from: 'Acme <onboarding@mockkey.com>',
+                        from: 'Flarekit <welcome@mockkey.com>',
                         to: [user.email],
                         subject: 'welcome',
                         react: WelcomeEmail({
