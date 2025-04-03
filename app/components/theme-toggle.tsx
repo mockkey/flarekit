@@ -7,7 +7,6 @@ import {  Theme ,useTheme } from 'remix-themes';
 const themeIcons = {
     light: <Sun />,
     dark:  <Moon />,
-    system: <Laptop />
 } as const
 
 const themes = [
@@ -20,11 +19,6 @@ const themes = [
         name: "Dark",
         value: "dark" as Theme,
         icon: themeIcons.dark,
-    },
-    {
-        name: "System",
-        value: "system" as Theme,
-        icon: themeIcons.system,
     },
 ] as const
 
@@ -41,9 +35,9 @@ export default function ThemeToggle() {
                 <span className="sr-only">Toggle theme</span>
             </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 p-2 bg-white border border-gray-300 rounded-lg shadow-md">
+        <DropdownMenuContent className="w-48 p-2 bg-white/80 dark:bg-black/80 border border-gray-300 rounded-lg shadow-md">
             {themes.map((theme) => (
-                <DropdownMenuItem key={theme.value} className="p-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setTheme(theme.value)}>
+                <DropdownMenuItem key={theme.value} className="p-2 text-sm  hover:bg-gray-100" onClick={() => setTheme(theme.value)}>
                     {theme.icon}
                     <span className="ml-2">{theme.name}</span>
                 </DropdownMenuItem>
