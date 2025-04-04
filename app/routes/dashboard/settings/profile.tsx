@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { Form } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { AvatarFallback } from "@flarekit/ui/components/ui/avatar";
 import InputField from "~/features/auth/components/input-filed";
 import { RiGithubFill, RiUploadCloud2Line } from "@remixicon/react";
-import { toast } from "sonner";
-import { authClient } from "~/features/auth/client/auth";
 import ActiveSessions from "~/components/settings/active-sessions";
 
 export const meta = () => [
@@ -15,11 +13,6 @@ export const meta = () => [
   }
 ]
 
-export const clientLoader = async () =>{  
-    const sessions = await authClient.listSessions()
-    console.log('sessions',sessions)
-    toast.info('developing...')
-}
 
 
 export default function ProfileSettings() {
@@ -118,7 +111,10 @@ export default function ProfileSettings() {
       </Card>
 
       {/* Active Sessions */}
-      <ActiveSessions />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ActiveSessions />
+      </Suspense>
+      
     </div>
   );
 }
