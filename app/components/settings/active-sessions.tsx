@@ -7,14 +7,13 @@ import { formatUserAgent } from '~/lib/user-agent'
 import { Spinner } from '../spinner'
 import { toast } from 'sonner'
 import { Session } from 'better-auth'
-
-
+import { useAuth } from '~/features/auth/hooks'
 
 interface SessionState {
   sessions: Session[];
   loading: boolean;
   error: string | null;
-  revokingId: string | null; 
+  revokingId: string | null;
 }
 
 type SessionAction =
@@ -50,8 +49,8 @@ function sessionReducer(state: SessionState, action: SessionAction): SessionStat
 }
 
 export default function ActiveSessions() {
-  const [state, dispatch] = useReducer(sessionReducer, initialState);
-
+  const [state, dispatch] = useReducer(sessionReducer, initialState)
+  const user = useAuth()
   const fetchSessions = async () => {
     try {
       const { data } = await authClient.listSessions();
@@ -72,7 +71,7 @@ export default function ActiveSessions() {
   const handleRevokeSession = async (session: Session) => {
     try {
       dispatch({ type: 'REVOKE_START', payload: session.id });
-      await authClient.revokeSession({token:session.token});
+      await authClient.revokeSession({ token: session.token });
       dispatch({ type: 'REVOKE_SUCCESS', payload: session.id });
       await fetchSessions();
       toast.success('Session revoked successfully');
@@ -117,7 +116,7 @@ export default function ActiveSessions() {
                   IP: {session.ipAddress || 'Unknown'}
                 </p>
               </div>
-              {false ? (
+              {user.session.token == session.token ? (
                 <Button variant="ghost" size="sm" disabled>
                   Current Session
                 </Button>
