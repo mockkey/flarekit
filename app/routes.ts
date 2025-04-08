@@ -18,7 +18,8 @@ export default [
       route('dashboard','routes/dashboard/dashboard.tsx'),
       ...prefix('settings',[
         index('routes/dashboard/settings/profile.tsx')
-      ]) 
+      ]),
+      route('/billing', 'routes/dashboard/billing/billing.tsx'),
     ]), 
 
 

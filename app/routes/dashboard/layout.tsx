@@ -1,7 +1,7 @@
 import { serverAuth } from '~/features/auth/server/auth'
 import { Outlet, Link, redirect } from 'react-router'
 import { Button } from '@flarekit/ui/components/ui/button'
-import { RiSparklingFill, RiMenuFoldLine, RiMenuUnfoldLine, RiUser3Line, RiSettings4Line, RiLogoutCircleLine } from "@remixicon/react"
+import { RiSparklingFill, RiMenuFoldLine, RiMenuUnfoldLine, RiUser3Line, RiSettings4Line, RiLogoutCircleLine, RiSettings2Fill, RiBankCard2Fill } from "@remixicon/react"
 import type { Route } from "../dashboard/+types/layout"
 import { useState } from 'react'
 import { cn } from '~/lib/utils'
@@ -50,6 +50,28 @@ export default function Layout({
               >
                 <RiSparklingFill className="size-5" />
                 {!collapsed && <span className="ml-2">Dashboard</span>}
+              </Button>
+            </Link>
+            <Link to="/settings">
+              <Button
+                variant="ghost"
+                className={cn("w-full justify-start",
+                  collapsed ? "px-2" : "px-4"
+                )}
+              >
+                <RiSettings2Fill className="size-5" />
+                {!collapsed && <span className="ml-2">Settings</span>}
+              </Button>
+            </Link>
+            <Link to="/billing">
+              <Button
+                variant="ghost"
+                className={cn("w-full justify-start",
+                  collapsed ? "px-2" : "px-4"
+                )}
+              >
+                <RiBankCard2Fill className="size-5" />
+                {!collapsed && <span className="ml-2">Billing</span>}
               </Button>
             </Link>
           </nav>
