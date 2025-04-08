@@ -9,6 +9,8 @@ interface InputFieldProps {
   placeholder?: string;
   error?: boolean;
   disabled?: boolean;
+  value?: string;
+  defaultValue?: string;
   action?: {
     label: string;
     href: string;
@@ -22,6 +24,7 @@ export default function InputField({
   placeholder,
   error,
   disabled,
+  defaultValue,
   action
 }: InputFieldProps) {
   return (
@@ -43,6 +46,7 @@ export default function InputField({
         type={type}
         placeholder={placeholder}
         required
+        defaultValue={defaultValue}
         disabled={disabled}
         aria-invalid={error}
         className={error ? "border-red-500" : undefined}

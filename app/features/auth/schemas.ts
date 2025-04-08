@@ -1,5 +1,12 @@
 import { z } from 'zod'
 
+
+export const NameSchema = z.object({
+    name: z.string()
+    .min(1, 'Name is required')
+    .max(25, 'Name must be less than 25 characters')
+})
+
 export const emailSchema = z.object({
     email: z
     .string()
