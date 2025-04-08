@@ -27,6 +27,9 @@ export default function ProfileCard() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(user.user.image!);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [username, setUserName] = useState<string>(user.user.name);
+  const size = 2 * 1024 * 1024; // 2MB
+  const fileTypes = ["image/jpeg", "image/png", "image/gif"];
+  const isValidFile = avatarFile && fileTypes.includes(avatarFile.type) && avatarFile.size <= size;
 
 
   const updataName = async (_, formData: FormData) => {
@@ -60,8 +63,27 @@ export default function ProfileCard() {
 
   useEffect(() => {
     if (!avatarFile) return;
+    if (!isValidFile) {
+      toast.error("Invalid file type or size. Please select a valid image.");
+      setAvatarFile(null);
+      return;
+    }
     const url = URL.createObjectURL(avatarFile);
     setPreviewUrl(url);
+
+    const formData = new FormData();
+    formData.append('file', avatarFile)
+    fetch("/api/upload/avatar", {
+      method: "POST",
+        body: formData,
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        if (data.error) {
+        toast.error(data.error);
+        return;
+        }
+    })
     return () => URL.revokeObjectURL(url);
   }, [avatarFile]);
 
@@ -104,6 +126,7 @@ export default function ProfileCard() {
                 className="hidden"
                 accept="image/*"
                 name="avatar"
+                multiple={false}
                 onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
               />
               <Button

@@ -27,4 +27,23 @@ app.get('/api/ping',(c)=>{
   return c.json({ message: 'pong' })
 })
 
+app.post('/api/upload/avatar', async (c) => {
+  const formData =  await c.req.formData()
+  const file = formData.get("file") as File
+  const auth = serverAuth(c.env)
+  const session = await auth.api.getSession({
+    headers: c.req.header() as any,
+  })
+  if (!session) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+  const userId = session.user.id
+  // upload file to cloudflare R2
+  const cloudflareFile  = await c.env.MY_BUCKET.put(`avatar/${userId}`, file.stream())
+  console.log('body', cloudflareFile)
+  
+  return c.json({ message: 'pong'})
+})
+
+
 export default app

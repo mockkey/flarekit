@@ -8,6 +8,7 @@ export type EnvType = {
   GITHUB_CLIENT_ID: string
   GITHUB_CLIENT_SECRET: string
   RESEND_API_KEY: string
+  MY_BUCKET: R2Bucket
 }
 
 

@@ -1,10 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
-import { Badge } from "@flarekit/ui/components/ui/badge";
-import { RiCheckLine, RiStarLine } from "@remixicon/react";
+import { RiCheckLine } from "@remixicon/react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@flarekit/ui/components/ui/dialog";
 import { useState } from "react";
 import { toast } from "sonner";
+import { PlansDialog } from "~/components/billing/plans-dialog";
 
 interface PlanFeature {
   name: string;
@@ -70,42 +70,9 @@ export default function Billing() {
                 Your plan renews on January 1, 2025
               </p>
             </div>
-            <Dialog open={showPlansDialog} onOpenChange={setShowPlansDialog}>
-              <DialogTrigger asChild>
-                <Button>
-                  {currentPlan === "Free" ? "Upgrade Now" : "Change Plan"}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Select a Plan</DialogTitle>
-                  <DialogDescription>
-                    Choose a plan that best suits your needs
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4">
-                  {plans.map((plan) => (
-                    <Button
-                      key={plan.name}
-                      variant={plan.highlight ? "default" : "outline"}
-                      className="w-full justify-between"
-                      onClick={() => {
-                        setShowPlansDialog(false);
-                        // 显示计划详情的第二个弹框
-                        // 可以使用useReducer或状态机来管理多步骤流程
-                        toast.info(`Opening ${plan.name} plan details...`);
-                      }}
-                    >
-                      <span>{plan.name}</span>
-                      <span className="font-mono">
-                        {plan.price}
-                        {plan.price !== "Free" && "/mo"}
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button onClick={() => setShowPlansDialog(true)}>
+              {currentPlan === "Free" ? "Upgrade Now" : "Change Plan"}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -124,6 +91,14 @@ export default function Billing() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Plans Dialog */}
+      <PlansDialog
+        open={showPlansDialog}
+        onOpenChange={setShowPlansDialog}
+        plans={plans}
+        currentPlan={currentPlan}
+      />
     </div>
   );
 }
