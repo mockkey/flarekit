@@ -2,7 +2,7 @@ import { Input } from '@flarekit/ui/components/ui/input';
 import { Label } from '@flarekit/ui/components/ui/label';
 import { Link } from 'react-router';
 
-interface InputFieldProps {
+interface InputFieldProps extends React.ComponentProps<typeof Input> {
   label: string;
   name: string;
   type?: string;
@@ -25,7 +25,8 @@ export default function InputField({
   error,
   disabled,
   defaultValue,
-  action
+  action,
+  ...props
 }: InputFieldProps) {
   return (
     <div className="space-y-2">
@@ -50,6 +51,7 @@ export default function InputField({
         disabled={disabled}
         aria-invalid={error}
         className={error ? "border-red-500" : undefined}
+        {...props}
       />
     </div>
   );

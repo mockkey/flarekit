@@ -8,6 +8,7 @@ import { RiGithubFill, RiUploadCloud2Line } from "@remixicon/react";
 import ActiveSessions from "~/components/settings/active-sessions";
 import ConnectedCard from "~/components/settings/connected-card";
 import ProfileCard from "~/components/settings/profile-card";
+import DeleteAccount from "~/components/settings/delete-account";
 
 export const meta = () => [
   {
@@ -25,7 +26,7 @@ export default function ProfileSettings() {
     <div className="space-y-6">
       {/* Profile Section with new layout */}
       <ProfileCard />
-      
+
       {/* Connected Accounts */}
       <ConnectedCard />
 
@@ -34,6 +35,9 @@ export default function ProfileSettings() {
         <ActiveSessions />
       </Suspense>
       
+      {/* DeleteAccount */}
+      <DeleteAccount />
+
     </div>
   );
 }

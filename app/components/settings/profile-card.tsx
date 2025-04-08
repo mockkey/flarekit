@@ -26,10 +26,8 @@ export default function ProfileCard() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(user.user.image!);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [username, setUserName] = useState<string>();
-  useEffect(() => {
-    setUserName(user.user.name);
-  }, [user.user.name]);
+  const [username, setUserName] = useState<string>(user.user.name);
+
 
   const updataName = async (_, formData: FormData) => {
     const newName = formData.get("name") as string;

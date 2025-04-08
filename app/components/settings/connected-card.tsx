@@ -8,7 +8,6 @@ export default function ConnectedCard() {
 
   useEffect(() => {
     authClient.listAccounts()
-
   },[])  
 
   return (
