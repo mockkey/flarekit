@@ -11,7 +11,7 @@ BETTER_AUTH_URL = ""
 GITHUB_CLIENT_ID = ""
 GITHUB_CLIENT_SECRET = ""
 RESEND_API_KEY = ""
-
+IMAGE_URL = ""
 
 [[d1_databases]]
 binding = "DB"
