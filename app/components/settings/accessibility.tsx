@@ -3,7 +3,7 @@ import { Label } from "@flarekit/ui/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@flarekit/ui/components/ui/radio-group";
 import { RiComputerLine, RiMoonLine, RiSunLine } from "@remixicon/react";
 import { Form } from "react-router";
-import { useTheme } from "remix-themes";
+import { Theme, useTheme } from "remix-themes";
 
 const themes = [
   {
@@ -97,8 +97,11 @@ export default function Accessibility() {
       </CardHeader>
       <CardContent>
         <RadioGroup
-          defaultValue={theme}
-          onValueChange={(value) => setTheme(value)}
+          defaultValue={theme as Theme}
+          onValueChange={(value) => {
+            const theme = value =='system' ? null : value as Theme
+            setTheme(theme)
+          }}
           className="flex md:flex-row flex-col gap-4"
         >
           {themes.map(({ value, label, icon: Icon, svg }) => (

@@ -1,4 +1,4 @@
-import { RiSparklingFill, RiSettings4Line, RiUser3Line } from "@remixicon/react";
+import { RiSparklingFill, RiSettings4Line, RiUser3Line, RiSettings2Fill, RiBankCard2Fill } from "@remixicon/react";
 
 interface NavItem {
   icon: React.ElementType;
@@ -7,14 +7,16 @@ interface NavItem {
   children?: Omit<NavItem, 'children'>[];
 }
 
-const navItems: NavItem[] = [
+export const navItems: NavItem[] = [
   { icon: RiSparklingFill, label: 'Dashboard', href: '/dashboard' },
   { 
     icon: RiSettings4Line, 
     label: 'Settings', 
     href: '/settings',
-    children: [
-      { icon: RiUser3Line, label: 'Profile', href: '/settings/profile' },
-    ]
+  },
+  { 
+    icon: RiBankCard2Fill, 
+    label: 'Billing', 
+    href: '/billing',
   }
 ]

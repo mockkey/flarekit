@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { cn } from '~/lib/utils'
 import UserNav from '~/components/dashboard/user-nav'
 import { AuthProvider } from '~/features/auth/hooks'
+import { navItems } from '~/components/dashboard/sidebar-nav'
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const auth = serverAuth(context.cloudflare.env)
@@ -41,39 +42,19 @@ export default function Layout({
           </div>
 
           <nav className="p-2 space-y-2">
-            <Link to="/dashboard">
-              <Button
-                variant="ghost"
-                className={cn("w-full justify-start",
-                  collapsed ? "px-2" : "px-4"
-                )}
-              >
-                <RiSparklingFill className="size-5" />
-                {!collapsed && <span className="ml-2">Dashboard</span>}
-              </Button>
-            </Link>
-            <Link to="/settings">
-              <Button
-                variant="ghost"
-                className={cn("w-full justify-start",
-                  collapsed ? "px-2" : "px-4"
-                )}
-              >
-                <RiSettings2Fill className="size-5" />
-                {!collapsed && <span className="ml-2">Settings</span>}
-              </Button>
-            </Link>
-            <Link to="/billing">
-              <Button
-                variant="ghost"
-                className={cn("w-full justify-start",
-                  collapsed ? "px-2" : "px-4"
-                )}
-              >
-                <RiBankCard2Fill className="size-5" />
-                {!collapsed && <span className="ml-2">Billing</span>}
-              </Button>
-            </Link>
+            {navItems.map(navItem=>{
+              return (<Link to={navItem.href} key={navItem.href}>
+                <Button
+                  variant="ghost"
+                  className={cn("w-full justify-start",
+                    collapsed ? "px-2" : "px-4"
+                  )}
+                >
+                  <navItem.icon  className="size-5"  />
+                  {!collapsed && <span className="ml-2">{navItem.label}</span>}
+                </Button>
+              </Link>)
+            })}
           </nav>
         </aside>
 

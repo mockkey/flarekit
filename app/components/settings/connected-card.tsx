@@ -4,6 +4,16 @@ import { RiGithubFill } from '@remixicon/react'
 import { useEffect } from 'react'
 import { authClient } from '~/features/auth/client/auth'
 
+
+const provider  = 'github'
+
+interface Connected {
+  provider: typeof provider
+  loading: boolean;
+  error: string | null;
+  revokingId: string | null;
+}
+
 export default function ConnectedCard() {
 
   useEffect(() => {

@@ -65,6 +65,12 @@ export const serverAuth = (env: EnvType) => {
           enabled: true,
         },
       },
+      account:{
+        accountLinking:{
+          enabled:true,
+          trustedProviders: ["github"]
+        }
+      }
     });
   }
 
