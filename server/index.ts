@@ -50,14 +50,12 @@ app.post('/api/upload/avatar', async (c) => {
     return c.json({ message: 'File size exceeds the maximum limit of 2MB.' }, 400);
   }
 
-
-
-  const userId = session.user.id
   // upload file to cloudflare R2
-  const fileBuffer = await file.arrayBuffer()
+  const userId = session.user.id
   const contentType = file.type
   const blob = new Blob([file], { type: contentType })
-  const key = `avatar/${userId}.${contentType.split('/')[1]}`
+  const day = (Number(new Date()) / 60 / 60 / 24 / 1000).toFixed(0)
+  const key = `avatar/${userId}/${day}.${contentType.split('/')[1]}`
   try{
     const cloudflareFile  = await c.env.MY_BUCKET.put(key,blob,{
       httpMetadata: {
