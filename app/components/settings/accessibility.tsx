@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flar
 import { Label } from "@flarekit/ui/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@flarekit/ui/components/ui/radio-group";
 import { RiComputerLine, RiMoonLine, RiSunLine } from "@remixicon/react";
-import { Form } from "react-router";
 import { Theme, useTheme } from "remix-themes";
 
 const themes = [
@@ -85,7 +84,7 @@ const themes = [
 
 export default function Accessibility() {
   const [theme, setTheme] = useTheme();
-
+  
   return (
     <Card>
       <CardHeader>

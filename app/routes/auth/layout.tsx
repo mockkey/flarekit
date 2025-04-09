@@ -1,9 +1,23 @@
 
-import { Link, Outlet } from 'react-router'
+import { Link, Outlet, redirect } from 'react-router'
 import { Route } from '../auth/+types/layout';
 import { Button } from '@flarekit/ui/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { serverAuth } from '~/features/auth/server/auth';
 
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const auth = serverAuth(context.cloudflare.env)
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  })
+
+  if (session && session.user.emailVerified === true) {
+    throw redirect('/dashboard')
+  }
+
+  return { session }
+}
 
 
 export default function Layout() {

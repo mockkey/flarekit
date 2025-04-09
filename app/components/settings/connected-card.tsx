@@ -37,14 +37,18 @@ export default function ConnectedCard() {
   ]);
 
   const unlinkHandle = async (item: ConnectedItem) => {
-    const { data, error } = await authClient.unlinkAccount({
-      providerId: item.provider as string,
-      accountId: item.accountId,
+    startTransition(async () => {
+      const { data, error } = await authClient.unlinkAccount({
+        providerId: item.provider as string,
+        accountId: item.accountId,
+      });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("success");
+      return;
     });
-
-    if (error) {
-      toast.error(error.message);
-    }
   };
 
   const getlistAccounts = async () => {
@@ -93,6 +97,7 @@ export default function ConnectedCard() {
             </div>
             {item.isConnected ? (
               <Button
+                disabled={isPending}
                 variant="destructive"
                 onClick={() => {
                   unlinkHandle(item);
@@ -101,7 +106,9 @@ export default function ConnectedCard() {
                 Connected
               </Button>
             ) : (
-              <Button variant="outline">Connect</Button>
+              <Button variant="outline" disabled={isPending}>
+                Connect
+              </Button>
             )}
           </div>
         ))}
