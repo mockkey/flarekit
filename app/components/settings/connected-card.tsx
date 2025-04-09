@@ -36,16 +36,15 @@ export default function ConnectedCard() {
     },
   ]);
 
-  const unlinkHandle = async (providerId: string) => {
+  const unlinkHandle = async (item: ConnectedItem) => {
     const { data, error } = await authClient.unlinkAccount({
-      providerId,
+      providerId: item.provider as string,
+      accountId: item.accountId,
     });
 
     if (error) {
       toast.error(error.message);
     }
-
-    console.log("data", data);
   };
 
   const getlistAccounts = async () => {
@@ -57,6 +56,7 @@ export default function ConnectedCard() {
         if (item.provider == connecteditem.provider) {
           isset = true;
           connecteditem.id = item.id;
+          connecteditem.accountId = item.accountId;
         }
       });
       tempConnectedList.push({
@@ -95,7 +95,7 @@ export default function ConnectedCard() {
               <Button
                 variant="destructive"
                 onClick={() => {
-                  unlinkHandle(item.id as string);
+                  unlinkHandle(item);
                 }}
               >
                 Connected
