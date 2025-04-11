@@ -9,6 +9,7 @@
     "dev": "react-router dev",
     "start": "wrangler dev",
     "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "db:local": "wrangler d1 migrations apply DB --local",
     "db:remote": "wrangler d1 migrations apply DB --remote",
     "typecheck": "react-router typegen && tsc",
@@ -22,6 +23,7 @@
     "config/*"
   ],
   "dependencies": {
+    "@better-auth/stripe": "^1.2.5",
     "@flarekit/ui": "workspace:*",
     "@hookform/resolvers": "^4.1.3",
     "@paralleldrive/cuid2": "^2.2.2",
@@ -78,6 +80,7 @@
     "remix-themes": "^2.0.4",
     "resend": "^4.2.0",
     "sonner": "^2.0.1",
+    "stripe": "^18.0.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "tw-animate-css": "^1.2.5",
@@ -99,7 +102,7 @@
     "typescript": "^5.1.6",
     "vite": "^6.0.7",
     "vite-tsconfig-paths": "^5.1.4",
-    "wrangler": "^3.86.0"
+    "wrangler": "^4.9.1"
   },
   "packageManager": "pnpm@10.5.0",
   "engines": {

@@ -6,10 +6,13 @@ import * as schema from "~/db/schema";
 import WelcomeEmail from "~/features/email/components/wecome";
 import { Resend } from "resend";
 import ResetPasswordEmail from "~/features/email/components/reset-password";
+import { stripe } from "@better-auth/stripe";
+import { StripeClient } from "./stripe";
 
 let _auth: ReturnType<typeof betterAuth>;
 
 export const serverAuth = (env: EnvType) => {
+  const stripeClient = StripeClient(env.STRIPE_SECRET_KEY!);
   const db = drizzle(env.DB, { schema });
   if (!_auth) {
     _auth = betterAuth({
@@ -65,12 +68,45 @@ export const serverAuth = (env: EnvType) => {
           enabled: true,
         },
       },
-      account:{
-        accountLinking:{
-          enabled:true,
-          trustedProviders: ["github"]
-        }
-      }
+      account: {
+        accountLinking: {
+          enabled: true,
+          trustedProviders: ["github"],
+        },
+      },
+      plugins: [
+        stripe({
+          stripeClient,
+          stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET!,
+          createCustomerOnSignUp: false,
+          onEvent: async (event) => {
+            // Handle any Stripe event
+            console.log('event',event.type)
+            switch (event.type) {
+              case "invoice.paid":
+                // Handle paid invoice
+                break;
+              case "payment_intent.succeeded":
+                // Handle successful payment
+                break;
+              case "customer.subscription.updated":
+                break;
+            }
+          },
+          subscription: {
+            enabled: true,
+            plans: [
+              {
+                name: "pro",
+                priceId: env.STRIPE_PRICE_ID,
+                freeTrial: {
+                  days: 7,
+                },
+              },
+            ],
+          },
+        }),
+      ],
     });
   }
 

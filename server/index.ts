@@ -2,6 +2,8 @@
 import { Hono } from 'hono'
 import { serverAuth } from '~/features/auth/server/auth';
 import { EnvType } from 'load-context';
+import { User } from 'better-auth/types';
+import { StripeClient } from '~/features/auth/server/stripe';
 
 const app = new Hono<{
   Bindings: EnvType ,
@@ -76,6 +78,36 @@ app.post('/api/upload/avatar', async (c) => {
     return c.json({ error: 'Failed to update avatar'})
   }
   
+})
+
+
+
+interface ExtendedUser extends User {
+  stripeCustomerId?: string;
+}
+
+app.post('/api/subscription/session',async (c)=>{
+  const auth = serverAuth(c.env)
+  const session = await auth.api.getSession({
+    headers: c.req.header() as any,
+  })
+  if (!session) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+  const user = session.user as ExtendedUser
+  if(user && user.stripeCustomerId!=null){
+    const stripeCustomerId = user.stripeCustomerId
+    const stripeClient = StripeClient(c.env.STRIPE_SECRET_KEY)
+    const stripeSession  = await stripeClient.billingPortal.sessions.create({
+      customer: stripeCustomerId,
+      return_url: `${c.env.BETTER_AUTH_URL}/billing`,
+    })
+    return c.json({
+      url:stripeSession.url,
+      redirect:true,
+    })
+  }
+  return c.json({ error: 'Unauthorized' }, 401)
 })
 
 

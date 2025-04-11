@@ -7,7 +7,11 @@ import {
 } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { PlansDialog } from "~/components/billing/plans-dialog";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { subscription } from "~/features/auth/client/auth";
+import { toast } from "sonner";
+import { Subscription } from "@better-auth/stripe";
+import { formatDateToLong } from "~/lib/utils";
 
 interface PlanFeature {
   name: string;
@@ -52,9 +56,58 @@ const plans: Plan[] = [
   },
 ];
 
+
+
 export default function Billing() {
-  const currentPlan = "Free";
-  const [showPlansDialog, setShowPlansDialog] = useState(currentPlan == "Free");
+  const [currentPlan,setCurrentPlan] = useState<Subscription>()
+  const [subscriptions,setsubscriptions] = useState<Subscription[]>()
+  const [showPlansDialog, setShowPlansDialog] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  
+  const getSubscriptionList = async ()=>{
+    startTransition(async()=>{
+      const { data: list } = await subscription.list()
+      if(list){
+   
+        const activeSubscription = list?.find(
+          sub => sub.status === "active" || sub.status === "trialing"
+        )
+  
+        activeSubscription && setCurrentPlan({
+          ...activeSubscription,
+        })
+      }
+      return 
+    })
+  }
+
+  const subscriptionSession = async () =>{
+    startTransition(async()=>{
+      const res = await fetch('/api/subscription/session',{
+        method:'post'
+      })
+      const data = await res.json()
+      if(data.url){
+          if (typeof window !== "undefined" && window.location) {
+            if (window.location) {
+              try {
+                window.location.href = data.url
+              } catch {
+              }
+            }
+          }
+      }
+      return 
+    })
+  }
+
+  
+
+  useEffect(()=>{
+    
+    getSubscriptionList()
+  },[])
+
   return (
     <div className="space-y-6">
       {/* Current Plan Overview */}
@@ -68,17 +121,21 @@ export default function Billing() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-medium">Current Plan: {currentPlan}</h3>
+              <h3 className="font-medium">Current Plan: { currentPlan?.plan ?  currentPlan.plan : 'free'   }</h3>
               <p className="text-sm text-muted-foreground">
-                Your plan renews on January 1, 2025
+                  { currentPlan?.periodStart && `Your plan renews on ${formatDateToLong(currentPlan?.periodStart)}` }
               </p>
             </div>
-            {currentPlan === "Free" ? (
-              <Button onClick={() => setShowPlansDialog(true)}>
+            {!currentPlan || currentPlan?.plan === "Free"  ? (
+              <Button disabled={isPending} onClick={() => setShowPlansDialog(true)}>
                 Upgrade Now
               </Button>
             ) : (
-              <Button variant="outline">Manage Subscription</Button>
+              currentPlan?.cancelAtPeriodEnd ? 
+              <Button disabled={isPending}  onClick={()=>{subscriptionSession()}}>Manage Subscription</Button> 
+              :
+              <Button disabled={isPending} variant="destructive" onClick={()=>{subscriptionSession()}}>Manage Subscription</Button>
+             
             )}
           </div>
         </CardContent>
@@ -102,7 +159,7 @@ export default function Billing() {
         open={showPlansDialog}
         onOpenChange={setShowPlansDialog}
         plans={plans}
-        currentPlan={currentPlan}
+        currentPlan={'free'}
       />
     </div>
   );

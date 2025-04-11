@@ -17,6 +17,7 @@ import {
 } from "@flarekit/ui/components/ui/card";
 import { Badge } from "@flarekit/ui/components/ui/badge";
 import { cn } from "~/lib/utils";
+import { authClient } from "~/features/auth/client/auth";
 
 interface Plan {
   name: string;
@@ -39,6 +40,15 @@ export function PlansDialog({
   plans,
   currentPlan,
 }: PlansDialogProps) {
+
+  const subscriptionHandle = async()=>{
+    await authClient.subscription.upgrade({
+        plan: "pro",
+        successUrl: "/dashboard",
+        cancelUrl: "/billing",
+    })
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="!w-[720px] !max-w-[96%] ">
@@ -96,6 +106,7 @@ export function PlansDialog({
                   className="mt-6 w-full"
                   variant={plan.highlight ? "default" : "outline"}
                   onClick={() => {
+                    subscriptionHandle()
                     toast.info(`Subscribing to ${plan.name} plan...`);
                     onOpenChange(false);
                   }}
