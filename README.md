@@ -10,6 +10,7 @@ Build an app template for React Router v7 and Better Auth and Hono to run on Clo
 - Framework: Hono and rr7
 - Language: TypeScript
 - Package Manager: pnpm
+- payment: stripe
 
 
 
@@ -35,6 +36,10 @@ BETTER_AUTH_URL = ""
 GITHUB_CLIENT_ID = ""
 GITHUB_CLIENT_SECRET = ""
 RESEND_API_KEY = ""
+IMAGE_URL = ""
+STRIPE_SECRET_KEY = ""
+STRIPE_WEBHOOK_SECRET = ""
+STRIPE_PRICE_ID = ""
 
 [[d1_databases]]
 binding = "DB"
