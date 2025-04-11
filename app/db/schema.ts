@@ -68,8 +68,7 @@ export const subscription = sqliteTable("subscription", {
     .primaryKey(),
   plan: text("plan").notNull(),
   referenceId: text("referenceId")
-    .notNull()
-    .references(() => user.id),
+    .notNull(),
   stripeCustomerId: text("stripeCustomerId"),
   stripeSubscriptionId: text("stripeSubscriptionId"),
   status: text("status").notNull(),
