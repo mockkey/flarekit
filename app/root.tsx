@@ -1,10 +1,11 @@
 import { Links, LinksFunction, LoaderFunctionArgs, Meta, Outlet, Scripts, useLoaderData } from 'react-router'
-
 import stylesheet from "@flarekit/ui/app.css?url";
 import { ThemeProvider, useTheme } from 'remix-themes';
 import { themeSessionResolver } from './server.session';
 import { ProgressBar } from '~/components/progress-bar';
 import { Toaster } from 'sonner';
+import { Route } from './+types/root';
+import { Boundary } from '~/components/boundary';
 
 
 export const links:LinksFunction = () => {
@@ -50,9 +51,23 @@ export function App() {
   )
 }
 
-// export default function App() {
-//   return <Outlet />
-// }
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <title>Error - FlareKit</title>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full">
+        <Boundary error={error} />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
 
 export default function AppWithProviders() {
   const data = useLoaderData();
