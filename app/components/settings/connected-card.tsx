@@ -51,6 +51,17 @@ export default function ConnectedCard() {
     });
   };
 
+  const connectHandle = async (item: ConnectedItem) => {
+    startTransition(async () => {
+      const { data } = await authClient.linkSocial({
+        provider: "github",
+        callbackURL: "/settings",
+      });
+      console.log("data", data);
+      return;
+    });
+  };
+
   const getlistAccounts = async () => {
     const { data } = await authClient.listAccounts();
     const tempConnectedList: ConnectedItem[] = [];
@@ -103,10 +114,16 @@ export default function ConnectedCard() {
                   unlinkHandle(item);
                 }}
               >
-                Connected
+                Disconnect
               </Button>
             ) : (
-              <Button variant="outline" disabled={isPending}>
+              <Button
+                variant="outline"
+                disabled={isPending}
+                onClick={() => {
+                  connectHandle(item);
+                }}
+              >
                 Connect
               </Button>
             )}
