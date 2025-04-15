@@ -12,6 +12,9 @@ import {
   RiSparklingFill,
   RiSettings4Line,
   RiBankCard2Fill,
+  RiCommandLine,
+  RiKeyFill,
+  RiSettings2Fill,
 } from "@remixicon/react";
 import { Link } from "react-router";
 
@@ -25,7 +28,7 @@ interface NavItem {
 export const navItems: NavItem[] = [
   { icon: RiSparklingFill, label: "Dashboard", href: "/dashboard" },
   {
-    icon: RiSettings4Line,
+    icon: RiSettings2Fill,
     label: "Settings",
     href: "/settings",
   },
@@ -33,6 +36,11 @@ export const navItems: NavItem[] = [
     icon: RiBankCard2Fill,
     label: "Billing",
     href: "/billing",
+  },
+  {
+    icon: RiKeyFill,
+    label: "API Tokens",
+    href: "/token",
   },
 ];
 

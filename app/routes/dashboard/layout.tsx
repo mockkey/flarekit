@@ -23,6 +23,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return { session };
 }
 
+
+
 export default function Layout({
   loaderData: { session },
 }: Route.ComponentProps) {

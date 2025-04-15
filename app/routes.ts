@@ -20,6 +20,7 @@ export default [
         index('routes/dashboard/settings/profile.tsx')
       ]),
       route('/billing', 'routes/dashboard/billing/billing.tsx'),
+      route('/token', 'routes/dashboard/token/token.tsx'),
     ]), 
 
 

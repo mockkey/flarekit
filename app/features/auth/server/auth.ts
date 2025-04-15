@@ -8,8 +8,9 @@ import { Resend } from "resend";
 import ResetPasswordEmail from "~/features/email/components/reset-password";
 import { stripe } from "@better-auth/stripe";
 import { StripeClient } from "./stripe";
-
+import { apiKey } from "better-auth/plugins"
 let _auth: ReturnType<typeof betterAuth>;
+
 
 export const serverAuth = (env: EnvType) => {
   const stripeClient = StripeClient(env.STRIPE_SECRET_KEY!);
@@ -106,6 +107,9 @@ export const serverAuth = (env: EnvType) => {
             ],
           },
         }),
+        apiKey({
+          
+        })
       ],
     });
   }

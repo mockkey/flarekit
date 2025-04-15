@@ -81,3 +81,32 @@ export const subscription = sqliteTable("subscription", {
   createdAt: integer("createdAt", { mode: "timestamp" }),
   updatedAt: integer("updatedAt", { mode: "timestamp" }),
 });
+
+
+export const apikey = sqliteTable("apikey", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  name: text("name"),
+  start: text("start"),
+  prefix: text("prefix"),
+  key: text("key").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  refillInterval: integer("refillInterval"),
+  refillAmount: integer("refillAmount"),
+  lastRefillAt: integer("lastRefillAt", { mode: "timestamp" }),
+  enabled: integer("enabled", { mode: "boolean" }).notNull(),
+  rateLimitEnabled: integer("rateLimitEnabled", { mode: "boolean" }).notNull(),
+  rateLimitTimeWindow: integer("rateLimitTimeWindow"),
+  rateLimitMax: integer("rateLimitMax"),
+  requestCount: integer("requestCount").notNull(),
+  remaining: integer("remaining"),
+  lastRequest: integer("lastRequest", { mode: "timestamp" }),
+  expiresAt: integer("expiresAt", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
+  permissions: text("permissions"),
+  metadata: text("metadata")
+});
