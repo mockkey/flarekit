@@ -1,8 +1,10 @@
 import { Button } from "@flarekit/ui/components/ui/button";
-import { RiClipboardLine, RiDeleteBinLine } from "@remixicon/react";
+import { RiDeleteBinLine, RiShieldLine, RiTimeLine, RiBarChart2Line, RiEditLine } from "@remixicon/react";
+import { Progress } from "@flarekit/ui/components/ui/progress";
 import { useTransition } from "react";
 import { authClient } from "~/features/auth/client/auth";
 import { Spinner } from "../spinner";
+import { toast } from "sonner";
 
 export interface Token {
   id: string;
@@ -34,45 +36,86 @@ interface TokenItemProps {
 export default function TokenItem({ token }: TokenItemProps) {
   const [isPending, startTransition] = useTransition();
 
+
   const handleRevokeToken = () => {
     startTransition(async () => {
-      const { data: result, error } = await authClient.apiKey.delete({
+      const { error } = await authClient.apiKey.delete({
         keyId: token.id,
       });
-      console.log("result", result, error);
-      return;
+      
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Token revoked successfully");
     });
   };
 
+  const usagePercentage = token.remaining 
+    ? Math.round((token.requestCount / (token.remaining + token.requestCount)) * 100)
+    : 0;
+
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg">
-      <div className="space-y-1">
-        <div className="font-medium">{token.name}</div>
-        <div className="text-sm text-muted-foreground flex items-center gap-2">
-          <code className="px-2 py-1 bg-muted rounded">{token.start}</code>
+    <div className="flex flex-col space-y-4 p-4 border rounded-lg">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <div className="font-medium">{token.name}</div>
+          <code className="px-2 py-1 bg-muted rounded text-sm">{token.start}</code>
         </div>
-        <div className="text-xs text-muted-foreground">
-          Created: {new Date(token.createdAt).toLocaleDateString()}
-          {token.expiresAt &&
-            ` • Last used: ${new Date(token.expiresAt).toLocaleDateString()}`}
-          {token.expiresAt &&
-            ` • Expires: ${new Date(token.expiresAt).toLocaleDateString()}`}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={isPending}
+            onClick={handleRevokeToken}
+          >
+            {isPending ? (
+              <Spinner className="size-4" />
+            ) : (
+              <>
+                <RiDeleteBinLine className="mr-2 size-4" />
+                Revoke
+              </>
+            )}
+          </Button>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Button
-          variant="destructive"
-          size="sm"
-          disabled={isPending}
-          onClick={handleRevokeToken}
-        >
-          {isPending ? (
-            <Spinner className="size-4" />
-          ) : (
-            <RiDeleteBinLine className="mr-2 size-4" />
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {/* Token Details */}
+        <div className="space-y-2">
+          <div className="text-xs text-muted-foreground flex items-center gap-1">
+            <RiTimeLine className="size-3" />
+            Created: {new Date(token.createdAt).toLocaleDateString()}
+          </div>
+          {token.lastRequest && (
+            <div className="text-xs text-muted-foreground flex items-center gap-1">
+              <RiTimeLine className="size-3" />
+              Last Request: {new Date(token.lastRequest).toLocaleDateString()}
+            </div>
           )}
-          Revoke
-        </Button>
+          {token.expiresAt && (
+            <div className="text-xs text-muted-foreground flex items-center gap-1">
+              <RiTimeLine className="size-3" />
+              Expires: {new Date(token.expiresAt).toLocaleDateString()}
+            </div>
+          )}
+        </div>
+
+        {/* Usage Stats */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground flex items-center gap-1">
+              <RiBarChart2Line className="size-3" />
+              Usage
+            </span>
+            <span className="font-medium">{usagePercentage}%</span>
+          </div>
+          <Progress value={usagePercentage} className="h-2" />
+          <div className="text-xs text-muted-foreground">
+            {token.requestCount} / {(token.remaining || 0) + token.requestCount} requests
+          </div>
+        </div>
       </div>
     </div>
   );

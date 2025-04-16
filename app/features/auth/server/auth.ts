@@ -108,8 +108,17 @@ export const serverAuth = (env: EnvType) => {
           },
         }),
         apiKey({
-          
-        })
+          apiKeyHeaders:['x-api-key'],
+          enableMetadata:true,
+          permissions:{
+            defaultPermissions: async (userId, ctx) => {
+              return {
+                files: ["read"],
+                users: ["read"]
+              }
+            }
+          },
+        }),
       ],
     });
   }

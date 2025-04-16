@@ -4,6 +4,8 @@ import { serverAuth } from '~/features/auth/server/auth';
 import { EnvType } from 'load-context';
 import { User } from 'better-auth/types';
 import { StripeClient } from '~/features/auth/server/stripe';
+import api from './api';
+import { validatePermissions } from '~/config/permissions';
 
 const app = new Hono<{
   Bindings: EnvType ,
@@ -18,16 +20,16 @@ app.use(async (c, next) => {
   c.header('X-Powered-By', 'React Router and Hono')
 })
 
-app.get('/api', (c) => {
-  return c.json({
-    message: 'Hello',
-    var: c.env.MY_VAR,
-  })
-})
+
+
+
+app.route('/admin/api', api)
 
 app.get('/api/ping',(c)=>{
   return c.json({ message: 'pong' })
 })
+
+
 
 app.post('/api/upload/avatar', async (c) => {
   const formData =  await c.req.formData()
@@ -109,6 +111,57 @@ app.post('/api/subscription/session',async (c)=>{
   }
   return c.json({ error: 'Unauthorized' }, 401)
 })
+
+
+app.post('/api/api-key/create',async (c)=>{
+  const auth = serverAuth(c.env)
+  const session = await auth.api.getSession({
+    headers: c.req.header() as any,
+  })
+
+  if (!session) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const jsonData =  await c.req.json()
+  const reqPermissions =  jsonData['permissions']
+  const reqName = jsonData['name'] || 'test'
+  const reqExpiresIn = jsonData['expiresIn'] || null
+  const validationResult = validatePermissions(reqPermissions)
+  if(!validationResult.valid){
+    console.error(validationResult.error);
+    if (validationResult.invalidPermissions) {
+      console.error("Invalid permissions:", validationResult.invalidPermissions);
+    }
+    console.error("Invalid permissions");
+  }
+  
+  const validatedPermissions = validationResult.permissions;
+
+  console.log('validatedPermissions',validatedPermissions)
+
+  // @ts-ignore
+  const token = await auth.api.createApiKey({
+    body: {
+      name: reqName,
+      expiresIn: reqExpiresIn,
+      prefix: "fk_",
+      remaining: 100,
+      refillAmount: 100,
+      refillInterval: 60 * 60 * 24 * 7, // 7 days
+      rateLimitTimeWindow: 1000 * 60 * 60 * 24, // everyday
+      rateLimitMax: 100, // every day, they can use up to 100 requests
+      rateLimitEnabled: true,
+      userId:session.user.id, // the user id to create the API key for
+      permissions:validatedPermissions
+    },
+  })
+
+  return c.json(token)
+})
+
+
+
 
 
 export default app

@@ -4,9 +4,14 @@ import TokenItem, { Token } from "./token-item";
 import { toast } from "sonner";
 import { TokenItemSkeleton } from "./token-item-skeleton";
 
-export default function TokenItemList() {
-  const [apiKeys, setApiKeys] = useState<Token[]>([]);
+interface TokenListProps {
+  onTokenRemove?: (tokenId: string) => void;
+}
+
+export default function TokenItemList({ onTokenRemove }: TokenListProps) {
+  const [tokens, setTokens] = useState<Token[]>([]);
   const [isPending, startTransition] = useTransition();
+
   useEffect(() => {
     startTransition(async () => {
       const { data: apiKeys, error } = await authClient.apiKey.list();
@@ -14,17 +19,20 @@ export default function TokenItemList() {
         toast.error(error?.message);
       }
       if (apiKeys) {
-        setApiKeys(apiKeys);
+        setTokens(apiKeys);
       }
-      return;
     });
   }, []);
 
   if (isPending) {
-    return <TokenItemSkeleton />;
+    return (
+      <div className="max-h-[600px] overflow-y-auto pr-2">
+        <TokenItemSkeleton />
+      </div>
+    );
   }
 
-  if (!apiKeys.length && !isPending) {
+  if (!tokens.length && !isPending) {
     return (
       <div className="text-center py-6 text-muted-foreground">
         No API tokens created yet
@@ -33,9 +41,12 @@ export default function TokenItemList() {
   }
 
   return (
-    <div className="space-y-4">
-      {apiKeys.map((token: any) => (
-        <TokenItem key={token.id} token={token} />
+    <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
+      {tokens.map((token: any) => (
+        <TokenItem 
+          key={token.id} 
+          token={token} 
+        />
       ))}
     </div>
   );

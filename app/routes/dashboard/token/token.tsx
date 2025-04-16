@@ -31,6 +31,7 @@ const expirationOptions = [
 
 export default function ApiTokens() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [tokens, setTokens] = useState<Token[]>([]);
 
 
   const copyToClipboard = (text: string) => {
@@ -56,14 +57,20 @@ export default function ApiTokens() {
           </div>
         </CardHeader>
         <CardContent>
-          <TokenItemList />
+          <TokenItemList 
+            onTokenRemove={(tokenId) => {
+              setTokens(prev => prev.filter(t => t.id !== tokenId));
+            }} 
+          />
         </CardContent>
       </Card>
 
       <CreateTokenDialog
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
-        onTokenCreated={()=>{}}
+        onTokenCreated={(newToken) => {
+          setTokens(prev => [...prev, newToken]);
+        }}
       />
     </div>
   );
