@@ -8,6 +8,7 @@ import { Route } from './+types/root';
 import { Boundary } from '~/components/boundary';
 
 
+
 export const links:LinksFunction = () => {
   return [
     { rel: "stylesheet", href: stylesheet },
@@ -54,7 +55,7 @@ export function App() {
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <title>Error - FlareKit</title>
         <Meta />

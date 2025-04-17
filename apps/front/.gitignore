@@ -1,0 +1,12 @@
+node_modules
+drizzle
+test-results
+
+/.cache
+/build
+.env
+.dev.vars
+.react-router
+
+.wrangler
+wrangler.toml

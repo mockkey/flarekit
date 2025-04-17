@@ -9,6 +9,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { getLoadContext } from './load-context'
 
 
+
 export default defineConfig({
   plugins: [
     remixCloudflareDevProxy(),
@@ -20,5 +21,10 @@ export default defineConfig({
       entry: 'server/index.ts',
     }),
     tsconfigPaths()
-  ]
+  ],
+  build:{
+    rollupOptions:{
+
+    }
+  }
 })

@@ -7,6 +7,7 @@ import {  Theme ,useTheme } from 'remix-themes';
 const themeIcons = {
     light: <Sun />,
     dark:  <Moon />,
+    system: <Laptop />
 } as const
 
 const themes = [

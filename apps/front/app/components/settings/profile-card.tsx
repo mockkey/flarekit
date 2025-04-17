@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { AvatarFallback } from "@radix-ui/react-avatar";
+
 import { RiUploadCloud2Line } from "@remixicon/react";
 import {
   useEffect,
@@ -20,6 +20,7 @@ import InputField from "~/features/auth/components/input-filed";
 import { useAuth } from "~/features/auth/hooks";
 import { NameSchema } from "~/features/auth/schemas";
 import { Spinner } from "../spinner";
+import { AvatarFallback } from "@flarekit/ui/components/ui/avatar";
 
 export default function ProfileCard() {
   const user = useAuth();

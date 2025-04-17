@@ -21,7 +21,8 @@
       "~/*": [
         "./app/*",
       ],
-      "@flarekit/ui/components/*":["packages/ui/src/components/*"]
+      "@flarekit/ui/components/*":["packages/ui/src/components/*"],
+      "@flarekit/ui/app.css*":["packages/ui/src/styles/app.css"]
     },
     "noEmit": true
   }
