@@ -11,6 +11,10 @@ import { signUpSchema } from "~/features/auth/schemas";
 import InputField from "~/features/auth/components/input-filed";
 import { serverAuth } from "~/features/auth/server/auth";
 
+import {
+  SignUpCard,
+} from "@flarekit/auth/components/sign-up-card";
+
 export const meta: Route.MetaFunction = () => [
   {
     title: "Sign Up",
@@ -121,91 +125,6 @@ export default function SignUp() {
   }, [actionData])
 
   return (
-    <Card className='flex flex-col gap-6'>
-      <CardHeader className="text-center">
-        <CardTitle className="text-xl">Create an account</CardTitle>
-        <CardDescription>
-          Get started with your free account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-6">
-          {/* Social Sign Up */}
-          <Form method="post">
-            <Button 
-              type="submit"
-              name="intent"
-              value="github"
-              variant="outline"
-              className="w-full"
-              disabled={isPending}
-            >
-              <RiGithubFill size={32} />
-              {isPending ? 'Connecting...' : 'Continue with Github'}
-            </Button>
-          </Form>
-
-          {/* Divider */}
-          <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-            <span className="relative z-10 bg-background px-2 text-muted-foreground">
-              Or with email
-            </span>
-          </div>
-
-          {/* Email Sign Up Form */}
-          <Form method="post" className="space-y-4">
-            <div className="space-y-4">
-              <InputField
-                label="Full Name"
-                name="name"
-                placeholder="John Doe"
-                error={actionData?.error?.field === 'name' }
-                disabled={isPending}
-              />
-              <InputField
-                label="Email"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                error={actionData?.error?.field === 'email'}
-                disabled={isPending}
-              />
-              <InputField
-                label="Password"
-                name="password"
-                type="password"
-                error={actionData?.error?.field === 'password'}
-                disabled={isPending}
-              />
-
-            </div>
-
-            <Button 
-              type="submit"
-              name="intent"
-              value="email"
-              className="w-full"
-              disabled={isPending}
-            >
-              {isPending ? (
-                <div className="flex items-center justify-center gap-2">
-                  <Spinner className="size-4" />
-                  <span>Creating account...</span>
-                </div>
-              ) : (
-                'Create Account'
-              )}
-            </Button>
-          </Form>
-
-          <div className="text-center text-sm">
-            Already have an account?{" "}
-            <Link to="/auth/sign-in">
-              <Button variant="link" className="p-0">Sign in</Button>
-            </Link>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <SignUpCard />
   )
 }
