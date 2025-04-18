@@ -1,5 +1,5 @@
 import { Links, LinksFunction, LoaderFunctionArgs, Meta, Outlet, Scripts, useLoaderData } from 'react-router'
-import stylesheet from "@flarekit/ui/app.css?url";
+import stylesheet from "./styles/app.css?url";
 import { ThemeProvider, useTheme } from 'remix-themes';
 import { themeSessionResolver } from './server.session';
 import { ProgressBar } from '~/components/progress-bar';
