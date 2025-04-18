@@ -1,7 +1,7 @@
 // server/index.ts
 import { Hono } from 'hono'
 import { serverAuth } from '~/features/auth/server/auth';
-import { EnvType } from 'front/load-context';
+import { EnvType } from 'load-context';
 import { User } from 'better-auth/types';
 import { StripeClient } from '~/features/auth/server/stripe';
 import api from './api';

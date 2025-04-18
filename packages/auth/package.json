@@ -1,0 +1,33 @@
+{
+  "name": "@flarekit/auth",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.0.1",
+    "@flarekit/config-typescript": "workspace:*",
+    "typescript": "^5.1.6"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.0",
+  "dependencies": {
+    "better-auth": "^1.2.5",
+    "@flarekit/ui": "workspace:*",
+    "zod": "^3.24.2",
+    "sonner": "^2.0.1"
+  },
+  "exports": {
+    "./components/*": "./src/components/*.tsx",
+    "./lib/*": "./src/lib/*.tsx"
+  }
+}

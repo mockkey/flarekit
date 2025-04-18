@@ -1,4 +1,4 @@
-import { Links, LinksFunction, LoaderFunctionArgs, Meta, Outlet, Scripts, useLoaderData } from 'react-router'
+import { Link, Links, LinksFunction, LoaderFunctionArgs, Meta, NavLink, Outlet, Scripts, useLoaderData } from 'react-router'
 import stylesheet from "./styles/app.css?url";
 import { ThemeProvider, useTheme } from 'remix-themes';
 import { themeSessionResolver } from './server.session';
@@ -6,6 +6,7 @@ import { ProgressBar } from '~/components/progress-bar';
 import { Toaster } from 'sonner';
 import { Route } from './+types/root';
 import { Boundary } from '~/components/boundary';
+import { AuthProvider } from '@flarekit/auth/lib/auth-provider';
 
 
 
@@ -37,15 +38,15 @@ export function App() {
         <Links />
       </head>
       <body className='h-[100vh]' suppressHydrationWarning>
-        <ProgressBar />
-        <Toaster 
-          position="top-right"
-          theme={theme as "light" | "dark"}
-          closeButton
-          richColors
-          expand={false}
-        />
-        <Outlet />
+          <ProgressBar />
+          <Toaster 
+            position="top-right"
+            theme={theme as "light" | "dark"}
+            closeButton
+            richColors
+            expand={false}
+          />
+          <Outlet />
         <Scripts />
       </body>
     </html>
