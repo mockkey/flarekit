@@ -57,7 +57,6 @@ export default function ConnectedCard() {
         provider: "github",
         callbackURL: "/settings",
       });
-      console.log("data", data);
       return;
     });
   };

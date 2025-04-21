@@ -1,6 +1,7 @@
 import { signIn } from "@flarekit/auth/lib/auth-client";
 import { toast } from "sonner";
 import { Schema, z } from "zod";
+import { providerPlatform, SocialActions } from "./social-actions";
 
 const signInSchema: Schema<{
   email: string;
@@ -18,23 +19,22 @@ type FormState = {
 
 export const signInAction = async (_: FormState, payload: FormData) => {
   const intent = payload.get("intent");
+  const isSet = await SocialActions(intent as providerPlatform);
+  if (isSet) {
+    return {
+      success: true,
+    };
+  }
   switch (intent) {
-    case "github":
-      signIn.social({
-        provider: "github",
-        callbackURL: "/dashboard",
-      });
-      break;
     case "email":
       const formData = Object.fromEntries(payload);
       const parsed = signInSchema.safeParse(formData);
+      const fields: Record<string, string> = {};
+      for (const key of Object.keys(formData)) {
+        fields[key] = formData[key].toString();
+      }
       if (!parsed.success) {
         const errors = parsed.error.flatten().fieldErrors;
-        const fields: Record<string, string> = {};
-
-        for (const key of Object.keys(formData)) {
-          fields[key] = formData[key].toString();
-        }
         return {
           success: false,
           fields,
@@ -50,7 +50,9 @@ export const signInAction = async (_: FormState, payload: FormData) => {
         toast.error(error.message);
       }
 
-      console.log("signInRes", data, error);
+      return {
+        success: true,
+      };
 
       break;
   }

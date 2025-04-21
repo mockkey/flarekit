@@ -1,20 +1,7 @@
-import { Form, Link, useActionData, useNavigation } from "react-router";
+import { useFetcher } from "react-router";
 import type { Route } from "../auth/+types/sign-in";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
 import { signIn } from "~/features/auth/client/auth";
-import { RiGithubFill } from "@remixicon/react";
 import { signInSchema } from "~/features/auth/schemas";
-import InputField from "~/features/auth/components/input-filed";
-import { toast } from "sonner";
-import { useEffect } from "react";
-import { Spinner } from "~/components/spinner";
 import {
   SignInCard,
   SignInCardSkeleton,
@@ -27,13 +14,6 @@ export const meta: Route.MetaFunction = () => [
   },
 ];
 
-interface ActionData {
-  error?: {
-    message: string;
-    field: string;
-  };
-  success?: boolean;
-}
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
   let formData = await request.formData();
@@ -79,5 +59,5 @@ export function HydrateFallback() {
 }
 
 export default function SignIn() {
-  return <SignInCard />;
+  return <SignInCard  />;
 }

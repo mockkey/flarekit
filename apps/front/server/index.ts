@@ -138,7 +138,6 @@ app.post('/api/api-key/create',async (c)=>{
   
   const validatedPermissions = validationResult.permissions;
 
-  console.log('validatedPermissions',validatedPermissions)
 
   // @ts-ignore
   const token = await auth.api.createApiKey({

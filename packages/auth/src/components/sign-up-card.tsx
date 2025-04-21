@@ -11,9 +11,10 @@ import { InputField } from "./input-field";
 import { Spinner } from "@flarekit/ui/components/spinner";
 import { useAuth } from "../lib/auth-provider";
 import { signUpAction } from "../actions/sign-up-action";
+import { SocicalButton } from "./socical-button";
 
 export function SignUpCard() {
-  const { Link } = useAuth();
+  const { Link, socials } = useAuth();
 
   const [state, formAction, isPending] = useActionState(signUpAction, {
     success: false,
@@ -27,21 +28,23 @@ export function SignUpCard() {
         <CardDescription>Get started with your free account</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-6">
-          {/* Social Sign Up */}
-          <form method="post" action={formAction}>
-            <Button
-              type="submit"
-              name="intent"
-              value="github"
-              variant="outline"
-              className="w-full"
-              disabled={isPending}
-            >
-              {/* <RiGithubFill size={32} /> */}
-              {isPending ? "Connecting..." : "Continue with Github"}
-            </Button>
-          </form>
+        <div className="grid gap-4">
+          {socials?.map && (
+            <form action={formAction} className="flex flex-col gap-2">
+              {socials.map((social) => {
+                return (
+                  <SocicalButton
+                    key={social.name}
+                    label={`Continue with ${social.name}`}
+                    name="intent"
+                    value={social.name}
+                    icon={social.icon}
+                    isLoading={isPending}
+                  />
+                );
+              })}
+            </form>
+          )}
 
           {/* Divider */}
           <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">

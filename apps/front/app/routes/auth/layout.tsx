@@ -1,9 +1,10 @@
-import { Link, NavLink, Outlet, redirect } from "react-router";
+import { Link, NavLink, Outlet, redirect, useNavigation } from "react-router";
 import { Route } from "../auth/+types/layout";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { serverAuth } from "~/features/auth/server/auth";
 import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
+import { RiGithubFill, RiGoogleFill } from "@remixicon/react";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const auth = serverAuth(context.cloudflare.env);
@@ -39,6 +40,9 @@ export default function Layout() {
             Sass Inc.
           </a>
           <AuthProvider
+            socials={[
+              {name: "github", icon: <RiGithubFill size={32} />, label: "Continue with Github"},
+            ]}
             Link={({ href, ...props }) => <NavLink to={href!} {...props} />}
           >
             <Outlet />

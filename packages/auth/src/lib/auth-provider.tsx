@@ -1,8 +1,19 @@
-import { createContext, useContext } from "react";
-import { Link } from "../types/link";
+import { createContext, JSX, useContext } from "react";
+import { Link } from "../types/elements";
+import { socialProviders } from "better-auth/social-providers";
+
+
+
+export interface SocialProvider {
+  name: (keyof typeof socialProviders);
+  icon?: JSX.Element;
+  label: string;
+}
+
 
 export type AuthContextType = {
   Link: Link;
+  socials?: SocialProvider[];
 };
 
 const DefaultLink: Link = ({ href, className, children }) => (
@@ -23,16 +34,20 @@ export function useAuth() {
   return context;
 }
 
+
+
 export type AuthProviderProps = {
   children: React.ReactNode;
   Link: Link;
+  socials?: SocialProvider[];
 };
 
 export const AuthProvider = ({
   children,
-  Link: Link = DefaultLink,
+  Link = DefaultLink,
+  socials = []
 }: AuthProviderProps) => {
   return (
-    <AuthContext.Provider value={{ Link }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider  value={{Link,socials}} >{children}</AuthContext.Provider>
   );
 };
