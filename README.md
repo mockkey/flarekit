@@ -1,74 +1,78 @@
-# React Router v7 with Better Auth
+# Flarekit
 
-Build an app template for React Router v7 and Better Auth and Hono to run on Cloudflare Workers.
+**Flarekit** is a modern full-stack SaaS starter kit built with **React Router v7**, **Better Auth**, **Hono**, and **Cloudflare Workers**. It helps you build and deploy SaaS apps faster with built-in authentication, Stripe billing, email integration, and a SQL database — all optimized for speed, scalability, and developer experience.
 
-## Stack
-
-- Authentication:Better auth
-- ORM: Drizzle
-- DB: D1
-- Framework: Hono and rr7
-- Language: TypeScript
-- Package Manager: pnpm
-- payment: stripe
+🌐 [Live Demo](https://flarekit.mockkey.com/)
 
 
 
-## Getting Started
+## 🚀 Tech Stack
 
-Install the dependencies:
+- **Frontend Framework**: React + React Router v7
+- **Authentication**: Better Auth
+- **Backend API**: Hono (Cloudflare Workers)
+- **Database**: Cloudflare D1 + Drizzle ORM
+- **Payments**: Stripe
+- **Email API**: Resend
+- **Package Manager**: pnpm
+- **Language**: TypeScript
+- **UI Components**: shadcn/ui (Tailwind CSS v4)
+
+
+
+## 📦 Monorepo Structure
+
+```
+├── apps/
+│   └── front/              # Main web frontend
+├── packages/
+│   ├── better-auth/        # Auth client SDK
+│   ├── ui/                 # Shared UI components (shadcn styled)
+│   └── config-typescript/  # Typescript config files
+```
+
+### Folder Overview
+
+- `apps/`: All deployable applications (frontend, backend if needed).
+- `packages/`: Reusable logic/modules (auth clients, shadcn/ui , tsconfig).
+- `.github/`: CI/CD workflows.
+- `/apps/frontend/wrangler.toml`: Configuration for Cloudflare Workers (env vars, routing, etc.).
+
+
+
+
+## 🛠️ Getting Started
 
 ```bash
-git clone https://github.com/panwenwei/cloudflare-workers
+# Clone the project
+git clone https://github.com/mockkey/flarekit.git
+cd flarekit
+
+# Install dependencies
 pnpm install
-```
 
+# Copy and configure wrangler config
+cp apps/frontend/wrangler.toml.example apps/frontend/wrangler.toml
+# Edit the file with your secrets (auth, Stripe, DB, etc.)
 
-### Modify config
-
-
-```toml
-// wrangler.toml
-[vars]
-MY_VAR = "My Value"
-BETTER_AUTH_SECRET = ""
-BETTER_AUTH_URL = ""
-GITHUB_CLIENT_ID = ""
-GITHUB_CLIENT_SECRET = ""
-RESEND_API_KEY = ""
-IMAGE_URL = ""
-STRIPE_SECRET_KEY = ""
-STRIPE_WEBHOOK_SECRET = ""
-STRIPE_PRICE_ID = ""
-
-[[d1_databases]]
-binding = "DB"
-database_name = ""
-database_id = ""
-migrations_dir = "drizzle"
-
-[[r2_buckets]]
-  bucket_name = "flarekit"
-  binding = "MY_BUCKET"
-
-```
-
-
-
-### Development
-
-```bash
+# Initialize database
 pnpm run db:generate
-pnpm run db:local
+pnpm run db:push
+
+# Run in dev mode
+pnpm dev
+
+
+# Push schema to your remote D1 database
+pnpm db:remote
+
+# Build the app
+pnpm build
+
+# Deploy
+pnpm deploy
 
 ```
 
-```bash
-pnpm run dev
-```
-
-### deploy
-
-```bash
-pnpm run deploy
-```
+## 📜 License
+This project is licensed under the MIT License.
