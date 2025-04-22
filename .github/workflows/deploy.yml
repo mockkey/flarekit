@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers 
+name: Deploy to Cloudflare Workers
 
 concurrency:
   group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
@@ -13,18 +13,24 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v4
+      - name: Copy and configure wrangler.toml
+        working-directory: ./app/front
       - run: |
-         cp wrangler.toml.example wrangler.toml
-         sed -i 's/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "${{ secrets.BETTER_AUTH_SECRET }}"/g' wrangler.toml    
-         sed -i 's/BETTER_AUTH_URL = ""/BETTER_AUTH_URL= "${{ secrets.BETTER_AUTH_URL }}"/g' wrangler.toml
-         sed -i 's/GITHUB_CLIENT_ID = ""/GITHUB_CLIENT_ID = "${{ secrets.GITAUTH_CLIENT_ID }}"/g' wrangler.toml
-         sed -i 's/GITHUB_CLIENT_SECRET = ""/ GITHUB_CLIENT_SECRET = "${{ secrets.GITAUTH_CLIENT_SECRET }}"/g' wrangler.toml    
-         sed -i 's/RESEND_API_KEY = "" = ""/RESEND_API_KEY = "${{ secrets.RESEND_API_KEY }}"/g' wrangler.toml   
-         sed -i 's/database_name = ""/database_name = "${{ secrets.DATABASE_NAME }}"/g' wrangler.toml   
-         sed -i 's/database_id = ""/database_id = "${{ secrets.DATABASE_ID }}"/g' wrangler.toml  
-      
+          cp wrangler.toml.example wrangler.toml
+          sed -i 's/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "${{ secrets.BETTER_AUTH_SECRET }}"/g' wrangler.toml    
+          sed -i 's/BETTER_AUTH_URL = ""/BETTER_AUTH_URL= "${{ secrets.BETTER_AUTH_URL }}"/g' wrangler.toml
+          sed -i 's/GITHUB_CLIENT_ID = ""/GITHUB_CLIENT_ID = "${{ secrets.GITAUTH_CLIENT_ID }}"/g' wrangler.toml
+          sed -i 's/GITHUB_CLIENT_SECRET = ""/ GITHUB_CLIENT_SECRET = "${{ secrets.GITAUTH_CLIENT_SECRET }}"/g' wrangler.toml    
+          sed -i 's/RESEND_API_KEY = "" = ""/RESEND_API_KEY = "${{ secrets.RESEND_API_KEY }}"/g' wrangler.toml   
+          sed -i 's/database_name = ""/database_name = "${{ secrets.DATABASE_NAME }}"/g' wrangler.toml   
+          sed -i 's/database_id = ""/database_id = "${{ secrets.DATABASE_ID }}"/g' wrangler.toml
+          sed -i 's/bucket_name = ""/bucket_name = "${{ secrets.BUCKET_NAME }}"/g' wrangler.toml
+          sed -i 's/IMAGE_URL = ""/IMAGE_URL = "${{ secrets.IMAGE_URL }}"/g' wrangler.toml
+          sed -i 's/STRIPE_SECRET_KEY = ""/STRIPE_SECRET_KEY = "${{ secrets.STRIPE_SECRET_KEY }}"/g' wrangler.toml
+          sed -i 's/STRIPE_WEBHOOK_SECRET = ""/STRIPE_WEBHOOK_SECRET = "${{ secrets.STRIPE_WEBHOOK_SECRET }}"/g' wrangler.toml
+          sed -i 's/STRIPE_PRICE_ID = ""/STRIPE_PRICE_ID = "${{ secrets.STRIPE_PRICE_ID }}"/g' wrangler.toml
+
       - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -49,4 +55,5 @@ jobs:
           packageManager: pnpm
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy 
+          command: deploy
+          workingDirectory: ./app/front
