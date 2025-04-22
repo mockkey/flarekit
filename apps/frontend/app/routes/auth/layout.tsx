@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, redirect, useNavigation } from "react-router";
-import { Route } from "../auth/+types/layout";
+import { Route } from "./+types/layout";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { serverAuth } from "~/features/auth/server/auth";

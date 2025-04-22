@@ -4,15 +4,15 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev:front": "pnpm -F @flarekit/front dev",
-    "build:front": "pnpm -F @flarekit/front build",
-    "deploy:front": "pnpm build:front &&  pnpm run -F @flarekit/front deploy",
-    "db:generate": "pnpm -F @flarekit/front db:generate",
-    "db:local": "pnpm -F @flarekit/front db:local",
-    "db:remote": "pnpm -F @flarekit/front db:remote"
+    "dev": "pnpm -F @flarekit/frontend dev",
+    "build": "pnpm -F @flarekit/frontend build",
+    "deploy": "pnpm build:frontend &&  pnpm run -F @flarekit/frontend deploy",
+    "db:generate": "pnpm -F @flarekit/frontend db:generate",
+    "db:local": "pnpm -F @flarekit/frontend db:local",
+    "db:remote": "pnpm -F @flarekit/frontend db:remote"
   },
   "dependencies": {
-    "@flarekit/front": "workspace:*"
+    "@flarekit/frontend": "workspace:*"
   },
   "devDependencies": {
   },

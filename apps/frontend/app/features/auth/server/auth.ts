@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { drizzle } from "drizzle-orm/d1";
-import { EnvType } from "front/load-context";
+import { EnvType } from "load-context";
 import * as schema from "~/db/schema";
 import WelcomeEmail from "~/features/email/components/wecome";
 import { Resend } from "resend";

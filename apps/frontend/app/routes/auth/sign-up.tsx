@@ -1,5 +1,5 @@
 import {  Form, Link, redirect, useActionData, useNavigation } from "react-router";
-import type { Route } from "../auth/+types/sign-up";
+import type { Route } from "./+types/sign-up";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { signIn, signUp } from "~/features/auth/client/auth";
