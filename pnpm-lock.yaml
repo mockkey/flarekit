@@ -8,11 +8,11 @@ importers:
 
   .:
     dependencies:
-      '@flarekit/front':
+      '@flarekit/frontend':
         specifier: workspace:*
-        version: link:apps/front
+        version: link:apps/frontend
 
-  apps/front:
+  apps/frontend:
     dependencies:
       '@better-auth/stripe':
         specifier: ^1.2.5

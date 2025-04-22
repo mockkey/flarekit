@@ -45,7 +45,11 @@ STRIPE_PRICE_ID = ""
 binding = "DB"
 database_name = ""
 database_id = ""
-migrations_dir = ""
+migrations_dir = "drizzle"
+
+[[r2_buckets]]
+  bucket_name = "flarekit"
+  binding = "MY_BUCKET"
 
 ```
 
@@ -54,7 +58,7 @@ migrations_dir = ""
 ### Development
 
 ```bash
-pnpm run  db:generate
+pnpm run db:generate
 pnpm run db:local
 
 ```

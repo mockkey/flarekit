@@ -1,5 +1,5 @@
 import { useFetcher } from "react-router";
-import type { Route } from "../auth/+types/sign-in";
+import type { Route } from "./+types/sign-in";
 import { signIn } from "~/features/auth/client/auth";
 import { signInSchema } from "~/features/auth/schemas";
 import {

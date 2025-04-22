@@ -5,17 +5,18 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app/frontend
     steps:
       - uses: actions/checkout@v4
-      - name: Copy and configure wrangler.toml
-        working-directory: ./app/front
       - run: |
           cp wrangler.toml.example wrangler.toml
           sed -i 's/BETTER_AUTH_SECRET = ""/BETTER_AUTH_SECRET = "${{ secrets.BETTER_AUTH_SECRET }}"/g' wrangler.toml    
@@ -55,5 +56,5 @@ jobs:
           packageManager: pnpm
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: ./app/frontend
           command: deploy
-          workingDirectory: ./app/front

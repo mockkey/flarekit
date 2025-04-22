@@ -1,6 +1,6 @@
 import { serverAuth } from "~/features/auth/server/auth";
 import { Outlet, redirect } from "react-router";
-import type { Route } from "../dashboard/+types/layout";
+import type { Route } from "./+types/layout";
 import { AuthProvider } from "~/features/auth/hooks";
 import SidebarNav from "~/components/dashboard/sidebar-nav";
 import {
