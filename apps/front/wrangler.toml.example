@@ -23,5 +23,5 @@ database_id = ""
 migrations_dir = "drizzle"
 
 [[r2_buckets]]
-  bucket_name = "my-bucket"
+  bucket_name = ""
   binding = "MY_BUCKET"
