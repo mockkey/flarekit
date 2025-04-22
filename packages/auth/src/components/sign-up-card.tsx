@@ -13,10 +13,20 @@ import { useAuth } from "../lib/auth-provider";
 import { signUpAction } from "../actions/sign-up-action";
 import { SocicalButton } from "./socical-button";
 
-export function SignUpCard() {
+interface SignUpCardProps {
+  title?: string;
+  description?: string;
+  callbackURL?: string;
+}
+
+export function SignUpCard({
+  title = "Create an account",
+  description = "Get started with your free account",
+}:SignUpCardProps) {
   const { Link, socials } = useAuth();
 
-  const [state, formAction, isPending] = useActionState(signUpAction, {
+  const [state, formAction, isPending] = useActionState(signUpAction, 
+  {
     success: false,
     fields: {},
     errors: {},
@@ -24,8 +34,8 @@ export function SignUpCard() {
   return (
     <Card className="flex flex-col gap-6">
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">Create an account</CardTitle>
-        <CardDescription>Get started with your free account</CardDescription>
+        <CardTitle className="text-xl">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">

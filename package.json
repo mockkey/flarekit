@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev:front": "pnpm -F @flarekit/front dev",
-    "build:front": "pnpm -F @flarekit/front build"
+    "build:front": "pnpm -F @flarekit/front build",
+    "deploy:front": "pnpm build:front &&  pnpm run -F @flarekit/front deploy",
+    "db:generate": "pnpm -F @flarekit/front db:generate",
+    "db:local": "pnpm -F @flarekit/front db:local",
+    "db:remote": "pnpm -F @flarekit/front db:remote"
   },
   "dependencies": {
     "@flarekit/front": "workspace:*"

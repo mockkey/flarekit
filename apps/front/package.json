@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "react-router build",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "wrangler deploy",
     "dev": "react-router dev",
     "start": "wrangler dev",
     "db:generate": "drizzle-kit generate",
