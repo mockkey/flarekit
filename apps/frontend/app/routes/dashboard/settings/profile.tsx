@@ -1,8 +1,8 @@
+import Accessibility from "~/components/settings/accessibility";
 import ActiveSessions from "~/components/settings/active-sessions";
 import ConnectedCard from "~/components/settings/connected-card";
-import ProfileCard from "~/components/settings/profile-card";
 import DeleteAccount from "~/components/settings/delete-account";
-import Accessibility from "~/components/settings/accessibility";
+import ProfileCard from "~/components/settings/profile-card";
 
 export const meta = () => [
   {

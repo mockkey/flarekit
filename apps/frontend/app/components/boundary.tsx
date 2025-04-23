@@ -1,6 +1,6 @@
 import { Button } from "@flarekit/ui/components/ui/button";
-import { Link, isRouteErrorResponse } from "react-router";
 import { RiAlertLine, RiArrowLeftLine, RiBug2Line } from "@remixicon/react";
+import { Link, isRouteErrorResponse } from "react-router";
 
 interface ErrorBoundaryProps {
   error: any;
@@ -21,20 +21,20 @@ export function Boundary({ error }: ErrorBoundaryProps) {
         title: `${error.status} ${error.statusText}`,
         message: error.data,
       };
-    } else if (error instanceof Error) {
+    }
+    if (error instanceof Error) {
       return {
         icon: <RiBug2Line className="size-8 text-red-600 dark:text-red-400" />,
         title: "Something went wrong",
         message: getErrorMessage(error),
         stack: process.env.NODE_ENV === "development" ? error.stack : null,
       };
-    } else {
-      return {
-        icon: <RiAlertLine className="size-8 text-red-600 dark:text-red-400" />,
-        title: "Unknown Error",
-        message: "An unexpected error occurred. Please try again later.",
-      };
     }
+    return {
+      icon: <RiAlertLine className="size-8 text-red-600 dark:text-red-400" />,
+      title: "Unknown Error",
+      message: "An unexpected error occurred. Please try again later.",
+    };
   };
 
   const { icon, title, message, stack } = getContent();

@@ -1,11 +1,4 @@
-import {
-  Form,
-  Link,
-  redirect,
-  useActionData,
-  useNavigation,
-} from "react-router";
-import type { Route } from "./+types/sign-up";
+import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,15 +6,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { signIn, signUp } from "~/features/auth/client/auth";
 import { RiGithubFill } from "@remixicon/react";
-import { Spinner } from "~/components/spinner";
-import { toast } from "sonner";
 import { useEffect } from "react";
-import { signUpSchema } from "~/features/auth/schemas";
+import {
+  Form,
+  Link,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "react-router";
+import { toast } from "sonner";
+import { Spinner } from "~/components/spinner";
+import { signIn, signUp } from "~/features/auth/client/auth";
 import InputField from "~/features/auth/components/input-filed";
+import { signUpSchema } from "~/features/auth/schemas";
 import { serverAuth } from "~/features/auth/server/auth";
+import type { Route } from "./+types/sign-up";
 
 import { SignUpCard } from "@flarekit/auth/components/sign-up-card";
 
@@ -46,7 +46,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   const intent = formData.get("intent");
   try {
     switch (intent) {
-      case "github":
+      case "github": {
         const socialRes = await auth.api.signInSocial({
           header: request.headers,
           body: {
@@ -58,6 +58,7 @@ export async function action({ request, context }: Route.ActionArgs) {
           return redirect(socialRes.url);
         }
         break;
+      }
       case "email":
         return {
           error: {
@@ -89,7 +90,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
         callbackURL: "/dashboard",
       });
       break;
-    case "email":
+    case "email": {
       const formPayload = Object.fromEntries(formData);
       const subscriber = signUpSchema.safeParse(formPayload);
       if (subscriber.error) {
@@ -100,17 +101,17 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
             field: issue.path[0],
           },
         };
-      } else {
-        const signUpRes = await signUp.email({
-          ...subscriber.data,
-          callbackURL: "/dashboard",
-        });
-        if (signUpRes.error) {
-          return signUpRes;
-        }
-        return redirect("/dashboard");
       }
+      const signUpRes = await signUp.email({
+        ...subscriber.data,
+        callbackURL: "/dashboard",
+      });
+      if (signUpRes.error) {
+        return signUpRes;
+      }
+      return redirect("/dashboard");
       break;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { Link, redirect, useSearchParams } from "react-router";
+import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { RiMailLine, RiArrowLeftLine } from "@remixicon/react";
-import { Route } from "./+types/sign-up.success";
-import { serverAuth } from "~/features/auth/server/auth";
+import { RiArrowLeftLine, RiMailLine } from "@remixicon/react";
+import { Link, redirect, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
+import { serverAuth } from "~/features/auth/server/auth";
+import type { Route } from "./+types/sign-up.success";
 
 export const meta: Route.MetaFunction = () => [
   {

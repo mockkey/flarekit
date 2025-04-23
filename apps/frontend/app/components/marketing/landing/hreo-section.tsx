@@ -1,7 +1,7 @@
 import { Button } from "@flarekit/ui/components/ui/button";
+import { RiGithubFill } from "@remixicon/react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router";
-import { RiGithubFill } from "@remixicon/react";
 
 export default function HreoSection() {
   return (
@@ -10,7 +10,7 @@ export default function HreoSection() {
       aria-label="Nextjs Starter Kit Hero"
     >
       <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-black bg-[linear-gradient(to_right,#8080800_1px,transparent_1px),linear-gradient(to_bottom,#8080800_1px,transparent_1px)] bg-[size:14px_24px]">
-        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-400 dark:bg-blue-500 opacity-20 blur-[100px]"></div>
+        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-400 dark:bg-blue-500 opacity-20 blur-[100px]" />
       </div>
       <div className="space-y-6 text-center max-w-4xl px-4">
         <div className="mx-auto w-fit rounded-full border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-900/30 px-4 py-1 mb-6">

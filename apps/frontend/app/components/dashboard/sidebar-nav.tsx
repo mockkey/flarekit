@@ -9,12 +9,12 @@ import {
   useSidebar,
 } from "@flarekit/ui/components/ui/sidebar";
 import {
-  RiSparklingFill,
-  RiSettings4Line,
   RiBankCard2Fill,
   RiCommandLine,
   RiKeyFill,
   RiSettings2Fill,
+  RiSettings4Line,
+  RiSparklingFill,
 } from "@remixicon/react";
 import { Link } from "react-router";
 
@@ -77,7 +77,7 @@ export default function SidebarNav({
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter />
     </Sidebar>
   );
 }

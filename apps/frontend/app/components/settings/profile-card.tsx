@@ -7,15 +7,15 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 
+import { AvatarFallback } from "@flarekit/ui/components/ui/avatar";
 import { RiUploadCloud2Line } from "@remixicon/react";
-import { useEffect, useState, useRef, useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
 import InputField from "~/features/auth/components/input-filed";
 import { useAuth } from "~/features/auth/hooks";
 import { NameSchema } from "~/features/auth/schemas";
 import { Spinner } from "../spinner";
-import { AvatarFallback } from "@flarekit/ui/components/ui/avatar";
 
 export default function ProfileCard() {
   const user = useAuth();

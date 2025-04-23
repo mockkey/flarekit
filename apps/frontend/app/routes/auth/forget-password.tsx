@@ -1,4 +1,4 @@
-import { Form, Link, useActionData, useNavigation } from "react-router";
+import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,14 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { Spinner } from "~/components/spinner";
-import { toast } from "sonner";
 import { useEffect } from "react";
-import InputField from "~/features/auth/components/input-filed";
-import { Route } from "./+types/forget-password";
-import { emailSchema } from "~/features/auth/schemas";
+import { Form, Link, useActionData, useNavigation } from "react-router";
+import { toast } from "sonner";
+import { Spinner } from "~/components/spinner";
 import { forgetPassword } from "~/features/auth/client/auth";
+import InputField from "~/features/auth/components/input-filed";
+import { emailSchema } from "~/features/auth/schemas";
+import type { Route } from "./+types/forget-password";
 
 export const meta = () => [
   {

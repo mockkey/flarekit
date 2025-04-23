@@ -1,5 +1,5 @@
-import { Session, User } from "better-auth";
-import { createContext, useContext, use } from "react";
+import type { Session, User } from "better-auth";
+import { createContext, use, useContext } from "react";
 
 interface AuthContextType {
   user: User;

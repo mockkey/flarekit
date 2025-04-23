@@ -1,7 +1,7 @@
 import { signIn, signUp } from "@flarekit/auth/lib/auth-client";
 import { toast } from "sonner";
-import { Schema, z } from "zod";
-import { providerPlatform, SocialActions } from "./social-actions";
+import { type Schema, z } from "zod";
+import { SocialActions, type providerPlatform } from "./social-actions";
 
 const signInSchema: Schema<{
   name: string;
@@ -26,7 +26,7 @@ export const signUpAction = async (_: FormState, payload: FormData) => {
     return true;
   }
   switch (intent) {
-    case "email":
+    case "email": {
       const formData = Object.fromEntries(payload);
       const parsed = signInSchema.safeParse(formData);
       const fields: Record<string, string> = {};
@@ -59,6 +59,7 @@ export const signUpAction = async (_: FormState, payload: FormData) => {
         fields,
       };
       break;
+    }
   }
   return {
     success: true,

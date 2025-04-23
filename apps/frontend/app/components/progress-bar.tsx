@@ -18,12 +18,11 @@ export function ProgressBar({ showSpinner = true }: ProgressBarProps) {
         setDelayedPending(true);
       }, 600);
       return () => clearTimeout(timer);
-    } else {
-      const timer = setTimeout(() => {
-        setDelayedPending(false);
-      }, 400);
-      return () => clearTimeout(timer);
     }
+    const timer = setTimeout(() => {
+      setDelayedPending(false);
+    }, 400);
+    return () => clearTimeout(timer);
   }, [busy]);
 
   const ref = useRef<HTMLDivElement>(null);

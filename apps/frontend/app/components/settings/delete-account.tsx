@@ -19,10 +19,10 @@ import { RiAlertLine } from "@remixicon/react";
 import { useRef, useState } from "react";
 import { Form, useNavigate } from "react-router";
 import { toast } from "sonner";
+import { authClient } from "~/features/auth/client/auth";
 import InputField from "~/features/auth/components/input-filed";
 import { useAuth } from "~/features/auth/hooks";
 import { Spinner } from "../spinner";
-import { authClient } from "~/features/auth/client/auth";
 
 export default function DeleteAccount() {
   const [open, setOpen] = useState(false);

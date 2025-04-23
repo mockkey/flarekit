@@ -1,13 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@flarekit/ui/components/ui/dialog";
+import { Badge } from "@flarekit/ui/components/ui/badge";
 import { Button } from "@flarekit/ui/components/ui/button";
-import { RiCheckLine } from "@remixicon/react";
-import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -15,9 +7,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Badge } from "@flarekit/ui/components/ui/badge";
-import { cn } from "~/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@flarekit/ui/components/ui/dialog";
+import { RiCheckLine } from "@remixicon/react";
+import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
+import { cn } from "~/lib/utils";
 
 interface Plan {
   name: string;

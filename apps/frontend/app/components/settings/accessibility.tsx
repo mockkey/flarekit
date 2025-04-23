@@ -11,7 +11,7 @@ import {
   RadioGroupItem,
 } from "@flarekit/ui/components/ui/radio-group";
 import { RiComputerLine, RiMoonLine, RiSunLine } from "@remixicon/react";
-import { Theme, useTheme } from "remix-themes";
+import { type Theme, useTheme } from "remix-themes";
 
 const themes = [
   {
@@ -123,7 +123,7 @@ export default function Accessibility() {
         <RadioGroup
           defaultValue={theme as Theme}
           onValueChange={(value) => {
-            const theme = value == "system" ? null : (value as Theme);
+            const theme = value === "system" ? null : (value as Theme);
             setTheme(theme);
           }}
           className="flex md:flex-row flex-col gap-4"

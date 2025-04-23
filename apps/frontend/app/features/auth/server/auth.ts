@@ -1,14 +1,14 @@
+import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { drizzle } from "drizzle-orm/d1";
-import { EnvType } from "load-context";
-import * as schema from "~/db/schema";
-import WelcomeEmail from "~/features/email/components/wecome";
-import { Resend } from "resend";
-import ResetPasswordEmail from "~/features/email/components/reset-password";
-import { stripe } from "@better-auth/stripe";
-import { StripeClient } from "./stripe";
 import { apiKey } from "better-auth/plugins";
+import { drizzle } from "drizzle-orm/d1";
+import type { EnvType } from "load-context";
+import { Resend } from "resend";
+import * as schema from "~/db/schema";
+import ResetPasswordEmail from "~/features/email/components/reset-password";
+import WelcomeEmail from "~/features/email/components/wecome";
+import { StripeClient } from "./stripe";
 let _auth: ReturnType<typeof betterAuth>;
 
 export const serverAuth = (env: EnvType) => {

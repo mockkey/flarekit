@@ -67,7 +67,7 @@ export default function ConnectedCard() {
     connectedList.forEach((connecteditem) => {
       let isset = false;
       data?.forEach((item) => {
-        if (item.provider == connecteditem.provider) {
+        if (item.provider === connecteditem.provider) {
           isset = true;
           connecteditem.id = item.id;
           connecteditem.accountId = item.accountId;

@@ -1,14 +1,14 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
   Html,
   Link,
   Preview,
-  Text,
-  Button,
   Section,
+  Text,
 } from "@react-email/components";
 
 interface WelcomeEmailProps {

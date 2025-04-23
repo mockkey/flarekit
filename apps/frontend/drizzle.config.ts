@@ -1,4 +1,4 @@
-import { Config, defineConfig } from "drizzle-kit";
+import { type Config, defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   dialect: "sqlite",

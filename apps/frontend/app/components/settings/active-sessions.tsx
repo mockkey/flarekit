@@ -7,13 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
+import type { Session } from "better-auth";
 import { useEffect, useReducer } from "react";
+import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
+import { useAuth } from "~/features/auth/hooks";
 import { formatUserAgent } from "~/lib/user-agent";
 import { Spinner } from "../spinner";
-import { toast } from "sonner";
-import { Session } from "better-auth";
-import { useAuth } from "~/features/auth/hooks";
 
 interface SessionState {
   sessions: Session[];
@@ -63,7 +63,7 @@ export default function ActiveSessions() {
   const fetchSessions = async () => {
     try {
       const { data } = await authClient.listSessions();
-      const sessionsWithCurrent = data!.map((session) => ({
+      const sessionsWithCurrent = data?.map((session) => ({
         ...session,
         current: session.token === localStorage.getItem("session_token"),
       }));
@@ -121,7 +121,7 @@ export default function ActiveSessions() {
                   IP: {session.ipAddress || "Unknown"}
                 </p>
               </div>
-              {user.session.token == session.token ? (
+              {user.session.token === session.token ? (
                 <Button variant="ghost" size="sm" disabled>
                   Current Session
                 </Button>

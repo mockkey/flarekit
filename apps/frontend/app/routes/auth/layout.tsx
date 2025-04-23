@@ -1,10 +1,10 @@
-import { Link, NavLink, Outlet, redirect, useNavigation } from "react-router";
-import { Route } from "./+types/layout";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { serverAuth } from "~/features/auth/server/auth";
 import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
+import { Button } from "@flarekit/ui/components/ui/button";
 import { RiGithubFill, RiGoogleFill } from "@remixicon/react";
+import { ArrowLeft } from "lucide-react";
+import { Link, NavLink, Outlet, redirect, useNavigation } from "react-router";
+import { serverAuth } from "~/features/auth/server/auth";
+import type { Route } from "./+types/layout";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const auth = serverAuth(context.cloudflare.env);
@@ -36,7 +36,7 @@ export default function Layout() {
             href="#"
             className="flex items-center gap-2 self-center font-medium"
           >
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground"></div>
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground" />
             Sass Inc.
           </a>
           <AuthProvider

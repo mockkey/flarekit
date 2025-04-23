@@ -1,8 +1,8 @@
 import { Button } from "@flarekit/ui/components/ui/button";
-import { RiMenuFoldLine, RiMenuUnfoldLine } from "@remixicon/react";
-import UserNav from "./user-nav";
-import { User } from "better-auth";
 import { useSidebar } from "@flarekit/ui/components/ui/sidebar";
+import { RiMenuFoldLine, RiMenuUnfoldLine } from "@remixicon/react";
+import type { User } from "better-auth";
+import UserNav from "./user-nav";
 
 interface HeaderProps {
   user: User;

@@ -1,3 +1,4 @@
+import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,8 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { RiCheckLine } from "@remixicon/react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@flarekit/ui/components/ui/dialog";
+import { RiCheckLine } from "@remixicon/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PlansDialog } from "~/components/billing/plans-dialog";

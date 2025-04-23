@@ -1,11 +1,11 @@
-import { useFetcher } from "react-router";
-import type { Route } from "./+types/sign-in";
-import { signIn } from "~/features/auth/client/auth";
-import { signInSchema } from "~/features/auth/schemas";
 import {
   SignInCard,
   SignInCardSkeleton,
 } from "@flarekit/auth/components/sign-in-card";
+import { useFetcher } from "react-router";
+import { signIn } from "~/features/auth/client/auth";
+import { signInSchema } from "~/features/auth/schemas";
+import type { Route } from "./+types/sign-in";
 
 export const meta: Route.MetaFunction = () => [
   {
@@ -15,8 +15,8 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
-  let formData = await request.formData();
-  let intent = formData.get("intent");
+  const formData = await request.formData();
+  const intent = formData.get("intent");
   switch (intent) {
     case "github":
       signIn.social({
@@ -24,7 +24,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
         callbackURL: "/dashboard",
       });
       break;
-    default:
+    default: {
       const formPayload = Object.fromEntries(formData);
       const subscriber = signInSchema.safeParse(formPayload);
       if (subscriber.error) {
@@ -35,16 +35,16 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
             field: issue.path[0],
           },
         };
-      } else {
-        const signUpRes = await signIn.email({
-          ...subscriber.data,
-          callbackURL: "/dashboard",
-        });
-        if (signUpRes.error) {
-          return signUpRes;
-        }
+      }
+      const signUpRes = await signIn.email({
+        ...subscriber.data,
+        callbackURL: "/dashboard",
+      });
+      if (signUpRes.error) {
+        return signUpRes;
       }
       break;
+    }
   }
   return true;
 }

@@ -1,16 +1,16 @@
 import { Button } from "@flarekit/ui/components/ui/button";
+import { Progress } from "@flarekit/ui/components/ui/progress";
 import {
+  RiBarChart2Line,
   RiDeleteBinLine,
+  RiEditLine,
   RiShieldLine,
   RiTimeLine,
-  RiBarChart2Line,
-  RiEditLine,
 } from "@remixicon/react";
-import { Progress } from "@flarekit/ui/components/ui/progress";
 import { useTransition } from "react";
+import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
 import { Spinner } from "../spinner";
-import { toast } from "sonner";
 
 export interface Token {
   id: string;

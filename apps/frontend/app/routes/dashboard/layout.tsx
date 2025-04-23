@@ -1,13 +1,13 @@
-import { serverAuth } from "~/features/auth/server/auth";
-import { Outlet, redirect } from "react-router";
-import type { Route } from "./+types/layout";
-import { AuthProvider } from "~/features/auth/hooks";
-import SidebarNav from "~/components/dashboard/sidebar-nav";
 import {
   SidebarInset,
   SidebarProvider,
 } from "@flarekit/ui/components/ui/sidebar";
+import { Outlet, redirect } from "react-router";
 import Header from "~/components/dashboard/header";
+import SidebarNav from "~/components/dashboard/sidebar-nav";
+import { AuthProvider } from "~/features/auth/hooks";
+import { serverAuth } from "~/features/auth/server/auth";
+import type { Route } from "./+types/layout";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const auth = serverAuth(context.cloudflare.env);

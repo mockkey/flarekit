@@ -1,8 +1,8 @@
-import { Link, Outlet } from "react-router";
 import { Button } from "@flarekit/ui/components/ui/button";
-import ThemeToggle from "~/components/theme-toggle";
 import { RiSparklingFill } from "@remixicon/react";
+import { Link, Outlet } from "react-router";
 import Footer from "~/components/marketing/landing/footer";
+import ThemeToggle from "~/components/theme-toggle";
 
 export default function Layout() {
   return (

@@ -18,7 +18,7 @@ import {
   RiSettings4Line,
   RiUser3Line,
 } from "@remixicon/react";
-import { type User } from "better-auth";
+import type { User } from "better-auth";
 import { useTransition } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ interface UserNavProps {
 }
 
 export default function UserNav({ user }: UserNavProps) {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
   const LogOutHandle = () => {
     startTransition(async () => {

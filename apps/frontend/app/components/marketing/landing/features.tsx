@@ -1,9 +1,16 @@
 import {
-  RiReactjsLine,
   RiDatabase2Line,
   RiMailSendLine,
+  RiReactjsLine,
 } from "@remixicon/react";
-import { Cloud, LucideIcon, Lock, Paintbrush, Rocket, Zap } from "lucide-react";
+import {
+  Cloud,
+  Lock,
+  type LucideIcon,
+  Paintbrush,
+  Rocket,
+  Zap,
+} from "lucide-react";
 
 interface FeatureItem {
   title: string;

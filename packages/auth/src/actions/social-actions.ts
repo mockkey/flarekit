@@ -1,9 +1,9 @@
 import {
   socialProviderList,
-  socialProviders,
+  type socialProviders,
 } from "better-auth/social-providers";
-import { signIn } from "../lib/auth-client";
 import { toast } from "sonner";
+import { signIn } from "../lib/auth-client";
 
 export type providerPlatform = keyof typeof socialProviders;
 

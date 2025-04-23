@@ -1,13 +1,13 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
   Html,
   Preview,
-  Text,
-  Button,
   Section,
+  Text,
 } from "@react-email/components";
 
 interface ResetPasswordEmailProps {

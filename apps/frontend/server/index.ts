@@ -1,11 +1,11 @@
+import type { User } from "better-auth/types";
 // server/index.ts
 import { Hono } from "hono";
+import type { EnvType } from "load-context";
+import { validatePermissions } from "~/config/permissions";
 import { serverAuth } from "~/features/auth/server/auth";
-import { EnvType } from "load-context";
-import { User } from "better-auth/types";
 import { StripeClient } from "~/features/auth/server/stripe";
 import api from "./api";
-import { validatePermissions } from "~/config/permissions";
 
 const app = new Hono<{
   Bindings: EnvType;
@@ -69,7 +69,7 @@ app.post("/api/upload/avatar", async (c) => {
         contentType: contentType,
       },
     });
-    const imageURL = c.env.IMAGE_URL + "/" + key;
+    const imageURL = `${c.env.IMAGE_URL}/${key}`;
     await auth.api.updateUser({
       headers: c.req.header() as any,
       body: {
@@ -126,9 +126,9 @@ app.post("/api/api-key/create", async (c) => {
   }
 
   const jsonData = await c.req.json();
-  const reqPermissions = jsonData["permissions"];
-  const reqName = jsonData["name"] || "test";
-  const reqExpiresIn = jsonData["expiresIn"] || null;
+  const reqPermissions = jsonData.permissions;
+  const reqName = jsonData.name || "test";
+  const reqExpiresIn = jsonData.expiresIn || null;
   const validationResult = validatePermissions(reqPermissions);
   if (!validationResult.valid) {
     console.error(validationResult.error);

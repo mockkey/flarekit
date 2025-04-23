@@ -1,3 +1,5 @@
+import type { Subscription } from "@better-auth/stripe";
+import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,12 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { PlansDialog } from "~/components/billing/plans-dialog";
 import { useEffect, useState, useTransition } from "react";
-import { subscription } from "~/features/auth/client/auth";
 import { toast } from "sonner";
-import { Subscription } from "@better-auth/stripe";
+import { PlansDialog } from "~/components/billing/plans-dialog";
+import { subscription } from "~/features/auth/client/auth";
 import { formatDateToLong } from "~/lib/utils";
 
 interface PlanFeature {

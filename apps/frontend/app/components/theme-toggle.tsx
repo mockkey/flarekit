@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@flarekit/ui/components/ui/dropdown-menu";
 import { Laptop, Moon, Sun } from "lucide-react";
-import { Theme, useTheme } from "remix-themes";
+import { type Theme, useTheme } from "remix-themes";
 
 const themeIcons = {
   light: <Sun />,

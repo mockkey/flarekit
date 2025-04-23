@@ -1,6 +1,6 @@
-import { createContext, JSX, useContext } from "react";
-import { Link } from "../types/elements";
-import { socialProviders } from "better-auth/social-providers";
+import type { socialProviders } from "better-auth/social-providers";
+import { type JSX, createContext, useContext } from "react";
+import type { Link } from "../types/elements";
 
 export interface SocialProvider {
   name: keyof typeof socialProviders;

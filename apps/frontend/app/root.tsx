@@ -1,22 +1,22 @@
+import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
 import {
   Link,
   Links,
-  LinksFunction,
-  LoaderFunctionArgs,
+  type LinksFunction,
+  type LoaderFunctionArgs,
   Meta,
   NavLink,
   Outlet,
   Scripts,
   useLoaderData,
 } from "react-router";
-import stylesheet from "./styles/app.css?url";
 import { ThemeProvider, useTheme } from "remix-themes";
-import { themeSessionResolver } from "./server.session";
-import { ProgressBar } from "~/components/progress-bar";
 import { Toaster } from "sonner";
-import { Route } from "./+types/root";
 import { Boundary } from "~/components/boundary";
-import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
+import { ProgressBar } from "~/components/progress-bar";
+import type { Route } from "./+types/root";
+import { themeSessionResolver } from "./server.session";
+import stylesheet from "./styles/app.css?url";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesheet }];

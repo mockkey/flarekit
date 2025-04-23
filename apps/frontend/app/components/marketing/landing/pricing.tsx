@@ -62,7 +62,7 @@ export default function Pricing() {
         cancelUrl: "/billing",
       });
       if (error) {
-        if (error.statusText == "Unauthorized") {
+        if (error.statusText === "Unauthorized") {
           navigate("/billing");
         } else {
           toast.error(error.message);

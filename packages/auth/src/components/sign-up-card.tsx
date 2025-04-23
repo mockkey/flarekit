@@ -1,3 +1,4 @@
+import { Spinner } from "@flarekit/ui/components/spinner";
 import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
@@ -7,10 +8,9 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 import { useActionState } from "react";
-import { InputField } from "./input-field";
-import { Spinner } from "@flarekit/ui/components/spinner";
-import { useAuth } from "../lib/auth-provider";
 import { signUpAction } from "../actions/sign-up-action";
+import { useAuth } from "../lib/auth-provider";
+import { InputField } from "./input-field";
 import { SocicalButton } from "./socical-button";
 
 interface SignUpCardProps {

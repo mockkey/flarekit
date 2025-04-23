@@ -1,3 +1,5 @@
+import { Button } from "@flarekit/ui/components/ui/button";
+import { Checkbox } from "@flarekit/ui/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -6,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@flarekit/ui/components/ui/dialog";
-import { Button } from "@flarekit/ui/components/ui/button";
+import { Input } from "@flarekit/ui/components/ui/input";
 import { Label } from "@flarekit/ui/components/ui/label";
 import {
   Select,
@@ -16,14 +18,12 @@ import {
   SelectValue,
 } from "@flarekit/ui/components/ui/select";
 import { RiSearchLine } from "@remixicon/react";
-import { Spinner } from "~/components/spinner";
-import InputField from "~/features/auth/components/input-filed";
-import { toast } from "sonner";
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
-import { Input } from "@flarekit/ui/components/ui/input";
-import { Checkbox } from "@flarekit/ui/components/ui/checkbox";
-import { permissionGroups, type PermissionType } from "~/config/permissions";
+import { Spinner } from "~/components/spinner";
+import { type PermissionType, permissionGroups } from "~/config/permissions";
+import InputField from "~/features/auth/components/input-filed";
 import TokenCard from "./token-card";
 
 const createTokenSchema = z.object({
@@ -110,7 +110,7 @@ export function CreateTokenDialog({
             expiresIn:
               validatedData.expiresIn === "never"
                 ? null
-                : parseInt(validatedData.expiresIn),
+                : Number.parseInt(validatedData.expiresIn),
             permissions: selectedPermissions,
           }),
         });

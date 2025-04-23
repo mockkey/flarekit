@@ -1,7 +1,7 @@
 import { useEffect, useState, useTransition } from "react";
-import { authClient } from "~/features/auth/client/auth";
-import TokenItem, { Token } from "./token-item";
 import { toast } from "sonner";
+import { authClient } from "~/features/auth/client/auth";
+import TokenItem, { type Token } from "./token-item";
 import { TokenItemSkeleton } from "./token-item-skeleton";
 
 interface TokenListProps {

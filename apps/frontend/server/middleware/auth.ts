@@ -1,7 +1,7 @@
-import { Context, Next } from "hono";
+import type { Context, Next } from "hono";
 import { bearerAuth } from "hono/bearer-auth";
-import { serverAuth } from "~/features/auth/server/auth";
 import { HTTPException } from "hono/http-exception";
+import { serverAuth } from "~/features/auth/server/auth";
 
 interface RequireAuthOptions {
   [resource: string]: string[];
