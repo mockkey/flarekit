@@ -1,3 +1,4 @@
+import { AccountDeleteCard } from "@flarekit/auth/components/settings/account-delete-card";
 import Accessibility from "~/components/settings/accessibility";
 import ActiveSessions from "~/components/settings/active-sessions";
 import ConnectedCard from "~/components/settings/connected-card";
@@ -27,6 +28,8 @@ export default function ProfileSettings() {
 
       {/* DeleteAccount */}
       <DeleteAccount />
+
+      <AccountDeleteCard />
     </div>
   );
 }
