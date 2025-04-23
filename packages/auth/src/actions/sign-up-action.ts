@@ -1,4 +1,4 @@
-import { signIn, signUp } from "@flarekit/auth/lib/auth-client";
+import { signUp } from "@flarekit/auth/lib/auth-client";
 import { toast } from "sonner";
 import { type Schema, z } from "zod";
 import { SocialActions, type providerPlatform } from "./social-actions";

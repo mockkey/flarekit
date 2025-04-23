@@ -1,11 +1,8 @@
-import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
 import {
-  Link,
   Links,
   type LinksFunction,
   type LoaderFunctionArgs,
   Meta,
-  NavLink,
   Outlet,
   Scripts,
   useLoaderData,

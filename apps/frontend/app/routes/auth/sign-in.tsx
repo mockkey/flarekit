@@ -2,7 +2,6 @@ import {
   SignInCard,
   SignInCardSkeleton,
 } from "@flarekit/auth/components/sign-in-card";
-import { useFetcher } from "react-router";
 import { signIn } from "~/features/auth/client/auth";
 import { signInSchema } from "~/features/auth/schemas";
 import type { Route } from "./+types/sign-in";

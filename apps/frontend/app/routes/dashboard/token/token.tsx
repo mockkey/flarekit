@@ -1,4 +1,3 @@
-import { Badge } from "@flarekit/ui/components/ui/badge";
 import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
@@ -7,26 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Label } from "@flarekit/ui/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@flarekit/ui/components/ui/select";
-import { Textarea } from "@flarekit/ui/components/ui/textarea";
-import { RiAddLine, RiClipboardLine, RiDeleteBinLine } from "@remixicon/react";
-import { Suspense, useEffect, useState, useTransition } from "react";
-import { Outlet } from "react-router";
+import { RiAddLine } from "@remixicon/react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Spinner } from "~/components/spinner";
 import { CreateTokenDialog } from "~/components/token/create-token-dialog";
-import TokenItem, { type Token } from "~/components/token/token-item";
+import type { Token } from "~/components/token/token-item";
 import TokenItemList from "~/components/token/token-item-list";
-import { TokenItemSkeleton } from "~/components/token/token-item-skeleton";
-import { authClient } from "~/features/auth/client/auth";
-import InputField from "~/features/auth/components/input-filed";
 
 const expirationOptions = [
   { value: "never", label: "Never" },

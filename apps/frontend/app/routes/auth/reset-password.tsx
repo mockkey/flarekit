@@ -7,14 +7,7 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 import { useEffect } from "react";
-import {
-  Form,
-  Link,
-  redirect,
-  useActionData,
-  useNavigation,
-  useSearchParams,
-} from "react-router";
+import { Form, redirect, useActionData, useNavigation } from "react-router";
 import { toast } from "sonner";
 import { Spinner } from "~/components/spinner";
 import { resetPassword } from "~/features/auth/client/auth";

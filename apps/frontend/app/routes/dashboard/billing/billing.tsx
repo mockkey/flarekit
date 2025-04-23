@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 import { useEffect, useState, useTransition } from "react";
-import { toast } from "sonner";
 import { PlansDialog } from "~/components/billing/plans-dialog";
 import { subscription } from "~/features/auth/client/auth";
 import { formatDateToLong } from "~/lib/utils";

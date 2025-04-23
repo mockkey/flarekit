@@ -1,7 +1,7 @@
 import { Button } from "@flarekit/ui/components/ui/button";
 import { Check } from "lucide-react";
 import { useTransition } from "react";
-import { Link, redirect, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
 import { cn } from "~/lib/utils";

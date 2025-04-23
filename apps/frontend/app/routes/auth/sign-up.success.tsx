@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 import { RiArrowLeftLine, RiMailLine } from "@remixicon/react";
-import { Link, redirect, useSearchParams } from "react-router";
+import { Link, redirect } from "react-router";
 import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
 import { serverAuth } from "~/features/auth/server/auth";

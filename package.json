@@ -10,7 +10,9 @@
     "db:generate": "pnpm -F @flarekit/frontend db:generate",
     "db:local": "pnpm -F @flarekit/frontend db:local",
     "db:remote": "pnpm -F @flarekit/frontend db:remote",
-    "format": "biome format . --write"
+    "format": "biome format . --write",
+    "check": "biome check .",
+    "check:fix": "biome check --fix ."
   },
   "dependencies": {
     "@flarekit/frontend": "workspace:*"

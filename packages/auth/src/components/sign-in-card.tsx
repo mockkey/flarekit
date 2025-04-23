@@ -1,6 +1,5 @@
 import { InputField } from "@flarekit/auth/components/input-field";
 import { useAuth } from "@flarekit/auth/lib/auth-provider";
-import { Spinner } from "@flarekit/ui/components/spinner";
 import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
@@ -10,8 +9,7 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 import { Skeleton } from "@flarekit/ui/components/ui/skeleton";
-import { useActionState, useEffect, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { useActionState } from "react";
 import { signInAction } from "../actions/sign-in-action";
 import { ActionButton } from "./action-button";
 import { SocicalButton } from "./socical-button";

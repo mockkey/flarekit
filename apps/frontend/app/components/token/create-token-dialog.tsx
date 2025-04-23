@@ -22,7 +22,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Spinner } from "~/components/spinner";
-import { type PermissionType, permissionGroups } from "~/config/permissions";
+import { permissionGroups } from "~/config/permissions";
 import InputField from "~/features/auth/components/input-filed";
 import TokenCard from "./token-card";
 

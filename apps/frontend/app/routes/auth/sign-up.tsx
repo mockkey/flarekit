@@ -1,24 +1,7 @@
-import { Button } from "@flarekit/ui/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@flarekit/ui/components/ui/card";
-import { RiGithubFill } from "@remixicon/react";
 import { useEffect } from "react";
-import {
-  Form,
-  Link,
-  redirect,
-  useActionData,
-  useNavigation,
-} from "react-router";
+import { redirect, useActionData, useNavigation } from "react-router";
 import { toast } from "sonner";
-import { Spinner } from "~/components/spinner";
 import { signIn, signUp } from "~/features/auth/client/auth";
-import InputField from "~/features/auth/components/input-filed";
 import { signUpSchema } from "~/features/auth/schemas";
 import { serverAuth } from "~/features/auth/server/auth";
 import type { Route } from "./+types/sign-up";

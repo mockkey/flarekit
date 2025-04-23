@@ -10,10 +10,8 @@ import {
 } from "@flarekit/ui/components/ui/sidebar";
 import {
   RiBankCard2Fill,
-  RiCommandLine,
   RiKeyFill,
   RiSettings2Fill,
-  RiSettings4Line,
   RiSparklingFill,
 } from "@remixicon/react";
 import { Link } from "react-router";

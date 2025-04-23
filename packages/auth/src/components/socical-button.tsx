@@ -1,4 +1,3 @@
-import { Spinner } from "@flarekit/ui/components/spinner";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { cn } from "@flarekit/ui/lib/utils";
 import React from "react";

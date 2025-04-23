@@ -1,8 +1,8 @@
 import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
 import { Button } from "@flarekit/ui/components/ui/button";
-import { RiGithubFill, RiGoogleFill } from "@remixicon/react";
+import { RiGithubFill } from "@remixicon/react";
 import { ArrowLeft } from "lucide-react";
-import { Link, NavLink, Outlet, redirect, useNavigation } from "react-router";
+import { Link, NavLink, Outlet, redirect } from "react-router";
 import { serverAuth } from "~/features/auth/server/auth";
 import type { Route } from "./+types/layout";
 

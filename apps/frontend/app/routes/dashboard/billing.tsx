@@ -12,7 +12,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@flarekit/ui/components/ui/dialog";
 import { RiCheckLine } from "@remixicon/react";
 import { useState } from "react";
