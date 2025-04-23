@@ -1,5 +1,11 @@
 import { Button } from "@flarekit/ui/components/ui/button";
-import { RiDeleteBinLine, RiShieldLine, RiTimeLine, RiBarChart2Line, RiEditLine } from "@remixicon/react";
+import {
+  RiDeleteBinLine,
+  RiShieldLine,
+  RiTimeLine,
+  RiBarChart2Line,
+  RiEditLine,
+} from "@remixicon/react";
 import { Progress } from "@flarekit/ui/components/ui/progress";
 import { useTransition } from "react";
 import { authClient } from "~/features/auth/client/auth";
@@ -36,13 +42,12 @@ interface TokenItemProps {
 export default function TokenItem({ token }: TokenItemProps) {
   const [isPending, startTransition] = useTransition();
 
-
   const handleRevokeToken = () => {
     startTransition(async () => {
       const { error } = await authClient.apiKey.delete({
         keyId: token.id,
       });
-      
+
       if (error) {
         toast.error(error.message);
         return;
@@ -51,8 +56,10 @@ export default function TokenItem({ token }: TokenItemProps) {
     });
   };
 
-  const usagePercentage = token.remaining 
-    ? Math.round((token.requestCount / (token.remaining + token.requestCount)) * 100)
+  const usagePercentage = token.remaining
+    ? Math.round(
+        (token.requestCount / (token.remaining + token.requestCount)) * 100,
+      )
     : 0;
 
   return (
@@ -60,7 +67,9 @@ export default function TokenItem({ token }: TokenItemProps) {
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <div className="font-medium">{token.name}</div>
-          <code className="px-2 py-1 bg-muted rounded text-sm">{token.start}</code>
+          <code className="px-2 py-1 bg-muted rounded text-sm">
+            {token.start}
+          </code>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -113,7 +122,8 @@ export default function TokenItem({ token }: TokenItemProps) {
           </div>
           <Progress value={usagePercentage} className="h-2" />
           <div className="text-xs text-muted-foreground">
-            {token.requestCount} / {(token.remaining || 0) + token.requestCount} requests
+            {token.requestCount} / {(token.remaining || 0) + token.requestCount}{" "}
+            requests
           </div>
         </div>
       </div>

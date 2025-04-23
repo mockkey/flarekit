@@ -75,8 +75,8 @@
     "wrangler": "^4.9.1"
   },
   "keywords": [],
-  "exports":{
-    "load-context":"./load-context.ts"
+  "exports": {
+    "load-context": "./load-context.ts"
   },
   "author": "",
   "license": "ISC",

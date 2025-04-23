@@ -1,5 +1,18 @@
-import { Form, Link, redirect, useActionData, useNavigation, useSearchParams } from "react-router";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
+import {
+  Form,
+  Link,
+  redirect,
+  useActionData,
+  useNavigation,
+  useSearchParams,
+} from "react-router";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { Spinner } from "~/components/spinner";
 import { toast } from "sonner";
@@ -13,7 +26,7 @@ export const meta = () => [
   {
     title: "Reset Password",
     description: "Create a new password",
-  }
+  },
 ];
 
 interface ActionData {
@@ -26,18 +39,16 @@ interface ActionData {
 
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
-  const token = url.searchParams.get("token")
-  
+  const token = url.searchParams.get("token");
+
   if (!token) {
-    throw redirect("/auth/forget-password")
+    throw redirect("/auth/forget-password");
   }
-  
-  return null
+
+  return null;
 }
 
-export async function clientAction({
-  request,
-}: Route.ClientActionArgs) {
+export async function clientAction({ request }: Route.ClientActionArgs) {
   try {
     const formData = await request.formData();
     const url = new URL(request.url);
@@ -47,8 +58,8 @@ export async function clientAction({
       return {
         error: {
           message: "Invalid reset token",
-          field: "password"
-        }
+          field: "password",
+        },
       };
     }
 
@@ -60,32 +71,32 @@ export async function clientAction({
       return {
         error: {
           message: error.message,
-          field: error.path[0].toString()
-        }
+          field: error.path[0].toString(),
+        },
       };
     }
 
     const { error } = await resetPassword({
       token,
-      newPassword: result.data.password
+      newPassword: result.data.password,
     });
 
     if (error) {
       return {
         error: {
           message: error.message,
-          field: "password"
-        }
+          field: "password",
+        },
       };
     }
 
-    return redirect('/auth/sign-in');
+    return redirect("/auth/sign-in");
   } catch (error) {
     return {
       error: {
         message: "Failed to reset password. Please try again.",
-        field: "password"
-      }
+        field: "password",
+      },
     };
   }
 }
@@ -105,9 +116,7 @@ export default function ResetPassword() {
     <Card className="flex flex-col gap-6">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Reset your password</CardTitle>
-        <CardDescription>
-          Enter your new password below
-        </CardDescription>
+        <CardDescription>Enter your new password below</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -127,22 +136,18 @@ export default function ResetPassword() {
             disabled={isPending}
           />
 
-          <Button 
-            type="submit"
-            className="w-full"
-            disabled={isPending}
-          >
+          <Button type="submit" className="w-full" disabled={isPending}>
             {isPending ? (
               <div className="flex items-center justify-center gap-2">
                 <Spinner className="size-4" />
                 <span>Resetting password...</span>
               </div>
             ) : (
-              'Reset Password'
+              "Reset Password"
             )}
           </Button>
         </Form>
       </CardContent>
     </Card>
-  )
+  );
 }

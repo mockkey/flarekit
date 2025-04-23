@@ -1,6 +1,6 @@
-import { Input } from '@flarekit/ui/components/ui/input';
-import { Label } from '@flarekit/ui/components/ui/label';
-import { Link } from 'react-router';
+import { Input } from "@flarekit/ui/components/ui/input";
+import { Label } from "@flarekit/ui/components/ui/label";
+import { Link } from "react-router";
 
 interface InputFieldProps extends React.ComponentProps<typeof Input> {
   label: string;

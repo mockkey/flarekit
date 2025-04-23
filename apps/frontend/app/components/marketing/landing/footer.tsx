@@ -6,7 +6,7 @@ const footerLinks = {
     { name: "Features", href: "#features" },
     { name: "Pricing", href: "#pricing" },
     { name: "FAQ", href: "#faq" },
-  ]
+  ],
 };
 
 export default function Footer() {
@@ -33,7 +33,7 @@ export default function Footer() {
                 {links.map((link) => (
                   <li key={link.name}>
                     <Link
-                      to={{ pathname:'/', hash:link.href}}
+                      to={{ pathname: "/", hash: link.href }}
                       className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
                     >
                       {link.name}

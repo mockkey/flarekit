@@ -41,7 +41,11 @@ export default function Layout() {
           </a>
           <AuthProvider
             socials={[
-              {name: "github", icon: <RiGithubFill size={32} />, label: "Continue with Github"},
+              {
+                name: "github",
+                icon: <RiGithubFill size={32} />,
+                label: "Continue with Github",
+              },
             ]}
             Link={({ href, ...props }) => <NavLink to={href!} {...props} />}
           >

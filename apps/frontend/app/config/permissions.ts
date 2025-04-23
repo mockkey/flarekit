@@ -17,56 +17,58 @@ export const permissionGroups: Record<string, PermissionGroup> = {
     name: "Files",
     description: "Manage file operations",
     permissions: [
-      { 
-        id: "read", 
+      {
+        id: "read",
         label: "Read files",
-        description: "View and download files" 
+        description: "View and download files",
       },
-      { 
-        id: "write", 
+      {
+        id: "write",
         label: "Create and modify files",
-        description: "Upload and edit files" 
+        description: "Upload and edit files",
       },
-      { 
-        id: "delete", 
+      {
+        id: "delete",
         label: "Delete files",
-        description: "Permanently remove files" 
-      }
-    ]
+        description: "Permanently remove files",
+      },
+    ],
   },
   users: {
     name: "Users",
     description: "Manage user operations",
     permissions: [
-      { 
-        id: "read", 
+      {
+        id: "read",
         label: "View user information",
-        description: "Access user profiles and settings" 
+        description: "Access user profiles and settings",
       },
-      { 
-        id: "write", 
+      {
+        id: "write",
         label: "Modify user settings",
-        description: "Update user information and preferences" 
-      }
-    ]
-  }
+        description: "Update user information and preferences",
+      },
+    ],
+  },
 };
 
 export type PermissionType = keyof typeof permissionGroups;
 export type ResourcePermissions = Record<PermissionType, string[]>;
 
-export const permissionsSchema = z.record(
-  z.enum(Object.keys(permissionGroups) as [string, ...string[]]),
-  z.array(z.string())
-).refine((permissions) => {
-  return Object.entries(permissions).every(([resource, perms]) => {
+export const permissionsSchema = z
+  .record(
+    z.enum(Object.keys(permissionGroups) as [string, ...string[]]),
+    z.array(z.string()),
+  )
+  .refine((permissions) => {
+    return Object.entries(permissions).every(([resource, perms]) => {
+      if (perms.length === 0) return true;
 
-    if (perms.length === 0) return true;
-    
-    const validPermissions = permissionGroups[resource]?.permissions.map(p => p.id) || [];
-    return perms.every(perm => validPermissions.includes(perm));
-  });
-}, "Invalid permissions format or values");
+      const validPermissions =
+        permissionGroups[resource]?.permissions.map((p) => p.id) || [];
+      return perms.every((perm) => validPermissions.includes(perm));
+    });
+  }, "Invalid permissions format or values");
 
 export const defaultPermissions: ResourcePermissions = {
   files: ["read"],
@@ -76,46 +78,51 @@ export const defaultPermissions: ResourcePermissions = {
 export function hasPermission(
   userPermissions: Partial<ResourcePermissions>,
   resource: PermissionType,
-  permission: string
+  permission: string,
 ): boolean {
   return userPermissions[resource]?.includes(permission) ?? false;
 }
 
 export function validatePermissions(permissions: Record<string, string[]>) {
   try {
-
-    const normalizedPermissions = Object.entries(permissionGroups).reduce((acc, [resource]) => {
-      const perms = permissions[resource] || [];
-      if (perms.length > 0) {
-        acc[resource] = perms;
-      }
-      return acc;
-    }, {} as Record<string, string[]>);
+    const normalizedPermissions = Object.entries(permissionGroups).reduce(
+      (acc, [resource]) => {
+        const perms = permissions[resource] || [];
+        if (perms.length > 0) {
+          acc[resource] = perms;
+        }
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    );
 
     if (Object.keys(normalizedPermissions).length === 0) {
       return { valid: true, permissions: {} };
     }
 
     const result = permissionsSchema.safeParse(normalizedPermissions);
-    
+
     if (!result.success) {
       return {
         valid: false,
         error: "Invalid permissions format",
-        details: result.error.issues
+        details: result.error.issues,
       };
     }
 
-    const invalidPermissions: Array<{resource: string, permission: string}> = [];
-    
+    const invalidPermissions: Array<{ resource: string; permission: string }> =
+      [];
+
     Object.entries(normalizedPermissions).forEach(([resource, perms]) => {
       if (!permissionGroups[resource]) {
-        invalidPermissions.push({ resource, permission: '*' });
+        invalidPermissions.push({ resource, permission: "*" });
         return;
       }
 
-      const validPermissions = permissionGroups[resource].permissions.map(p => p.id);
-      perms.forEach(perm => {
+      const validPermissions = permissionGroups[resource].permissions.map(
+        (p) => p.id,
+      );
+      perms.forEach((perm) => {
         if (!validPermissions.includes(perm)) {
           invalidPermissions.push({ resource, permission: perm });
         }
@@ -126,18 +133,16 @@ export function validatePermissions(permissions: Record<string, string[]>) {
       return {
         valid: false,
         error: "Invalid permissions found",
-        invalidPermissions
+        invalidPermissions,
       };
     }
 
-    return { valid: true, permissions: normalizedPermissions }; 
+    return { valid: true, permissions: normalizedPermissions };
   } catch (error) {
     return {
       valid: false,
       error: "Permission validation failed",
-      details: error
+      details: error,
     };
   }
 }
-
-

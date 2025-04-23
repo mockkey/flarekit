@@ -30,9 +30,9 @@ export const session = sqliteTable("session", {
 });
 
 export const account = sqliteTable("account", {
-  id: text("id") 
-  .$defaultFn(() => createId())
-  .primaryKey(),
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
   userId: text("userId")
     .notNull()
     .references(() => user.id),
@@ -67,8 +67,7 @@ export const subscription = sqliteTable("subscription", {
     .$defaultFn(() => createId())
     .primaryKey(),
   plan: text("plan").notNull(),
-  referenceId: text("referenceId")
-    .notNull(),
+  referenceId: text("referenceId").notNull(),
   stripeCustomerId: text("stripeCustomerId"),
   stripeSubscriptionId: text("stripeSubscriptionId"),
   status: text("status").notNull(),
@@ -81,7 +80,6 @@ export const subscription = sqliteTable("subscription", {
   createdAt: integer("createdAt", { mode: "timestamp" }),
   updatedAt: integer("updatedAt", { mode: "timestamp" }),
 });
-
 
 export const apikey = sqliteTable("apikey", {
   id: text("id")
@@ -108,5 +106,5 @@ export const apikey = sqliteTable("apikey", {
   createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
   permissions: text("permissions"),
-  metadata: text("metadata")
+  metadata: text("metadata"),
 });

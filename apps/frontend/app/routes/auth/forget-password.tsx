@@ -1,5 +1,11 @@
 import { Form, Link, useActionData, useNavigation } from "react-router";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { Spinner } from "~/components/spinner";
 import { toast } from "sonner";
@@ -13,7 +19,7 @@ export const meta = () => [
   {
     title: "Forgot Password",
     description: "Reset your password",
-  }
+  },
 ];
 
 interface ActionData {
@@ -24,9 +30,7 @@ interface ActionData {
   success?: boolean;
 }
 
-export async function clientAction({
-  request,
-}: Route.ClientActionArgs) {
+export async function clientAction({ request }: Route.ClientActionArgs) {
   try {
     const formData = await request.formData();
     const formPayload = Object.fromEntries(formData);
@@ -36,22 +40,22 @@ export async function clientAction({
       return {
         error: {
           message: subscriber.error.issues[0].message,
-          field: "email"
-        }
+          field: "email",
+        },
       };
     }
 
     const { data, error } = await forgetPassword({
       email: subscriber.data.email,
-      redirectTo: "/auth/reset-password"
+      redirectTo: "/auth/reset-password",
     });
 
     if (error) {
       return {
         error: {
           message: error.message,
-          field: "email"
-        }
+          field: "email",
+        },
       };
     }
 
@@ -60,8 +64,8 @@ export async function clientAction({
     return {
       error: {
         message: "Failed to send reset email. Please try again.",
-        field: "email"
-      }
+        field: "email",
+      },
     };
   }
 }
@@ -101,18 +105,14 @@ export default function ForgetPassword() {
               disabled={isPending}
             />
 
-            <Button 
-              type="submit"
-              className="w-full"
-              disabled={isPending}
-            >
+            <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? (
                 <div className="flex items-center justify-center gap-2">
                   <Spinner className="size-4" />
                   <span>Sending instructions...</span>
                 </div>
               ) : (
-                'Send Instructions'
+                "Send Instructions"
               )}
             </Button>
           </Form>

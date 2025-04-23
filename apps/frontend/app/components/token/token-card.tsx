@@ -10,7 +10,7 @@ interface TokenCardProps {
   handleClose: () => void;
 }
 
-export default function TokenCard({handleClose, newToken }: TokenCardProps) {
+export default function TokenCard({ handleClose, newToken }: TokenCardProps) {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Token copied to clipboard");

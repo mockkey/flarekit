@@ -13,4 +13,4 @@ export const themeSessionResolver = createThemeSessionResolver(
       // secure: true,
     },
   }),
-)
+);

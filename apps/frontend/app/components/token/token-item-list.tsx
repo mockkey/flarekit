@@ -43,10 +43,7 @@ export default function TokenItemList({ onTokenRemove }: TokenListProps) {
   return (
     <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
       {tokens.map((token: any) => (
-        <TokenItem 
-          key={token.id} 
-          token={token} 
-        />
+        <TokenItem key={token.id} token={token} />
       ))}
     </div>
   );

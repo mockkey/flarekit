@@ -52,23 +52,23 @@ const plans = [
 ];
 
 export default function Pricing() {
-  const [isPending, startTransition] = useTransition()
-  const navigate = useNavigate()
+  const [isPending, startTransition] = useTransition();
+  const navigate = useNavigate();
   const upgradeHandle = (plan: string) => {
     startTransition(async () => {
-      const {error} =   await authClient.subscription.upgrade({
+      const { error } = await authClient.subscription.upgrade({
         plan: plan,
         successUrl: "/dashboard",
         cancelUrl: "/billing",
-      })
-      if(error){
-        if(error.statusText=="Unauthorized"){
-          navigate('/billing')
-        }else{
-          toast.error(error.message)
+      });
+      if (error) {
+        if (error.statusText == "Unauthorized") {
+          navigate("/billing");
+        } else {
+          toast.error(error.message);
         }
       }
-      return
+      return;
     });
   };
 
@@ -93,7 +93,7 @@ export default function Pricing() {
                 plan.highlight
                   ? "border-blue-500 dark:border-blue-500 shadow-lg"
                   : "border-gray-200 dark:border-gray-800",
-                "bg-white dark:bg-gray-900"
+                "bg-white dark:bg-gray-900",
               )}
             >
               <div className="mb-6">

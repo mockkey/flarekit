@@ -69,7 +69,7 @@ export default function SidebarNav({
                 asChild
               >
                 <Link to={navItem.href} className="space-x-0.5">
-                  <navItem.icon className="!size-5"/>
+                  <navItem.icon className="!size-5" />
                   <span>{navItem.label}</span>
                 </Link>
               </SidebarMenuButton>

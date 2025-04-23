@@ -33,7 +33,6 @@ export const SignInCard = ({
     errors: {},
   });
 
-
   return (
     <Card className="flex flex-col gap-6">
       <CardHeader className="text-center">

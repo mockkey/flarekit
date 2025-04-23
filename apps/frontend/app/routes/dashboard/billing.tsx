@@ -1,7 +1,20 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { RiCheckLine } from "@remixicon/react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@flarekit/ui/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@flarekit/ui/components/ui/dialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PlansDialog } from "~/components/billing/plans-dialog";
@@ -31,7 +44,7 @@ const plans: Plan[] = [
       { name: "Discord community access", included: true },
       { name: "API Rate Limit: 1000 req/day", included: false },
       { name: "Team collaboration", included: false },
-    ]
+    ],
   },
   {
     name: "Pro",
@@ -45,8 +58,8 @@ const plans: Plan[] = [
       { name: "Discord community access", included: true },
       { name: "API Rate Limit: 10000 req/day", included: true },
       { name: "Team collaboration", included: true },
-    ]
-  }
+    ],
+  },
 ];
 
 export default function Billing() {
@@ -81,9 +94,7 @@ export default function Billing() {
       <Card>
         <CardHeader>
           <CardTitle>Payment History</CardTitle>
-          <CardDescription>
-            View your previous transactions
-          </CardDescription>
+          <CardDescription>View your previous transactions</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-6 text-muted-foreground">
@@ -104,7 +115,11 @@ export default function Billing() {
 }
 
 // 移到一个单独的组件
-function PlanDetailsDialog({ plan, open, onOpenChange }: {
+function PlanDetailsDialog({
+  plan,
+  open,
+  onOpenChange,
+}: {
   plan: Plan;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -121,23 +136,29 @@ function PlanDetailsDialog({ plan, open, onOpenChange }: {
           <div className="space-y-4">
             {plan.features.map((feature) => (
               <div key={feature.name} className="flex items-center gap-2">
-                <div className={`rounded-full p-1 ${
-                  feature.included 
-                    ? "bg-primary/10 text-primary" 
-                    : "bg-muted text-muted-foreground"
-                }`}>
+                <div
+                  className={`rounded-full p-1 ${
+                    feature.included
+                      ? "bg-primary/10 text-primary"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+                >
                   <RiCheckLine className="size-4" />
                 </div>
-                <span className={feature.included ? undefined : "text-muted-foreground"}>
+                <span
+                  className={
+                    feature.included ? undefined : "text-muted-foreground"
+                  }
+                >
                   {feature.name}
                 </span>
               </div>
             ))}
           </div>
-          
+
           {/* Subscription Button */}
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             variant={plan.highlight ? "default" : "outline"}
             onClick={() => {
               // 实现订阅逻辑

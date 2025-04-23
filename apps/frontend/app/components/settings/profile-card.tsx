@@ -8,12 +8,7 @@ import {
 } from "@flarekit/ui/components/ui/card";
 
 import { RiUploadCloud2Line } from "@remixicon/react";
-import {
-  useEffect,
-  useState,
-  useRef,
-  useActionState,
-} from "react";
+import { useEffect, useState, useRef, useActionState } from "react";
 import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
 import InputField from "~/features/auth/components/input-filed";
@@ -30,8 +25,10 @@ export default function ProfileCard() {
   const [username, setUserName] = useState<string>(user.user.name);
   const size = 2 * 1024 * 1024; // 2MB
   const fileTypes = ["image/jpeg", "image/png", "image/gif"];
-  const isValidFile = avatarFile && fileTypes.includes(avatarFile.type) && avatarFile.size <= size;
-
+  const isValidFile =
+    avatarFile &&
+    fileTypes.includes(avatarFile.type) &&
+    avatarFile.size <= size;
 
   const updataName = async (_, formData: FormData) => {
     const newName = formData.get("name") as string;
@@ -55,7 +52,7 @@ export default function ProfileCard() {
 
   const [actionState, updateNameAction, isPending] = useActionState(
     updataName,
-    null
+    null,
   );
 
   const handleButtonClick = () => {
@@ -73,18 +70,18 @@ export default function ProfileCard() {
     setPreviewUrl(url);
 
     const formData = new FormData();
-    formData.append('file', avatarFile)
+    formData.append("file", avatarFile);
     fetch("/api/upload/avatar", {
       method: "POST",
-        body: formData,
+      body: formData,
     })
-    .then((res) => res.json())
-    .then((data) => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.error) {
-        toast.error(data.error);
-        return;
+          toast.error(data.error);
+          return;
         }
-    })
+      });
     return () => URL.revokeObjectURL(url);
   }, [avatarFile]);
 

@@ -1,5 +1,11 @@
 import { Link, redirect, useSearchParams } from "react-router";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@flarekit/ui/components/ui/card";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { RiMailLine, RiArrowLeftLine } from "@remixicon/react";
 import { Route } from "./+types/sign-up.success";
@@ -11,32 +17,29 @@ export const meta: Route.MetaFunction = () => [
   {
     title: "Verify Your Email",
     description: "Please verify your email address to continue",
-  }
+  },
 ];
 
-export const loader = async ({ request, context }: Route.LoaderArgs) =>{
-      const auth = serverAuth(context.cloudflare.env)
-      const session = await auth.api.getSession({
-        headers: request.headers,
-      })
+export const loader = async ({ request, context }: Route.LoaderArgs) => {
+  const auth = serverAuth(context.cloudflare.env);
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
 
-      if(!session) {
-          throw redirect('/auth/sign-in')
-      }
-      
-      if(session.user.emailVerified=== true){
-          throw redirect('/dashboard')
-      }
+  if (!session) {
+    throw redirect("/auth/sign-in");
+  }
 
-      return session
+  if (session.user.emailVerified === true) {
+    throw redirect("/dashboard");
+  }
 
-}
-
+  return session;
+};
 
 export default function SignUpSuccess({
   loaderData: { user },
 }: Route.ComponentProps) {
-
   return (
     <Card className="flex flex-col gap-6 max-w-md mx-auto">
       <CardHeader className="text-center">
@@ -53,25 +56,25 @@ export default function SignUpSuccess({
       <CardContent className="space-y-4">
         <div className="text-sm text-muted-foreground">
           <p className="text-center">
-            Click the link in your email to verify your account.
-            The link will expire in 24 hours.
+            Click the link in your email to verify your account. The link will
+            expire in 24 hours.
           </p>
-          
+
           <div className="mt-4 flex flex-col gap-2 text-center">
             <p>Can't find the email? Check your spam folder or</p>
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               className="h-auto p-0"
-              onClick={ async () => {
-                const {data,error} = await authClient.sendVerificationEmail({
-                  email:user.email,
-                  callbackURL:'/'
-                })
-                if(error){
-                  toast.error(error.message)
+              onClick={async () => {
+                const { data, error } = await authClient.sendVerificationEmail({
+                  email: user.email,
+                  callbackURL: "/",
+                });
+                if (error) {
+                  toast.error(error.message);
                 }
-                if(data?.status){
-                  toast.info(`Verification email sent to ${user.email}`)
+                if (data?.status) {
+                  toast.info(`Verification email sent to ${user.email}`);
                 }
               }}
             >
@@ -79,7 +82,7 @@ export default function SignUpSuccess({
             </Button>
           </div>
         </div>
-        
+
         <div className="border-t pt-4">
           <Link to="/auth/sign-in">
             <Button variant="outline" className="w-full" size="lg">

@@ -1,4 +1,3 @@
-
 import ActiveSessions from "~/components/settings/active-sessions";
 import ConnectedCard from "~/components/settings/connected-card";
 import ProfileCard from "~/components/settings/profile-card";
@@ -8,10 +7,8 @@ import Accessibility from "~/components/settings/accessibility";
 export const meta = () => [
   {
     title: "Profile Settings",
-  }
-]
-
-
+  },
+];
 
 export default function ProfileSettings() {
   return (
@@ -30,7 +27,6 @@ export default function ProfileSettings() {
 
       {/* DeleteAccount */}
       <DeleteAccount />
-  
     </div>
   );
 }

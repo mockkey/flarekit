@@ -1,7 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { serverAuth } from "~/features/auth/server/auth";
 
-
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const auth = serverAuth(context.cloudflare.env);
   return auth.handler(request);

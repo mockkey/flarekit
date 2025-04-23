@@ -1,4 +1,8 @@
-import { RiReactjsLine, RiDatabase2Line, RiMailSendLine } from "@remixicon/react";
+import {
+  RiReactjsLine,
+  RiDatabase2Line,
+  RiMailSendLine,
+} from "@remixicon/react";
 import { Cloud, LucideIcon, Lock, Paintbrush, Rocket, Zap } from "lucide-react";
 
 interface FeatureItem {
@@ -10,17 +14,20 @@ interface FeatureItem {
 const features: FeatureItem[] = [
   {
     title: "React 19 & React Router",
-    description: "Experience modern development with the latest React 19 and React Router",
+    description:
+      "Experience modern development with the latest React 19 and React Router",
     icon: RiReactjsLine,
   },
   {
     title: "Cloudflare Deploy",
-    description: "One-click deployment to Cloudflare Worker with global CDN acceleration",
+    description:
+      "One-click deployment to Cloudflare Worker with global CDN acceleration",
     icon: Cloud,
   },
   {
     title: "D1 Database",
-    description: "Integrated Cloudflare D1 SQLite database with edge computing capabilities",
+    description:
+      "Integrated Cloudflare D1 SQLite database with edge computing capabilities",
     icon: RiDatabase2Line,
   },
   {
@@ -30,22 +37,26 @@ const features: FeatureItem[] = [
   },
   {
     title: "Tailwind CSS",
-    description: "Built-in Tailwind CSS support for rapid and beautiful UI development",
+    description:
+      "Built-in Tailwind CSS support for rapid and beautiful UI development",
     icon: Paintbrush,
   },
   {
     title: "React Email",
-    description: "Send beautiful email notifications with React Email and Resend",
+    description:
+      "Send beautiful email notifications with React Email and Resend",
     icon: RiMailSendLine,
   },
   {
     title: "Better Auth",
-    description: "Enhanced authentication solution supporting multiple login methods",
+    description:
+      "Enhanced authentication solution supporting multiple login methods",
     icon: Lock,
   },
   {
     title: "Quick Start",
-    description: "Pre-configured development environment to focus on business logic",
+    description:
+      "Pre-configured development environment to focus on business logic",
     icon: Rocket,
   },
 ];
@@ -59,7 +70,8 @@ export default function Features() {
             Powerful Features
           </h2>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Integrated with all the core functionalities needed for modern web development
+            Integrated with all the core functionalities needed for modern web
+            development
           </p>
         </div>
 
@@ -73,7 +85,9 @@ export default function Features() {
                 <feature.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {feature.description}
+              </p>
             </div>
           ))}
         </div>

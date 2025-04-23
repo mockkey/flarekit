@@ -47,7 +47,6 @@ export const signUpAction = async (_: FormState, payload: FormData) => {
         callbackURL: "/dashboard",
       });
 
-      
       if (data) {
         toast.success("Check your email for the verification link.");
       }

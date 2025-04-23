@@ -56,57 +56,51 @@ const plans: Plan[] = [
   },
 ];
 
-
-
 export default function Billing() {
-  const [currentPlan,setCurrentPlan] = useState<Subscription>()
-  const [subscriptions,setsubscriptions] = useState<Subscription[]>()
-  const [showPlansDialog, setShowPlansDialog] = useState(false)
-  const [isPending, startTransition] = useTransition()
-  
-  const getSubscriptionList = async ()=>{
-    startTransition(async()=>{
-      const { data: list } = await subscription.list()
-      if(list){
-   
+  const [currentPlan, setCurrentPlan] = useState<Subscription>();
+  const [subscriptions, setsubscriptions] = useState<Subscription[]>();
+  const [showPlansDialog, setShowPlansDialog] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const getSubscriptionList = async () => {
+    startTransition(async () => {
+      const { data: list } = await subscription.list();
+      if (list) {
         const activeSubscription = list?.find(
-          sub => sub.status === "active" || sub.status === "trialing"
-        )
-  
-        activeSubscription && setCurrentPlan({
-          ...activeSubscription,
-        })
-      }
-      return 
-    })
-  }
+          (sub) => sub.status === "active" || sub.status === "trialing",
+        );
 
-  const subscriptionSession = async () =>{
-    startTransition(async()=>{
-      const res = await fetch('/api/subscription/session',{
-        method:'post'
-      })
-      const data = await res.json()
-      if(data.url){
-          if (typeof window !== "undefined" && window.location) {
-            if (window.location) {
-              try {
-                window.location.href = data.url
-              } catch {
-              }
-            }
+        activeSubscription &&
+          setCurrentPlan({
+            ...activeSubscription,
+          });
+      }
+      return;
+    });
+  };
+
+  const subscriptionSession = async () => {
+    startTransition(async () => {
+      const res = await fetch("/api/subscription/session", {
+        method: "post",
+      });
+      const data = await res.json();
+      if (data.url) {
+        if (typeof window !== "undefined" && window.location) {
+          if (window.location) {
+            try {
+              window.location.href = data.url;
+            } catch {}
           }
+        }
       }
-      return 
-    })
-  }
+      return;
+    });
+  };
 
-  
-
-  useEffect(()=>{
-    
-    getSubscriptionList()
-  },[])
+  useEffect(() => {
+    getSubscriptionList();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -121,21 +115,40 @@ export default function Billing() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-medium">Current Plan: { currentPlan?.plan ?  currentPlan.plan : 'free'   }</h3>
+              <h3 className="font-medium">
+                Current Plan: {currentPlan?.plan ? currentPlan.plan : "free"}
+              </h3>
               <p className="text-sm text-muted-foreground">
-                  { currentPlan?.periodStart && `Your plan renews on ${formatDateToLong(currentPlan?.periodStart)}` }
+                {currentPlan?.periodStart &&
+                  `Your plan renews on ${formatDateToLong(currentPlan?.periodStart)}`}
               </p>
             </div>
-            {!currentPlan || currentPlan?.plan === "Free"  ? (
-              <Button disabled={isPending} onClick={() => setShowPlansDialog(true)}>
+            {!currentPlan || currentPlan?.plan === "Free" ? (
+              <Button
+                disabled={isPending}
+                onClick={() => setShowPlansDialog(true)}
+              >
                 Upgrade Now
               </Button>
+            ) : currentPlan?.cancelAtPeriodEnd ? (
+              <Button
+                disabled={isPending}
+                onClick={() => {
+                  subscriptionSession();
+                }}
+              >
+                Manage Subscription
+              </Button>
             ) : (
-              currentPlan?.cancelAtPeriodEnd ? 
-              <Button disabled={isPending}  onClick={()=>{subscriptionSession()}}>Manage Subscription</Button> 
-              :
-              <Button disabled={isPending} variant="destructive" onClick={()=>{subscriptionSession()}}>Manage Subscription</Button>
-             
+              <Button
+                disabled={isPending}
+                variant="destructive"
+                onClick={() => {
+                  subscriptionSession();
+                }}
+              >
+                Manage Subscription
+              </Button>
             )}
           </div>
         </CardContent>
@@ -159,7 +172,7 @@ export default function Billing() {
         open={showPlansDialog}
         onOpenChange={setShowPlansDialog}
         plans={plans}
-        currentPlan={'free'}
+        currentPlan={"free"}
       />
     </div>
   );

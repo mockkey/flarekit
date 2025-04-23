@@ -1,7 +1,20 @@
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@flarekit/ui/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@flarekit/ui/components/ui/dialog";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { Label } from "@flarekit/ui/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@flarekit/ui/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@flarekit/ui/components/ui/select";
 import { RiSearchLine } from "@remixicon/react";
 import { Spinner } from "~/components/spinner";
 import InputField from "~/features/auth/components/input-filed";
@@ -31,47 +44,55 @@ interface CreateTokenDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function CreateTokenDialog({ open, onOpenChange }: CreateTokenDialogProps) {
+export function CreateTokenDialog({
+  open,
+  onOpenChange,
+}: CreateTokenDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [newToken, setNewToken] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPermissions, setSelectedPermissions] = useState<Record<string, string[]>>({
+  const [selectedPermissions, setSelectedPermissions] = useState<
+    Record<string, string[]>
+  >({
     files: [],
     users: [],
-    admin: []
+    admin: [],
   });
 
+  const filteredPermissionGroups = Object.entries(permissionGroups).reduce(
+    (acc, [resource, group]) => {
+      const filteredPermissions = group.permissions.filter(
+        (permission) =>
+          permission.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          permission.description
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          group.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
 
-  const filteredPermissionGroups = Object.entries(permissionGroups).reduce((acc, [resource, group]) => {
-    const filteredPermissions = group.permissions.filter(
-      permission =>
-        permission.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        permission.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        group.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    if (filteredPermissions.length > 0) {
-      acc[resource] = {
-        ...group,
-        permissions: filteredPermissions,
-      };
-    }
-    return acc;
-  }, {} as typeof permissionGroups);
+      if (filteredPermissions.length > 0) {
+        acc[resource] = {
+          ...group,
+          permissions: filteredPermissions,
+        };
+      }
+      return acc;
+    },
+    {} as typeof permissionGroups,
+  );
 
   const handlePermissionChange = (resource: string, permission: string) => {
-    setSelectedPermissions(current => ({
+    setSelectedPermissions((current) => ({
       ...current,
       [resource]: current[resource].includes(permission)
-        ? current[resource].filter(p => p !== permission)
-        : [...current[resource], permission]
+        ? current[resource].filter((p) => p !== permission)
+        : [...current[resource], permission],
     }));
   };
 
   const handleCreateToken = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-  
     try {
       const formData = new FormData(e.currentTarget);
       const data = {
@@ -81,30 +102,30 @@ export function CreateTokenDialog({ open, onOpenChange }: CreateTokenDialogProps
 
       const validatedData = createTokenSchema.parse(data);
 
-      startTransition(async ()=>{
-        const res = await fetch('/api/api-key/create', {
-          method: 'post',
+      startTransition(async () => {
+        const res = await fetch("/api/api-key/create", {
+          method: "post",
           body: JSON.stringify({
             name: validatedData.name,
-            expiresIn: validatedData.expiresIn === "never" ? null : parseInt(validatedData.expiresIn),
-            permissions: selectedPermissions
-          })
+            expiresIn:
+              validatedData.expiresIn === "never"
+                ? null
+                : parseInt(validatedData.expiresIn),
+            permissions: selectedPermissions,
+          }),
         });
         const data = await res.json();
-        setNewToken(data.key)
+        setNewToken(data.key);
         if (data.error) {
           toast.error(data.error.message);
         }
         toast.success("Token created successfully");
-        return
-      })
-
+        return;
+      });
     } catch (error) {
       toast.error("Failed to create token");
     }
   };
-
-
 
   const handleClose = () => {
     setNewToken(null);
@@ -117,12 +138,13 @@ export function CreateTokenDialog({ open, onOpenChange }: CreateTokenDialogProps
         <DialogHeader>
           <DialogTitle>Create API Token</DialogTitle>
           <DialogDescription>
-            Create a new token to access the API. Make sure to copy your token - you won't be able to see it again!
+            Create a new token to access the API. Make sure to copy your token -
+            you won't be able to see it again!
           </DialogDescription>
         </DialogHeader>
 
         {newToken ? (
-          <TokenCard  newToken={newToken}  handleClose={handleClose} />
+          <TokenCard newToken={newToken} handleClose={handleClose} />
         ) : (
           <form onSubmit={handleCreateToken} className="space-y-6">
             <InputField
@@ -139,7 +161,7 @@ export function CreateTokenDialog({ open, onOpenChange }: CreateTokenDialogProps
                   <SelectValue placeholder="Select expiration time" />
                 </SelectTrigger>
                 <SelectContent>
-                  {expirationOptions.map(option => (
+                  {expirationOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -167,41 +189,55 @@ export function CreateTokenDialog({ open, onOpenChange }: CreateTokenDialogProps
 
               <div className="border rounded-lg divide-y">
                 {Object.entries(filteredPermissionGroups).length > 0 ? (
-                  Object.entries(filteredPermissionGroups).map(([resource, group]) => (
-                    <div key={resource} className="p-4 space-y-3">
-                      <div className="space-y-1">
-                        <h4 className="font-medium text-sm">{group.name}</h4>
-                        {group.description && (
-                          <p className="text-xs text-muted-foreground">{group.description}</p>
-                        )}
-                      </div>
-                      <div className="grid gap-3">
-                        {group.permissions.map((permission) => (
-                          <div key={`${resource}:${permission.id}`} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`${resource}:${permission.id}`}
-                              checked={selectedPermissions[resource]?.includes(permission.id)}
-                              onCheckedChange={() => handlePermissionChange(resource, permission.id)}
-                              disabled={isPending}
-                            />
-                            <div className="grid gap-0.5">
-                              <label
-                                htmlFor={`${resource}:${permission.id}`}
-                                className="text-sm leading-none"
-                              >
-                                {permission.label}
-                              </label>
-                              {permission.description && (
-                                <p className="text-xs text-muted-foreground">
-                                  {permission.description}
-                                </p>
-                              )}
+                  Object.entries(filteredPermissionGroups).map(
+                    ([resource, group]) => (
+                      <div key={resource} className="p-4 space-y-3">
+                        <div className="space-y-1">
+                          <h4 className="font-medium text-sm">{group.name}</h4>
+                          {group.description && (
+                            <p className="text-xs text-muted-foreground">
+                              {group.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="grid gap-3">
+                          {group.permissions.map((permission) => (
+                            <div
+                              key={`${resource}:${permission.id}`}
+                              className="flex items-center space-x-2"
+                            >
+                              <Checkbox
+                                id={`${resource}:${permission.id}`}
+                                checked={selectedPermissions[
+                                  resource
+                                ]?.includes(permission.id)}
+                                onCheckedChange={() =>
+                                  handlePermissionChange(
+                                    resource,
+                                    permission.id,
+                                  )
+                                }
+                                disabled={isPending}
+                              />
+                              <div className="grid gap-0.5">
+                                <label
+                                  htmlFor={`${resource}:${permission.id}`}
+                                  className="text-sm leading-none"
+                                >
+                                  {permission.label}
+                                </label>
+                                {permission.description && (
+                                  <p className="text-xs text-muted-foreground">
+                                    {permission.description}
+                                  </p>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ),
+                  )
                 ) : (
                   <div className="p-8 text-center text-muted-foreground">
                     No permissions found matching "{searchQuery}"
@@ -218,7 +254,7 @@ export function CreateTokenDialog({ open, onOpenChange }: CreateTokenDialogProps
                     <span>Creating...</span>
                   </div>
                 ) : (
-                  'Create Token'
+                  "Create Token"
                 )}
               </Button>
             </DialogFooter>

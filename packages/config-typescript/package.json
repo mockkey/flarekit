@@ -2,9 +2,7 @@
   "name": "@flarekit/config-typescript",
   "version": "1.0.0",
   "description": "",
-  "files": [
-    "base.json"
-  ],
+  "files": ["base.json"],
   "keywords": [],
   "author": "",
   "license": "ISC",

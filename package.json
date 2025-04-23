@@ -9,12 +9,14 @@
     "deploy": "pnpm build:frontend &&  pnpm run -F @flarekit/frontend deploy",
     "db:generate": "pnpm -F @flarekit/frontend db:generate",
     "db:local": "pnpm -F @flarekit/frontend db:local",
-    "db:remote": "pnpm -F @flarekit/frontend db:remote"
+    "db:remote": "pnpm -F @flarekit/frontend db:remote",
+    "format": "biome format . --write"
   },
   "dependencies": {
     "@flarekit/frontend": "workspace:*"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4"
   },
   "packageManager": "pnpm@10.5.0",
   "engines": {

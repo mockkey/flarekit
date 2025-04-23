@@ -28,4 +28,4 @@ const Spinner = ({ className }: { className?: string }) => {
   );
 };
 
-export { Spinner }
+export { Spinner };

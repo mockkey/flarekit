@@ -1,12 +1,24 @@
 import { Suspense, useEffect, useState, useTransition } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@flarekit/ui/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@flarekit/ui/components/ui/card";
 import { Badge } from "@flarekit/ui/components/ui/badge";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { RiAddLine, RiClipboardLine, RiDeleteBinLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { Spinner } from "~/components/spinner";
 import InputField from "~/features/auth/components/input-filed";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@flarekit/ui/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@flarekit/ui/components/ui/select";
 import { Textarea } from "@flarekit/ui/components/ui/textarea";
 import { Label } from "@flarekit/ui/components/ui/label";
 import { CreateTokenDialog } from "~/components/token/create-token-dialog";
@@ -15,7 +27,6 @@ import TokenItem, { Token } from "~/components/token/token-item";
 import { TokenItemSkeleton } from "~/components/token/token-item-skeleton";
 import TokenItemList from "~/components/token/token-item-list";
 import { Outlet } from "react-router";
-
 
 const expirationOptions = [
   { value: "never", label: "Never" },
@@ -26,13 +37,9 @@ const expirationOptions = [
   { value: "7776000", label: "90 days", seconds: 7776000 },
 ];
 
-
-
-
 export default function ApiTokens() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [tokens, setTokens] = useState<Token[]>([]);
-
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -50,17 +57,17 @@ export default function ApiTokens() {
                 Manage your API tokens for accessing the API
               </CardDescription>
             </div>
-            <Button  onClick={() => setShowCreateDialog(true)}>
+            <Button onClick={() => setShowCreateDialog(true)}>
               <RiAddLine className="mr-2 size-4" />
               Create Token
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          <TokenItemList 
+          <TokenItemList
             onTokenRemove={(tokenId) => {
-              setTokens(prev => prev.filter(t => t.id !== tokenId));
-            }} 
+              setTokens((prev) => prev.filter((t) => t.id !== tokenId));
+            }}
           />
         </CardContent>
       </Card>
@@ -69,7 +76,7 @@ export default function ApiTokens() {
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
         onTokenCreated={(newToken) => {
-          setTokens(prev => [...prev, newToken]);
+          setTokens((prev) => [...prev, newToken]);
         }}
       />
     </div>

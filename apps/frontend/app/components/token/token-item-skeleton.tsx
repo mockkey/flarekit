@@ -1,4 +1,4 @@
-import { Skeleton } from "@flarekit/ui/components/ui/skeleton"
+import { Skeleton } from "@flarekit/ui/components/ui/skeleton";
 
 export function TokenItemSkeleton() {
   return (

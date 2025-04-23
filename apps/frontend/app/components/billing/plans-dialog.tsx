@@ -40,14 +40,13 @@ export function PlansDialog({
   plans,
   currentPlan,
 }: PlansDialogProps) {
-
-  const subscriptionHandle = async()=>{
+  const subscriptionHandle = async () => {
     await authClient.subscription.upgrade({
-        plan: "pro",
-        successUrl: "/dashboard",
-        cancelUrl: "/billing",
-    })
-  }
+      plan: "pro",
+      successUrl: "/dashboard",
+      cancelUrl: "/billing",
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,7 +61,10 @@ export function PlansDialog({
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={cn('w-[320px]',plan.highlight ? "border-primary" : undefined) }
+              className={cn(
+                "w-[320px]",
+                plan.highlight ? "border-primary" : undefined,
+              )}
             >
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -106,7 +108,7 @@ export function PlansDialog({
                   className="mt-6 w-full"
                   variant={plan.highlight ? "default" : "outline"}
                   onClick={() => {
-                    subscriptionHandle()
+                    subscriptionHandle();
                     toast.info(`Subscribing to ${plan.name} plan...`);
                     onOpenChange(false);
                   }}

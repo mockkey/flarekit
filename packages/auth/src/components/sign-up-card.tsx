@@ -22,11 +22,10 @@ interface SignUpCardProps {
 export function SignUpCard({
   title = "Create an account",
   description = "Get started with your free account",
-}:SignUpCardProps) {
+}: SignUpCardProps) {
   const { Link, socials } = useAuth();
 
-  const [state, formAction, isPending] = useActionState(signUpAction, 
-  {
+  const [state, formAction, isPending] = useActionState(signUpAction, {
     success: false,
     fields: {},
     errors: {},

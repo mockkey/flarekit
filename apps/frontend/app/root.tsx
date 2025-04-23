@@ -1,58 +1,60 @@
-import { Link, Links, LinksFunction, LoaderFunctionArgs, Meta, NavLink, Outlet, Scripts, useLoaderData } from 'react-router'
+import {
+  Link,
+  Links,
+  LinksFunction,
+  LoaderFunctionArgs,
+  Meta,
+  NavLink,
+  Outlet,
+  Scripts,
+  useLoaderData,
+} from "react-router";
 import stylesheet from "./styles/app.css?url";
-import { ThemeProvider, useTheme } from 'remix-themes';
-import { themeSessionResolver } from './server.session';
-import { ProgressBar } from '~/components/progress-bar';
-import { Toaster } from 'sonner';
-import { Route } from './+types/root';
-import { Boundary } from '~/components/boundary';
-import { AuthProvider } from '@flarekit/auth/lib/auth-provider';
+import { ThemeProvider, useTheme } from "remix-themes";
+import { themeSessionResolver } from "./server.session";
+import { ProgressBar } from "~/components/progress-bar";
+import { Toaster } from "sonner";
+import { Route } from "./+types/root";
+import { Boundary } from "~/components/boundary";
+import { AuthProvider } from "@flarekit/auth/lib/auth-provider";
 
-
-
-export const links:LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: stylesheet },
-  ];
-}
-
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: stylesheet }];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { getTheme } = await themeSessionResolver(request)
+  const { getTheme } = await themeSessionResolver(request);
   return {
-    theme: getTheme()
-  }
+    theme: getTheme(),
+  };
 }
 
-
-
 export function App() {
-  const data = useLoaderData()
-  const [theme] = useTheme()
+  const data = useLoaderData();
+  const [theme] = useTheme();
   return (
-    <html lang='en'  data-theme={theme ?? ""} suppressHydrationWarning>
+    <html lang="en" data-theme={theme ?? ""} suppressHydrationWarning>
       <head>
-        <meta charSet='utf-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className='h-[100vh]' suppressHydrationWarning>
-          <ProgressBar />
-          <Toaster 
-            position="top-right"
-            theme={theme as "light" | "dark"}
-            closeButton
-            richColors
-            expand={false}
-          />
-          <Outlet />
+      <body className="h-[100vh]" suppressHydrationWarning>
+        <ProgressBar />
+        <Toaster
+          position="top-right"
+          theme={theme as "light" | "dark"}
+          closeButton
+          richColors
+          expand={false}
+        />
+        <Outlet />
         <Scripts />
       </body>
     </html>
-  )
+  );
 }
-
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   return (
@@ -69,7 +71,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     </html>
   );
 }
-
 
 export default function AppWithProviders() {
   const data = useLoaderData();

@@ -1,13 +1,19 @@
-import { Badge } from '@flarekit/ui/components/ui/badge'
-import { Button } from '@flarekit/ui/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@flarekit/ui/components/ui/card'
-import { useEffect, useReducer } from 'react'
-import { authClient } from '~/features/auth/client/auth'
-import { formatUserAgent } from '~/lib/user-agent'
-import { Spinner } from '../spinner'
-import { toast } from 'sonner'
-import { Session } from 'better-auth'
-import { useAuth } from '~/features/auth/hooks'
+import { Badge } from "@flarekit/ui/components/ui/badge";
+import { Button } from "@flarekit/ui/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@flarekit/ui/components/ui/card";
+import { useEffect, useReducer } from "react";
+import { authClient } from "~/features/auth/client/auth";
+import { formatUserAgent } from "~/lib/user-agent";
+import { Spinner } from "../spinner";
+import { toast } from "sonner";
+import { Session } from "better-auth";
+import { useAuth } from "~/features/auth/hooks";
 
 interface SessionState {
   sessions: Session[];
@@ -17,12 +23,12 @@ interface SessionState {
 }
 
 type SessionAction =
-  | { type: 'FETCH_START' }
-  | { type: 'FETCH_SUCCESS'; payload: Session[] }
-  | { type: 'FETCH_ERROR'; payload: string }
-  | { type: 'REVOKE_START'; payload: string }
-  | { type: 'REVOKE_SUCCESS'; payload: string }
-  | { type: 'REVOKE_ERROR' };
+  | { type: "FETCH_START" }
+  | { type: "FETCH_SUCCESS"; payload: Session[] }
+  | { type: "FETCH_ERROR"; payload: string }
+  | { type: "REVOKE_START"; payload: string }
+  | { type: "REVOKE_SUCCESS"; payload: string }
+  | { type: "REVOKE_ERROR" };
 
 const initialState: SessionState = {
   sessions: [],
@@ -31,17 +37,20 @@ const initialState: SessionState = {
   revokingId: null,
 };
 
-function sessionReducer(state: SessionState, action: SessionAction): SessionState {
+function sessionReducer(
+  state: SessionState,
+  action: SessionAction,
+): SessionState {
   switch (action.type) {
-    case 'FETCH_START':
+    case "FETCH_START":
       return { ...state, loading: true, error: null };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return { ...state, loading: false, sessions: action.payload };
-    case 'REVOKE_START':
+    case "REVOKE_START":
       return { ...state, revokingId: action.payload };
-    case 'REVOKE_SUCCESS':
+    case "REVOKE_SUCCESS":
       return { ...state, revokingId: null };
-    case 'REVOKE_ERROR':
+    case "REVOKE_ERROR":
       return { ...state, revokingId: null };
     default:
       return state;
@@ -49,16 +58,16 @@ function sessionReducer(state: SessionState, action: SessionAction): SessionStat
 }
 
 export default function ActiveSessions() {
-  const [state, dispatch] = useReducer(sessionReducer, initialState)
-  const user = useAuth()
+  const [state, dispatch] = useReducer(sessionReducer, initialState);
+  const user = useAuth();
   const fetchSessions = async () => {
     try {
       const { data } = await authClient.listSessions();
-      const sessionsWithCurrent = data!.map(session => ({
+      const sessionsWithCurrent = data!.map((session) => ({
         ...session,
-        current: session.token === localStorage.getItem('session_token')
+        current: session.token === localStorage.getItem("session_token"),
       }));
-      dispatch({ type: 'FETCH_SUCCESS', payload: sessionsWithCurrent });
+      dispatch({ type: "FETCH_SUCCESS", payload: sessionsWithCurrent });
     } catch (error) {
       toast.error(`Failed to load sessions: ${error}`);
     }
@@ -70,13 +79,13 @@ export default function ActiveSessions() {
 
   const handleRevokeSession = async (session: Session) => {
     try {
-      dispatch({ type: 'REVOKE_START', payload: session.id });
+      dispatch({ type: "REVOKE_START", payload: session.id });
       await authClient.revokeSession({ token: session.token });
-      dispatch({ type: 'REVOKE_SUCCESS', payload: session.id });
+      dispatch({ type: "REVOKE_SUCCESS", payload: session.id });
       await fetchSessions();
-      toast.success('Session revoked successfully');
+      toast.success("Session revoked successfully");
     } catch (error) {
-      dispatch({ type: 'REVOKE_ERROR' });
+      dispatch({ type: "REVOKE_ERROR" });
       toast.error(`Failed to revoke session: ${error}`);
     }
   };
@@ -85,9 +94,7 @@ export default function ActiveSessions() {
     <Card>
       <CardHeader>
         <CardTitle>Active Sessions</CardTitle>
-        <CardDescription>
-          Manage your active sessions
-        </CardDescription>
+        <CardDescription>Manage your active sessions</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {state.loading ? (
@@ -102,9 +109,7 @@ export default function ActiveSessions() {
                   <p className="font-medium">
                     {session.userAgent && formatUserAgent(session.userAgent)}
                   </p>
-                  {false && (
-                    <Badge variant="secondary">Current</Badge>
-                  )}
+                  {false && <Badge variant="secondary">Current</Badge>}
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Last active: {new Date(session.updatedAt).toLocaleString()}
@@ -113,7 +118,7 @@ export default function ActiveSessions() {
                   Expires: {new Date(session.expiresAt).toLocaleString()}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  IP: {session.ipAddress || 'Unknown'}
+                  IP: {session.ipAddress || "Unknown"}
                 </p>
               </div>
               {user.session.token == session.token ? (
@@ -133,7 +138,7 @@ export default function ActiveSessions() {
                       <span>Revoking...</span>
                     </div>
                   ) : (
-                    'Log Out'
+                    "Log Out"
                   )}
                 </Button>
               )}
@@ -144,4 +149,3 @@ export default function ActiveSessions() {
     </Card>
   );
 }
-

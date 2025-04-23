@@ -14,7 +14,6 @@ export const meta: Route.MetaFunction = () => [
   },
 ];
 
-
 export async function clientAction({ request }: Route.ClientActionArgs) {
   let formData = await request.formData();
   let intent = formData.get("intent");
@@ -50,14 +49,12 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   return true;
 }
 
-export function clientLoader(){
-
-}
+export function clientLoader() {}
 
 export function HydrateFallback() {
   return <SignInCardSkeleton />;
 }
 
 export default function SignIn() {
-  return <SignInCard  />;
+  return <SignInCard />;
 }
