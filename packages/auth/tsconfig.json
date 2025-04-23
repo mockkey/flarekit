@@ -1,13 +1,11 @@
 {
-  "extends":"@flarekit/config-typescript/base",
+  "extends": "@flarekit/config-typescript/base",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
       "@flarekit/auth/*": ["./src/*"]
     }
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

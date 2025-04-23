@@ -4,17 +4,24 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "pnpm -F @flarekit/frontend dev",
-    "build": "pnpm -F @flarekit/frontend build",
-    "deploy": "pnpm build:frontend &&  pnpm run -F @flarekit/frontend deploy",
-    "db:generate": "pnpm -F @flarekit/frontend db:generate",
-    "db:local": "pnpm -F @flarekit/frontend db:local",
-    "db:remote": "pnpm -F @flarekit/frontend db:remote"
+    "dev": "pnpm -F @flarekit/web dev",
+    "build": "pnpm -F @flarekit/web build",
+    "deploy": "pnpm build:web &&  pnpm run -F @flarekit/web deploy",
+    "db:generate": "pnpm -F @flarekit/web db:generate",
+    "db:local": "pnpm -F @flarekit/web db:local",
+    "db:remote": "pnpm -F @flarekit/web db:remote",
+    "format": "biome format . --write",
+    "check": "biome check .",
+    "check:fix": "biome check --fix ."
   },
   "dependencies": {
-    "@flarekit/frontend": "workspace:*"
+    "@flarekit/web": "workspace:*"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "lefthook": "^1.11.11"
   },
   "packageManager": "pnpm@10.5.0",
   "engines": {

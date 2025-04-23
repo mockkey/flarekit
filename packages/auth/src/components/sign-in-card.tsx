@@ -1,4 +1,6 @@
-import { useActionState, useEffect, useState } from "react";
+import { InputField } from "@flarekit/auth/components/input-field";
+import { useAuth } from "@flarekit/auth/lib/auth-provider";
+import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,13 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { Button } from "@flarekit/ui/components/ui/button";
-import { InputField } from "@flarekit/auth/components/input-field";
-import { signInAction } from "../actions/sign-in-action";
 import { Skeleton } from "@flarekit/ui/components/ui/skeleton";
-import { Spinner } from "@flarekit/ui/components/spinner";
-import { useAuth } from "@flarekit/auth/lib/auth-provider";
-import { useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { signInAction } from "../actions/sign-in-action";
 import { ActionButton } from "./action-button";
 import { SocicalButton } from "./socical-button";
 
@@ -32,7 +30,6 @@ export const SignInCard = ({
     fields: {},
     errors: {},
   });
-
 
   return (
     <Card className="flex flex-col gap-6">

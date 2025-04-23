@@ -24,9 +24,9 @@
 
 ```
 ├── apps/
-│   └── front/              # Main web frontend
+│   └── web/              # Main web frontend
 ├── packages/
-│   ├── better-auth/        # Auth client SDK
+│   ├── auth/        # Auth client SDK
 │   ├── ui/                 # Shared UI components (shadcn styled)
 │   └── config-typescript/  # Typescript config files
 ```
@@ -36,7 +36,7 @@
 - `apps/`: All deployable applications (frontend, backend if needed).
 - `packages/`: Reusable logic/modules (auth clients, shadcn/ui , tsconfig).
 - `.github/`: CI/CD workflows.
-- `/apps/frontend/wrangler.toml`: Configuration for Cloudflare Workers (env vars, routing, etc.).
+- `/apps/web/wrangler.toml`: Configuration for Cloudflare Workers (env vars, routing, etc.).
 
 
 
@@ -52,7 +52,7 @@ cd flarekit
 pnpm install
 
 # Copy and configure wrangler config
-cp apps/frontend/wrangler.toml.example apps/frontend/wrangler.toml
+cp apps/web/wrangler.toml.example apps/web/wrangler.toml
 # Edit the file with your secrets (auth, Stripe, DB, etc.)
 
 # Initialize database
