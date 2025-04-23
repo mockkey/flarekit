@@ -32,12 +32,24 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "correctness": {
-        "noUnusedImports": "warn",
-        "noUndeclaredVariables": "warn"
-      },
       "style": {
-        "useImportType": "warn"
+        "useImportType": "warn",
+        "noParameterAssign": "off",
+        "noNonNullAssertion": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn",
+        "noUnreachable": "warn",
+        "noEmptyPattern": "off",
+        "useExhaustiveDependencies": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useSemanticElements": "off"
+      },
+      "complexity": {
+        "noForEach": "off"
       }
     }
   },

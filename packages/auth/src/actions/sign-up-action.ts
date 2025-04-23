@@ -58,7 +58,6 @@ export const signUpAction = async (_: FormState, payload: FormData) => {
         success: true,
         fields,
       };
-      break;
     }
   }
   return {

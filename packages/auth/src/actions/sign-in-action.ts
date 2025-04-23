@@ -41,7 +41,7 @@ export const signInAction = async (_: FormState, payload: FormData) => {
           errors,
         };
       }
-      const { data, error } = await signIn.email({
+      const { error } = await signIn.email({
         ...parsed.data,
         callbackURL: "/dashboard",
       });
@@ -53,8 +53,6 @@ export const signInAction = async (_: FormState, payload: FormData) => {
       return {
         success: true,
       };
-
-      break;
     }
   }
   return {

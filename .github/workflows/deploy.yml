@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app/frontend
+        working-directory: ./app/web
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -56,5 +56,5 @@ jobs:
           packageManager: pnpm
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: ./app/frontend
+          workingDirectory: ./app/web
           command: deploy
