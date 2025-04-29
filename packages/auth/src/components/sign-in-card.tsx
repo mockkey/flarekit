@@ -10,7 +10,10 @@ import {
 } from "@flarekit/ui/components/ui/card";
 import { Skeleton } from "@flarekit/ui/components/ui/skeleton";
 import { useActionState } from "react";
-import { signInAction } from "../actions/sign-in-action";
+import { toast } from "sonner";
+import { signInSchema } from "../schema/auth";
+import type { Providers } from "../types/auth-client";
+import type { FormState } from "../types/from";
 import { ActionButton } from "./action-button";
 import { SocicalButton } from "./socical-button";
 
@@ -23,12 +26,55 @@ export const SignInCard = ({
   title = "Welcome back",
   description = "Login with your Apple or Google account",
 }: SignInCardProps) => {
-  const { Link, socials } = useAuth();
-  // const { pending, data, method, action } = useFormStatus()
+  const { Link, socials, authClient } = useAuth();
+
+  const signInAction = async (_: FormState, payload: FormData) => {
+    const intent = payload.get("intent");
+
+    switch (intent) {
+      case "email": {
+        const formData = Object.fromEntries(payload);
+        const parsed = signInSchema.safeParse(formData);
+        const fields: Record<string, string> = {};
+        for (const key of Object.keys(formData)) {
+          fields[key] = formData[key].toString();
+        }
+        if (!parsed.success) {
+          const errors = parsed.error.flatten().fieldErrors;
+          return {
+            success: false,
+            fields,
+            errors,
+          };
+        }
+
+        const { error } = await authClient!.signIn.email({
+          ...parsed.data,
+          callbackURL: "/dashboard",
+        });
+
+        if (error) {
+          toast.error(error.message);
+        }
+        return {
+          success: true,
+        };
+      }
+      default:
+        {
+          authClient?.signIn.social({
+            provider: intent as Providers,
+            callbackURL: "/dashboard",
+          });
+        }
+        return {
+          success: true,
+        };
+    }
+  };
+
   const [state, formAction, isPending] = useActionState(signInAction, {
     success: false,
-    fields: {},
-    errors: {},
   });
 
   return (
@@ -68,9 +114,9 @@ export const SignInCard = ({
                 label="Email"
                 name="email"
                 type="email"
-                defaultValue={state.fields?.email}
+                defaultValue={state?.fields?.email}
                 placeholder="m@example.com"
-                errorMessage={state.errors?.email}
+                errorMessage={state?.errors?.email}
                 disabled={isPending}
               />
               <InputField
@@ -78,8 +124,8 @@ export const SignInCard = ({
                 name="password"
                 type="password"
                 placeholder="123abc!"
-                defaultValue={state.fields?.password}
-                errorMessage={state.errors?.password}
+                defaultValue={state?.fields?.password}
+                errorMessage={state?.errors?.password}
                 disabled={isPending}
                 action={{
                   label: "Forgot password?",

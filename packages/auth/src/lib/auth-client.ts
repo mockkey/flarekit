@@ -5,9 +5,11 @@ import {
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
-export const authClient = createAuthClient({
+export const AuthClient = createAuthClient({
   plugins: [passkeyClient(), twoFactorClient(), apiKeyClient()],
 });
+
+export const defaultAuthClient = AuthClient;
 
 export const {
   signIn,
@@ -17,6 +19,9 @@ export const {
   resetPassword,
   changePassword,
   useSession,
+  deleteUser,
   getSession,
   listSessions,
-} = authClient;
+} = defaultAuthClient;
+
+export type betterHooks = ReturnType<typeof createAuthClient>;

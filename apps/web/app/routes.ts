@@ -28,5 +28,6 @@ export default [
 
   // actions
   route("action/set-theme", "routes/action.set-theme.tsx"),
+  route("api/auth/avatar", "features/auth/server/avatar.tsx"),
   route("api/auth/*", "features/auth/server/better.tsx"),
 ] satisfies RouteConfig;

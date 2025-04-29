@@ -18,19 +18,20 @@ import {
   RiSettings4Line,
   RiUser3Line,
 } from "@remixicon/react";
-import type { User } from "better-auth";
 import { useTransition } from "react";
-import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
-import { authClient } from "~/features/auth/client/auth";
+import { useAuth } from "../lib/auth-provider";
 
-interface UserNavProps {
-  user: User;
-}
-
-export default function UserNav({ user }: UserNavProps) {
-  const navigate = useNavigate();
+export function UserNav() {
   const [isPending, startTransition] = useTransition();
+  const {
+    authClient,
+    hooks: { useSession },
+    Link,
+    navigate,
+  } = useAuth();
+  const { data: sessionData } = useSession();
+
   const LogOutHandle = () => {
     startTransition(async () => {
       const { error } = await authClient.signOut();
@@ -45,9 +46,9 @@ export default function UserNav({ user }: UserNavProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar>
-            <AvatarImage src={user.image || ""} />
+            <AvatarImage src={sessionData?.user.image || ""} />
             <AvatarFallback>
-              {user.name?.charAt(0).toUpperCase()}
+              {sessionData?.user.name?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -55,20 +56,22 @@ export default function UserNav({ user }: UserNavProps) {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{user.name}</p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+            <p className="text-sm font-medium">{sessionData?.user.name}</p>
+            <p className="text-xs text-muted-foreground">
+              {sessionData?.user.email}
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link to="/settings">
+            <Link href="/settings">
               <RiUser3Line className="mr-2 size-4" />
               Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link to="/settings">
+            <Link href="/settings">
               <RiSettings4Line className="mr-2 size-4" />
               Settings
             </Link>
