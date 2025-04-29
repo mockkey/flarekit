@@ -1,11 +1,10 @@
-import { useEffect } from "react";
-import { redirect, useActionData } from "react-router";
-import { toast } from "sonner";
+import { redirect } from "react-router";
 import { signIn, signUp } from "~/features/auth/client/auth";
 import { signUpSchema } from "~/features/auth/schemas";
-import { serverAuth } from "~/features/auth/server/auth";
+
 import type { Route } from "./+types/sign-up";
 
+import { SignInCardSkeleton } from "@flarekit/auth/components/sign-in-card";
 import { SignUpCard } from "@flarekit/auth/components/sign-up-card";
 
 export const meta: Route.MetaFunction = () => [
@@ -15,52 +14,7 @@ export const meta: Route.MetaFunction = () => [
   },
 ];
 
-interface ActionData {
-  error?: {
-    message: string;
-    field: string;
-  };
-  success?: boolean;
-}
-
-export async function action({ request, context }: Route.ActionArgs) {
-  const auth = serverAuth(context.cloudflare.env);
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-  try {
-    switch (intent) {
-      case "github": {
-        const socialRes = await auth.api.signInSocial({
-          headers: request.headers,
-          body: {
-            provider: "github",
-            callbackURL: "/dashboard",
-          },
-        });
-        if (socialRes.url) {
-          return redirect(socialRes.url);
-        }
-        break;
-      }
-      case "email":
-        return {
-          error: {
-            message: "Something went wrong. Please try again.",
-          },
-        };
-    }
-  } catch (error) {
-    let message = "Something went wrong. Please try again.";
-    if (error instanceof Error) {
-      message = error.message;
-    }
-    return {
-      error: {
-        message: message,
-      },
-    };
-  }
-}
+export function clientLoader() {}
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
@@ -96,16 +50,10 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   }
 }
 
+export function HydrateFallback() {
+  return <SignInCardSkeleton />;
+}
+
 export default function SignUp() {
-  const actionData: ActionData | undefined = useActionData();
-
-  useEffect(() => {
-    if (actionData?.error) {
-      if (actionData.error.message) {
-        toast.error(actionData.error.message);
-      }
-    }
-  }, [actionData]);
-
   return <SignUpCard />;
 }

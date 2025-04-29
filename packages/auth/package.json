@@ -7,24 +7,30 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@flarekit/config-typescript": "workspace:*",
     "@types/node": "^22.13.13",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.0.1",
-    "@flarekit/config-typescript": "workspace:*",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "@types/ua-parser-js": "^0.7.39"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.5.0",
   "dependencies": {
-    "better-auth": "^1.2.5",
+    "@daveyplate/better-auth-tanstack": "^1.3.4",
+    "@daveyplate/better-auth-ui": "^1.5.2",
     "@flarekit/ui": "workspace:*",
+    "@tanstack/react-query": "^5.74.4",
+    "better-auth": "^1.2.5",
+    "sonner": "^2.0.1",
+    "ua-parser-js": "^2.0.3",
     "zod": "^3.24.2",
-    "sonner": "^2.0.1"
+    "@remixicon/react": "^4.6.0"
   },
   "exports": {
     "./components/*": "./src/components/*.tsx",

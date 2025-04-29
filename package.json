@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm -F @flarekit/web dev",
     "build": "pnpm -F @flarekit/web build",
-    "deploy": "pnpm build:web &&  pnpm run -F @flarekit/web deploy",
+    "deploy": "pnpm build &&  pnpm run -F @flarekit/web deploy",
     "db:generate": "pnpm -F @flarekit/web db:generate",
     "db:local": "pnpm -F @flarekit/web db:local",
     "db:remote": "pnpm -F @flarekit/web db:remote",

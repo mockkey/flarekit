@@ -8,8 +8,11 @@ import {
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
 import { useActionState } from "react";
-import { signUpAction } from "../actions/sign-up-action";
+import { toast } from "sonner";
 import { useAuth } from "../lib/auth-provider";
+import { signUpSchema } from "../schema/auth";
+import type { Providers } from "../types/auth-client";
+import type { FormState } from "../types/from";
 import { InputField } from "./input-field";
 import { SocicalButton } from "./socical-button";
 
@@ -23,7 +26,54 @@ export function SignUpCard({
   title = "Create an account",
   description = "Get started with your free account",
 }: SignUpCardProps) {
-  const { Link, socials } = useAuth();
+  const { Link, socials, authClient, navigate } = useAuth();
+
+  const signUpAction = async (_: FormState, payload: FormData) => {
+    const intent = payload.get("intent");
+    switch (intent) {
+      case "email": {
+        const formData = Object.fromEntries(payload);
+        const parsed = signUpSchema.safeParse(formData);
+        const fields: Record<string, string> = {};
+        for (const key of Object.keys(formData)) {
+          fields[key] = formData[key].toString();
+        }
+        if (!parsed.success) {
+          const errors = parsed.error.flatten().fieldErrors;
+          return {
+            success: false,
+            fields,
+            errors,
+          };
+        }
+
+        const { error } = await authClient!.signUp.email({
+          ...parsed.data,
+          callbackURL: "/dashboard",
+        });
+
+        if (error) {
+          toast.error(error.message);
+        }
+
+        navigate("/dashboard");
+
+        return {
+          success: true,
+        };
+      }
+      default:
+        {
+          authClient?.signIn.social({
+            provider: intent as Providers,
+            callbackURL: "/dashboard",
+          });
+        }
+        return {
+          success: true,
+        };
+    }
+  };
 
   const [state, formAction, isPending] = useActionState(signUpAction, {
     success: false,
@@ -63,41 +113,42 @@ export function SignUpCard({
           </div>
 
           {/* Email Sign Up Form */}
-          <form method="post" action={formAction} className="space-y-4">
+          <form action={formAction} className="space-y-4">
             <div className="space-y-4">
               <InputField
                 label="Full Name"
                 name="name"
-                defaultValue={state.fields?.name}
-                placeholder="John Doe"
-                errorMessage={state.errors?.name}
+                defaultValue={state?.fields?.name}
+                errorMessage={state?.errors?.name}
                 disabled={isPending}
+                placeholder="John Doe"
               />
               <InputField
-                defaultValue={state.fields?.email}
-                errorMessage={state.errors?.email}
+                defaultValue={state?.fields?.email}
+                errorMessage={state?.errors?.email}
                 disabled={isPending}
                 label="Email"
                 name="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="You@example.com"
               />
               <InputField
-                defaultValue={state.fields?.password}
-                errorMessage={state.errors?.password}
+                defaultValue={state?.fields?.password}
+                errorMessage={state?.errors?.password}
                 disabled={isPending}
                 label="Password"
                 name="password"
                 type="password"
+                placeholder="Password"
               />
             </div>
 
             <Button
+              disabled={isPending}
               type="submit"
               name="intent"
               value="email"
               className="w-full"
-              disabled={isPending}
             >
               {isPending ? (
                 <div className="flex items-center justify-center gap-2">

@@ -6,11 +6,15 @@ import AccountDeleteDialog from "./account-delete-dialog";
 
 export function AccountDeleteCard() {
   const [showDialog, setShowDialog] = useState(false);
-  const auth = useAuth();
-  console.log("auth", auth);
+  const { hooks } = useAuth();
+  const res = hooks?.useSession();
+  const data = res?.data;
+  const isPending = res?.isPending;
+
   return (
     <>
       <SettingCard
+        isPending={isPending}
         variant="destructive"
         title="Delete Account"
         description="Permanently delete your account and all of its contents. This action
@@ -30,7 +34,7 @@ export function AccountDeleteCard() {
       <AccountDeleteDialog
         showDialog={showDialog}
         setShowDialog={setShowDialog}
-        email=""
+        email={data?.user?.email!}
       />
     </>
   );

@@ -1,6 +1,6 @@
-import { signUp } from "@flarekit/auth/lib/auth-client";
 import { toast } from "sonner";
 import { type Schema, z } from "zod";
+import { useAuth } from "../hooks/use-auth";
 import { SocialActions, type providerPlatform } from "./social-actions";
 
 const signInSchema: Schema<{
@@ -22,6 +22,8 @@ type FormState = {
 export const signUpAction = async (_: FormState, payload: FormData) => {
   const intent = payload.get("intent");
   const isSet = await SocialActions(intent as providerPlatform);
+  const { authClient, navigate } = useAuth();
+  const signUp = authClient?.signUp!;
   if (isSet) {
     return true;
   }
@@ -49,6 +51,7 @@ export const signUpAction = async (_: FormState, payload: FormData) => {
 
       if (data) {
         toast.success("Check your email for the verification link.");
+        navigate("/dashboard");
       }
 
       if (error) {
