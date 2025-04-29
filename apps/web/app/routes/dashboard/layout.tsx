@@ -21,12 +21,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   if (session.user.emailVerified === false) {
     throw redirect("/auth/sign-up/success");
   }
-  return { session };
 }
 
-export default function Layout({
-  loaderData: { session },
-}: Route.ComponentProps) {
+export default function Layout() {
   return (
     <SidebarProvider>
       <AuthProvider
@@ -59,7 +56,7 @@ export default function Layout({
         <SidebarInset>
           <div className="flex-1 flex flex-col">
             {/* Header */}
-            <Header user={session.user} />
+            <Header />
 
             {/* Main Content */}
             <main className="flex-1 overflow-auto p-6 bg-slate-100 dark:bg-slate-900">

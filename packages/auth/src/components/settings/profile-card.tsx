@@ -34,6 +34,7 @@ export function ProfileCard({
         success: true,
       };
     }
+
     if (sessionData?.user.name === newName) {
       return {
         fields: {
@@ -42,6 +43,13 @@ export function ProfileCard({
         errors: {
           name: ["Name is the same as before"],
         },
+        success: false,
+      };
+    }
+
+    if (newName.length > 32) {
+      toast.error("Name must be 32 characters or fewer.");
+      return {
         success: false,
       };
     }

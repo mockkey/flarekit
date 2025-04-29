@@ -68,7 +68,6 @@ export const AuthBaseProvider = ({
   const {
     hooks: contextHooks,
     mutators: contextMutators,
-    optimistic,
   } = useOptions({ authClient });
 
   const hooks = useMemo(
