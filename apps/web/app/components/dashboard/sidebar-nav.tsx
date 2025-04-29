@@ -14,7 +14,7 @@ import {
   RiSettings2Fill,
   RiSparklingFill,
 } from "@remixicon/react";
-import { Link } from "react-router";
+import { Link, matchPath, useLocation } from "react-router";
 
 interface NavItem {
   icon: React.ElementType;
@@ -46,6 +46,8 @@ export default function SidebarNav({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
+  const location = useLocation();
+  const isActive = (to: string) => { return !!matchPath({ path: to, end: false }, location.pathname) }
   return (
     <Sidebar
       collapsible="icon"
@@ -59,8 +61,9 @@ export default function SidebarNav({
       <SidebarContent>
         <SidebarMenu className="p-2 space-y-1.5">
           {navItems.map((navItem) => (
-            <SidebarMenuItem key={navItem.label}>
+            <SidebarMenuItem key={navItem.label} >
               <SidebarMenuButton
+                isActive={isActive(navItem.href)}
                 tooltip={{
                   children: navItem.label,
                 }}
