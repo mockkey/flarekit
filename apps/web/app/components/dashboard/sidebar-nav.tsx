@@ -47,7 +47,9 @@ export default function SidebarNav({
 }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   const location = useLocation();
-  const isActive = (to: string) => { return !!matchPath({ path: to, end: false }, location.pathname) }
+  const isActive = (to: string) => {
+    return !!matchPath({ path: to, end: false }, location.pathname);
+  };
   return (
     <Sidebar
       collapsible="icon"
@@ -61,7 +63,7 @@ export default function SidebarNav({
       <SidebarContent>
         <SidebarMenu className="p-2 space-y-1.5">
           {navItems.map((navItem) => (
-            <SidebarMenuItem key={navItem.label} >
+            <SidebarMenuItem key={navItem.label}>
               <SidebarMenuButton
                 isActive={isActive(navItem.href)}
                 tooltip={{

@@ -65,10 +65,9 @@ export const AuthBaseProvider = ({
   uploadAvatar,
   ...props
 }: AuthProviderProps) => {
-  const {
-    hooks: contextHooks,
-    mutators: contextMutators,
-  } = useOptions({ authClient });
+  const { hooks: contextHooks, mutators: contextMutators } = useOptions({
+    authClient,
+  });
 
   const hooks = useMemo(
     () => ({ ...contextHooks, ...hooksProp }),
