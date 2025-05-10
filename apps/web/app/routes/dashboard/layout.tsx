@@ -4,10 +4,13 @@ import {
   SidebarProvider,
 } from "@flarekit/ui/components/ui/sidebar";
 import { RiGithubFill } from "@remixicon/react";
+import { useEffect } from "react";
 import { NavLink, Outlet, redirect } from "react-router";
+import { type Theme, useTheme } from "remix-themes";
 import Header from "~/components/dashboard/header";
 import SidebarNav from "~/components/dashboard/sidebar-nav";
 import { serverAuth } from "~/features/auth/server/auth";
+import type { ExtendedUser } from "~/features/auth/types";
 import type { Route } from "./+types/layout";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -21,9 +24,15 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   if (session.user.emailVerified === false) {
     throw redirect("/auth/sign-up/success");
   }
+  return session;
 }
 
-export default function Layout() {
+export default function Layout({ loaderData: { user } }: Route.ComponentProps) {
+  const [, setTheme] = useTheme();
+  useEffect(() => {
+    const theme = (user as ExtendedUser).theme;
+    setTheme(theme as Theme);
+  }, [user]);
   return (
     <SidebarProvider>
       <AuthProvider

@@ -12,17 +12,17 @@ import { Toaster } from "sonner";
 import { Boundary } from "~/components/boundary";
 import { ProgressBar } from "~/components/progress-bar";
 import type { Route } from "./+types/root";
-import { themeSessionResolver } from "./server.session";
+import { getTheme } from "./server.session";
 import stylesheet from "./styles/app.css?url";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesheet }];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { getTheme } = await themeSessionResolver(request);
+export async function loader(argument: LoaderFunctionArgs) {
+  const theme = await getTheme(argument);
   return {
-    theme: getTheme(),
+    theme: theme,
   };
 }
 
