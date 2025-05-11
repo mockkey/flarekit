@@ -7,7 +7,11 @@ import {
   Scripts,
   useLoaderData,
 } from "react-router";
-import { ThemeProvider, useTheme } from "remix-themes";
+import {
+  PreventFlashOnWrongTheme,
+  ThemeProvider,
+  useTheme,
+} from "remix-themes";
 import { Toaster } from "sonner";
 import { Boundary } from "~/components/boundary";
 import { ProgressBar } from "~/components/progress-bar";
@@ -28,12 +32,14 @@ export async function loader(argument: LoaderFunctionArgs) {
 
 export function App() {
   const [theme] = useTheme();
+  const data = useLoaderData();
   return (
     <html lang="en" data-theme={theme ?? ""} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
         <Links />
       </head>
       <body className="h-[100vh]" suppressHydrationWarning>

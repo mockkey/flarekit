@@ -30,8 +30,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export default function Layout({ loaderData: { user } }: Route.ComponentProps) {
   const [, setTheme] = useTheme();
   useEffect(() => {
-    const theme = (user as ExtendedUser).theme;
-    setTheme(theme as Theme);
+    const themeCurrent = (user as ExtendedUser).theme;
+    setTheme(themeCurrent as Theme);
   }, [user]);
   return (
     <SidebarProvider>
