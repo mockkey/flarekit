@@ -3,7 +3,7 @@ import { Progress } from "@flarekit/ui/components/ui/progress";
 import { RiBarChart2Line, RiDeleteBinLine, RiTimeLine } from "@remixicon/react";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { authClient } from "~/features/auth/client/auth";
+import { useDeleteApiKey } from "~/features/auth/hooks/use-api-key";
 import { Spinner } from "../spinner";
 
 export interface Token {
@@ -26,7 +26,7 @@ export interface Token {
   createdAt: Date;
   updatedAt: Date;
   metadata: Record<string, string> | null;
-  permissions?: string;
+  permissions: { [key: string]: string[] } | null;
 }
 
 interface TokenItemProps {
@@ -35,18 +35,17 @@ interface TokenItemProps {
 
 export default function TokenItem({ token }: TokenItemProps) {
   const [isPending, startTransition] = useTransition();
-
+  const deleteMutation = useDeleteApiKey();
   const handleRevokeToken = () => {
     startTransition(async () => {
-      const { error } = await authClient.apiKey.delete({
-        keyId: token.id,
+      deleteMutation.mutate(token.id, {
+        onSuccess: () => {
+          toast.success("Token revoked successfully");
+        },
+        onError: () => {
+          toast.error("Failed to token revoked. Please try again.");
+        },
       });
-
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-      toast.success("Token revoked successfully");
     });
   };
 

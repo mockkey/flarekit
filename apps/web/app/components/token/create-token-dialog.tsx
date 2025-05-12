@@ -24,6 +24,7 @@ import { z } from "zod";
 import { Spinner } from "~/components/spinner";
 import { permissionGroups } from "~/config/permissions";
 import InputField from "~/features/auth/components/input-filed";
+import { createApiKey } from "~/features/auth/hooks/use-api-key";
 import TokenCard from "./token-card";
 
 const createTokenSchema = z.object({
@@ -51,6 +52,7 @@ export function CreateTokenDialog({
   const [isPending, startTransition] = useTransition();
   const [newToken, setNewToken] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const mutation = createApiKey();
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<string, string[]>
   >({
@@ -103,23 +105,24 @@ export function CreateTokenDialog({
       const validatedData = createTokenSchema.parse(data);
 
       startTransition(async () => {
-        const res = await fetch("/api/api-key/create", {
-          method: "post",
-          body: JSON.stringify({
-            name: validatedData.name,
-            expiresIn:
-              validatedData.expiresIn === "never"
-                ? null
-                : Number.parseInt(validatedData.expiresIn),
-            permissions: selectedPermissions,
-          }),
+        const queryString = JSON.stringify({
+          name: validatedData.name,
+          expiresIn:
+            validatedData.expiresIn === "never"
+              ? null
+              : Number.parseInt(validatedData.expiresIn),
+          permissions: selectedPermissions,
         });
-        const data = await res.json();
-        setNewToken(data.key);
-        if (data.error) {
-          toast.error(data.error.message);
-        }
-        toast.success("Token created successfully");
+
+        mutation.mutate(queryString, {
+          onSuccess: (data) => {
+            setNewToken(data.key);
+            toast.success("Token created successfully");
+          },
+          onError: () => {
+            toast.error("Failed to create token. Please try again.");
+          },
+        });
         return;
       });
     } catch (_error) {
