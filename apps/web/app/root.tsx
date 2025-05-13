@@ -7,33 +7,39 @@ import {
   Scripts,
   useLoaderData,
 } from "react-router";
-import { ThemeProvider, useTheme } from "remix-themes";
+import {
+  PreventFlashOnWrongTheme,
+  ThemeProvider,
+  useTheme,
+} from "remix-themes";
 import { Toaster } from "sonner";
 import { Boundary } from "~/components/boundary";
 import { ProgressBar } from "~/components/progress-bar";
 import type { Route } from "./+types/root";
-import { themeSessionResolver } from "./server.session";
+import { getTheme } from "./server.session";
 import stylesheet from "./styles/app.css?url";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesheet }];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { getTheme } = await themeSessionResolver(request);
+export async function loader(argument: LoaderFunctionArgs) {
+  const theme = await getTheme(argument);
   return {
-    theme: getTheme(),
+    theme: theme,
   };
 }
 
 export function App() {
   const [theme] = useTheme();
+  const data = useLoaderData();
   return (
     <html lang="en" data-theme={theme ?? ""} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
         <Links />
       </head>
       <body className="h-[100vh]" suppressHydrationWarning>

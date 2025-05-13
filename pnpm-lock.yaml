@@ -57,6 +57,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.0.17
         version: 4.1.4(vite@6.3.1(@types/node@22.14.1)(jiti@2.4.2)(lightningcss@1.29.2))
+      '@tanstack/react-query':
+        specifier: ^5.74.4
+        version: 5.74.4(react@19.1.0)
       better-auth:
         specifier: ^1.2.5
         version: 1.2.7

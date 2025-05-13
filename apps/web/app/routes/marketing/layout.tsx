@@ -2,7 +2,6 @@ import { Button } from "@flarekit/ui/components/ui/button";
 import { RiSparklingFill } from "@remixicon/react";
 import { Link, Outlet } from "react-router";
 import Footer from "~/components/marketing/landing/footer";
-import ThemeToggle from "~/components/theme-toggle";
 
 export default function Layout() {
   return (
@@ -14,7 +13,6 @@ export default function Layout() {
             Flare Kit
           </h1>
           <div className="flex items-center space-x-6">
-            <ThemeToggle />
             <Link to="https://github.com/mockkey/flarekit" target="_blank">
               <Button variant="link">GitHub</Button>
             </Link>

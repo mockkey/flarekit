@@ -18,7 +18,6 @@ export const serverAuth = (env: EnvType) => {
     _auth = betterAuth({
       baseUrl: env.BETTER_AUTH_URL,
       trustedOrigins: [env.BETTER_AUTH_URL],
-
       database: drizzleAdapter(db, {
         provider: "sqlite",
       }),
@@ -66,6 +65,13 @@ export const serverAuth = (env: EnvType) => {
       user: {
         deleteUser: {
           enabled: true,
+        },
+        additionalFields: {
+          theme: {
+            type: "string",
+            required: false,
+            defaultValue: "null",
+          },
         },
       },
       account: {

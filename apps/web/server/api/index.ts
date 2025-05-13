@@ -13,4 +13,11 @@ api.get(
   },
 );
 
+//test
+api.get("/ping", async (c) => {
+  return c.json({
+    message: "pong",
+  });
+});
+
 export default api;

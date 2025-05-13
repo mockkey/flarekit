@@ -12,6 +12,7 @@ export const user = sqliteTable("user", {
   createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
   stripeCustomerId: text("stripeCustomerId"),
+  theme: text("theme"),
 });
 
 export const session = sqliteTable("session", {

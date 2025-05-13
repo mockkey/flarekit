@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@better-auth/stripe": "^1.2.5",
+    "@tanstack/react-query": "^5.74.4",
     "@flarekit/ui": "workspace:*",
     "@flarekit/auth": "workspace:*",
     "@hookform/resolvers": "^4.1.3",
