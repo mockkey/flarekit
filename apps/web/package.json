@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "build": "react-router build",
-    "deploy": "wrangler deploy",
     "dev": "react-router dev",
+    "deploy": "wrangler deploy",
     "start": "wrangler dev",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

@@ -65,6 +65,7 @@ export const serverAuth = (env: EnvType) => {
       user: {
         deleteUser: {
           enabled: true,
+          afterDelete: async () => {},
         },
         additionalFields: {
           theme: {
@@ -77,6 +78,7 @@ export const serverAuth = (env: EnvType) => {
       account: {
         accountLinking: {
           enabled: true,
+          allowDifferentEmails: true,
           trustedProviders: ["github"],
         },
       },
