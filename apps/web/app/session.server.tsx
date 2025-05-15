@@ -4,7 +4,7 @@ import {
   createCookieSessionStorage,
 } from "react-router";
 import { createThemeSessionResolver } from "remix-themes";
-import { serverAuth } from "./features/auth/server/auth";
+import { serverAuth } from "./features/auth/server/auth.server";
 
 export const themeSessionResolver = createThemeSessionResolver(
   createCookieSessionStorage({

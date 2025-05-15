@@ -8,6 +8,7 @@ import { Resend } from "resend";
 import * as schema from "~/db/schema";
 import ResetPasswordEmail from "~/features/email/components/reset-password";
 import WelcomeEmail from "~/features/email/components/wecome";
+import { hashPassword, verifyPassword } from "../crypto.server";
 import { StripeClient } from "./stripe";
 let _auth: ReturnType<typeof betterAuth>;
 
@@ -36,6 +37,14 @@ export const serverAuth = (env: EnvType) => {
               resetUrl: url,
             }),
           });
+        },
+        password: {
+          hash: async (password) => {
+            return await hashPassword(password);
+          },
+          verify: async ({ hash, password }) => {
+            return await verifyPassword({ hash, password });
+          },
         },
       },
       emailVerification: {

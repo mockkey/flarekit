@@ -9,7 +9,7 @@ import { NavLink, Outlet, redirect } from "react-router";
 import { type Theme, useTheme } from "remix-themes";
 import Header from "~/components/dashboard/header";
 import SidebarNav from "~/components/dashboard/sidebar-nav";
-import { serverAuth } from "~/features/auth/server/auth";
+import { serverAuth } from "~/features/auth/server/auth.server";
 import type { ExtendedUser } from "~/features/auth/types";
 import type { Route } from "./+types/layout";
 

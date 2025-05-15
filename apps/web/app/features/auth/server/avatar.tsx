@@ -3,7 +3,7 @@ import {
   type LoaderFunctionArgs,
   redirect,
 } from "react-router";
-import { serverAuth } from "~/features/auth/server/auth";
+import { serverAuth } from "~/features/auth/server/auth.server";
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const auth = serverAuth(context.cloudflare.env);

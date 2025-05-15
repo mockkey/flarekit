@@ -16,7 +16,7 @@ import { Toaster } from "sonner";
 import { Boundary } from "~/components/boundary";
 import { ProgressBar } from "~/components/progress-bar";
 import type { Route } from "./+types/root";
-import { getTheme } from "./server.session";
+import { getTheme } from "./session.server";
 import stylesheet from "./styles/app.css?url";
 
 export const links: LinksFunction = () => {

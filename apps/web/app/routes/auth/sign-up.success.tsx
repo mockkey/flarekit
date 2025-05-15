@@ -10,7 +10,7 @@ import { RiArrowLeftLine, RiMailLine } from "@remixicon/react";
 import { Link, redirect } from "react-router";
 import { toast } from "sonner";
 import { authClient } from "~/features/auth/client/auth";
-import { serverAuth } from "~/features/auth/server/auth";
+import { serverAuth } from "~/features/auth/server/auth.server";
 import type { Route } from "./+types/sign-up.success";
 
 export const meta: Route.MetaFunction = () => [

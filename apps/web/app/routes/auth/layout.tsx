@@ -3,7 +3,7 @@ import { Button } from "@flarekit/ui/components/ui/button";
 import { RiGithubFill } from "@remixicon/react";
 import { ArrowLeft } from "lucide-react";
 import { Link, NavLink, Outlet, redirect } from "react-router";
-import { serverAuth } from "~/features/auth/server/auth";
+import { serverAuth } from "~/features/auth/server/auth.server";
 import type { Route } from "./+types/layout";
 
 export async function loader({ request, context }: Route.LoaderArgs) {

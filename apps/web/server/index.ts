@@ -3,7 +3,7 @@ import type { User } from "better-auth/types";
 import { Hono } from "hono";
 import type { EnvType } from "load-context";
 import { validatePermissions } from "~/config/permissions";
-import { serverAuth } from "~/features/auth/server/auth";
+import { serverAuth } from "~/features/auth/server/auth.server";
 import { StripeClient } from "~/features/auth/server/stripe";
 import api from "./api";
 

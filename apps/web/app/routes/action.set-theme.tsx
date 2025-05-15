@@ -1,16 +1,18 @@
 import type { User } from "better-auth";
 import type { ActionFunctionArgs } from "react-router";
 import { createThemeAction } from "remix-themes";
-import { serverAuth } from "~/features/auth/server/auth";
-import { themeSessionResolver } from "../server.session";
+import { serverAuth } from "~/features/auth/server/auth.server";
+import { themeSessionResolver } from "../session.server";
 
-export const themeAction = createThemeAction(themeSessionResolver);
+// export const themeAction = createThemeAction(themeSessionResolver);
 
 type ExtendedUser = User & {
   theme: string;
 };
 
 export const action = async (args: ActionFunctionArgs) => {
+  // const { themeSessionResolver } = await import("../session.server");
+  const themeAction = createThemeAction(themeSessionResolver);
   const themeSet = [null, "dark", "light"];
   const req = args.request.clone();
   const context = args.context;
