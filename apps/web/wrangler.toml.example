@@ -5,6 +5,12 @@ compatibility_flags = [ "nodejs_compat" ]
 main = "./worker.ts"
 assets = { directory = "./build/client" }
 
+
+[[kv_namespaces]]
+binding = "APP_KV"
+id = ""
+preview_id = ""
+
 [vars]
 MY_VAR = "My Value"
 BETTER_AUTH_SECRET = ""
