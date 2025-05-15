@@ -22,6 +22,17 @@ export const serverAuth = (env: EnvType) => {
       database: drizzleAdapter(db, {
         provider: "sqlite",
       }),
+      secondaryStorage: {
+        get: async (key) => {
+          const token = await env.APP_KV.get(`auth:${key}`, "json");
+          return token;
+        },
+        set: async (key, value, ttl) =>
+          await env.APP_KV.put(`auth:${key}`, JSON.stringify(value), {
+            expirationTtl: ttl,
+          }),
+        delete: async (key) => await env.APP_KV.delete(`auth:${key}`),
+      },
       emailAndPassword: {
         enabled: true,
         autoSignIn: true,

@@ -13,6 +13,7 @@ export type EnvType = {
   STRIPE_WEBHOOK_SECRET: string;
   STRIPE_PRICE_ID: string;
   MY_BUCKET: R2Bucket;
+  APP_KV: KVNamespace;
 };
 
 type Env = {
