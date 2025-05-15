@@ -47,7 +47,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-resizable-panels": "^2.1.7",
-    "react-router": "^7.0.1",
+    "react-router": "^7.5.2",
     "recharts": "^2.15.1",
     "remix-themes": "^2.0.4",
     "resend": "^4.2.0",
