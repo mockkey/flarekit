@@ -1,4 +1,5 @@
 import type { Subscription } from "@better-auth/stripe";
+import { Badge } from "@flarekit/ui/components/ui/badge";
 import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Card,
@@ -7,9 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@flarekit/ui/components/ui/card";
-import { useEffect, useState, useTransition } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@flarekit/ui/components/ui/table";
+import { useEffect, useState } from "react";
 import { PlansDialog } from "~/components/billing/plans-dialog";
-import { subscription } from "~/features/auth/client/auth";
+import {
+  useSubscriptionList,
+  useSubscriptionSession,
+} from "~/features/auth/hooks/use-subscription";
 import { formatDateToLong } from "~/lib/utils";
 
 interface PlanFeature {
@@ -58,47 +70,25 @@ const plans: Plan[] = [
 export default function Billing() {
   const [currentPlan, setCurrentPlan] = useState<Subscription>();
   const [showPlansDialog, setShowPlansDialog] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  const getSubscriptionList = async () => {
-    startTransition(async () => {
-      const { data: list } = await subscription.list();
-      if (list) {
-        const activeSubscription = list?.find(
-          (sub) => sub.status === "active" || sub.status === "trialing",
-        );
-
-        activeSubscription &&
-          setCurrentPlan({
-            ...activeSubscription,
-          });
-      }
-      return;
-    });
-  };
-
-  const subscriptionSession = async () => {
-    startTransition(async () => {
-      const res = await fetch("/api/subscription/session", {
-        method: "post",
-      });
-      const data = await res.json();
-      if (data.url) {
-        if (typeof window !== "undefined" && window.location) {
-          if (window.location) {
-            try {
-              window.location.href = data.url;
-            } catch {}
-          }
-        }
-      }
-      return;
-    });
-  };
+  const getSubscriptionSession = useSubscriptionSession();
+  const { isPending, data: list } = useSubscriptionList();
 
   useEffect(() => {
-    getSubscriptionList();
+    if (list) {
+      const activeSubscription = list?.find(
+        (sub) => sub.status === "active" || sub.status === "trialing",
+      );
+
+      activeSubscription &&
+        setCurrentPlan({
+          ...activeSubscription,
+        });
+    }
   }, []);
+
+  const subscriptionSession = async () => {
+    getSubscriptionSession.mutate();
+  };
 
   return (
     <div className="space-y-6">
@@ -130,7 +120,7 @@ export default function Billing() {
               </Button>
             ) : currentPlan?.cancelAtPeriodEnd ? (
               <Button
-                disabled={isPending}
+                disabled={getSubscriptionSession.isPending}
                 onClick={() => {
                   subscriptionSession();
                 }}
@@ -139,7 +129,7 @@ export default function Billing() {
               </Button>
             ) : (
               <Button
-                disabled={isPending}
+                disabled={getSubscriptionSession.isPending}
                 variant="destructive"
                 onClick={() => {
                   subscriptionSession();
@@ -159,9 +149,60 @@ export default function Billing() {
           <CardDescription>View your previous transactions</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-6 text-muted-foreground">
-            No payment history available
-          </div>
+          {list && list.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Plan</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Period Start</TableHead>
+                  <TableHead>Period End</TableHead>
+                  <TableHead>Auto Renew</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {list.map((subscription) => (
+                  <TableRow key={subscription.id}>
+                    <TableCell className="font-medium capitalize">
+                      {subscription.plan}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          subscription.status === "trialing"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {subscription.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {formatDateToLong(subscription.periodStart!)}
+                    </TableCell>
+                    <TableCell>
+                      {formatDateToLong(subscription.periodEnd!)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          subscription.cancelAtPeriodEnd
+                            ? "destructive"
+                            : "default"
+                        }
+                      >
+                        {subscription.cancelAtPeriodEnd ? "No" : "Yes"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-center py-6 text-muted-foreground">
+              No payment history available
+            </div>
+          )}
         </CardContent>
       </Card>
       {/* plans */}

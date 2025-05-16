@@ -16,7 +16,7 @@ import {
 } from "@flarekit/ui/components/ui/dialog";
 import { RiCheckLine } from "@remixicon/react";
 import { toast } from "sonner";
-import { authClient } from "~/features/auth/client/auth";
+import { useSubscriptionUpgrade } from "~/features/auth/hooks/use-subscription";
 import { cn } from "~/lib/utils";
 
 interface Plan {
@@ -40,12 +40,22 @@ export function PlansDialog({
   plans,
   currentPlan,
 }: PlansDialogProps) {
-  const subscriptionHandle = async () => {
-    await authClient.subscription.upgrade({
-      plan: "pro",
-      successUrl: "/dashboard",
-      cancelUrl: "/billing",
-    });
+  const subscriptionUpgradeHandle = useSubscriptionUpgrade();
+
+  const subscriptionHandle = async (plan: string) => {
+    subscriptionUpgradeHandle.mutate(
+      {
+        plan: plan,
+        successUrl: "/dashboard",
+        cancelUrl: "/billing",
+      },
+      {
+        onSuccess() {
+          toast.info(`Subscribing to ${plan} plan...`);
+          onOpenChange(false);
+        },
+      },
+    );
   };
 
   return (
@@ -107,10 +117,9 @@ export function PlansDialog({
                 <Button
                   className="mt-6 w-full"
                   variant={plan.highlight ? "default" : "outline"}
+                  disabled={subscriptionUpgradeHandle.isPending}
                   onClick={() => {
-                    subscriptionHandle();
-                    toast.info(`Subscribing to ${plan.name} plan...`);
-                    onOpenChange(false);
+                    subscriptionHandle(plan.name);
                   }}
                 >
                   {currentPlan === plan.name
