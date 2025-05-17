@@ -1,10 +1,12 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "flarekit"
-compatibility_date = "2024-11-06"
+compatibility_date = "2025-04-01"
 compatibility_flags = [ "nodejs_compat" ]
 main = "./worker.ts"
 assets = { directory = "./build/client" }
 
+[limits]
+cpu_ms = 30_000
 
 [[kv_namespaces]]
 binding = "APP_KV"
