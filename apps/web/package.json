@@ -14,7 +14,6 @@
     "db:local": "wrangler d1 migrations apply DB --local",
     "db:remote": "wrangler d1 migrations apply DB --remote",
     "typecheck": "react-router typegen && tsc",
-    "predeploy": "wrangler d1 migrations apply DB --remote",
     "preview": "npm run build && wrangler dev",
     "test:e2e:vite": "playwright test -c playwright-vite.config.ts e2e.test.ts",
     "test:e2e:workers": "npm run build && playwright test -c playwright-workers.config.ts e2e.test.ts",
