@@ -1,0 +1,37 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "flarekit"
+compatibility_date = "2025-04-01"
+compatibility_flags = [ "nodejs_compat" ]
+
+main = "./worker.ts"
+assets = { directory = "./build/client" }
+
+[[kv_namespaces]]
+binding = "APP_KV"
+id = "xxxxxx"
+preview_id = "mock-next"
+
+[limits]
+cpu_ms = 30_000
+
+[vars]
+MY_VAR = "My Value"
+BETTER_AUTH_SECRET = "xxxx"
+BETTER_AUTH_URL = "xxxx"
+GITHUB_CLIENT_ID = "xxxx"
+GITHUB_CLIENT_SECRET = "xxxx"
+RESEND_API_KEY = "xxxxx"
+IMAGE_URL = "xxxx"
+STRIPE_SECRET_KEY = "xxxx"
+STRIPE_WEBHOOK_SECRET = "xxxxx"
+STRIPE_PRICE_ID = "xxxx"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kit-3"
+database_id = "xxxxxx"
+migrations_dir = "drizzle"
+
+[[r2_buckets]]
+  bucket_name = "flarekit"
+  binding = "MY_BUCKET"
