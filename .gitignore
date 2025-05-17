@@ -10,3 +10,4 @@ test-results
 
 .wrangler
 wrangler.jsonc
+bun.lockb

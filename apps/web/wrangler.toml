@@ -35,3 +35,5 @@ migrations_dir = "drizzle"
 [[r2_buckets]]
   bucket_name = "flarekit"
   binding = "MY_BUCKET"
+
+  
