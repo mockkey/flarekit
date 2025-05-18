@@ -7,6 +7,7 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
+    "predeploy": "cp ../../wrangler.jsonc ./wrangler.jsonc",
     "deploy": "wrangler deploy",
     "start": "wrangler dev",
     "db:generate": "drizzle-kit generate",
