@@ -6,6 +6,7 @@ compatibility_flags = [ "nodejs_compat" ]
 main = "./worker.ts"
 assets = { directory = "./build/client" }
 
+
 [[kv_namespaces]]
 binding = "APP_KV"
 id = "xxxxxx"

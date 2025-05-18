@@ -8,5 +8,4 @@ test-results
 .react-router
 
 .wrangler
-wrangler.jsonc
 bun.lockb

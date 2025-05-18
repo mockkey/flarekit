@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "flarekit",
+  "compatibility_date": "2025-04-01",
+  "main": "./apps/web/worker.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./apps/web/build/client"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "APP_KV",
+      "id": "6dac391ff69046838c96b2b8f1814ba0"
+    }
+  ],
+  "limits": {
+    "cpu_ms": 30000
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kit-3",
+      "database_id": "2774e536-4d2d-4eb0-be5c-c5d57f4f385b",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "flarekit",
+      "binding": "MY_BUCKET"
+    }
+  ],
+  "vars": {
+    "MY_VAR": "My Value",
+    "BETTER_AUTH_SECRET": "518e273c9b135179518e273c9b135179",
+    "BETTER_AUTH_URL": "https://flarekit.mockkey.com",
+    "GITHUB_CLIENT_ID": "Ov23liNWMOOv23liNWMO",
+    "GITHUB_CLIENT_SECRET": "1ea05e0b844a0c4b1f91ea05e0b844a0c4b1f9",
+    "RESEND_API_KEY": "re_VKnJmFce_HYY9raKnJmFce_HYY9ra",
+    "IMAGE_URL": "https://222.mockkey.com",
+    "STRIPE_SECRET_KEY": "sk_test_51Nl68tFskvTvScJI2ebMFNhmAB1cTiqJs50351Nl68tFskvTvScJI2ebMFNhmAB1cTiqJs503",
+    "STRIPE_WEBHOOK_SECRET": "whsec_9nblxioA09nblxioA0WPr",
+    "STRIPE_PRICE_ID": "price_1RCb4ZF1RCb4ZFsk"
+  },
+  "placement": {
+    "mode": "smart"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true
+}

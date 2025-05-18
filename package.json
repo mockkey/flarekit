@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm -F @flarekit/web dev",
     "build": "pnpm -F @flarekit/web build",
-    "deploy": "pnpm build &&  pnpm run -F @flarekit/web deploy",
+    "deploy": "wrangler deploy",
     "db:generate": "pnpm -F @flarekit/web db:generate",
     "db:local": "pnpm -F @flarekit/web db:local",
     "db:remote": "pnpm -F @flarekit/web db:remote",
@@ -22,7 +22,8 @@
     "@biomejs/biome": "1.9.4",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
-    "lefthook": "^1.11.11"
+    "lefthook": "^1.11.11",
+    "wrangler": "^4.9.1"
   },
   "packageManager": "pnpm@10.5.0",
   "engines": {
