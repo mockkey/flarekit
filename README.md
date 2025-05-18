@@ -2,6 +2,9 @@
 
 **Flarekit** is a modern full-stack SaaS starter kit built with **React Router v7**, **Better Auth**, **Hono**, and **Cloudflare Workers**. It helps you build and deploy SaaS apps faster with built-in authentication, Stripe billing, email integration, and a SQL database — all optimized for speed, scalability, and developer experience.
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/mockkey/flarekit)
+
+
 🌐 [Live Demo](https://flarekit.mockkey.com/)
 
 English | [简体中文](./README-zh_CN.md) 
@@ -51,19 +54,26 @@ cd flarekit
 # Install dependencies
 pnpm install
 
-# Copy and configure wrangler config
-cp apps/web/wrangler.toml.example apps/web/wrangler.toml
-# Edit the file with your secrets (auth, Stripe, DB, etc.)
+# Navigate to the web app directory:
+cd app/web
 
-# Initialize database
+#Create Cloudflare resources:
+npx wrangler d1 create flare-d1
+npx wrangler kv namespace create APP_KV
+npx wrangler r2 bucket create flarekit
+
+# Be sure to update wrangler.toml with your secrets (auth keys, Stripe keys, D1 DB name, etc.)
+
+
+# Generate and run database locally:
 pnpm run db:generate
-pnpm run db:push
+pnpm run db:local
 
 # Run in dev mode
 pnpm dev
 
 
-# Push schema to your remote D1 database
+# Push schema to the remote D1 instance:
 pnpm db:remote
 
 # Build the app

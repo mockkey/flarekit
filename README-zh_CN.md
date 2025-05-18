@@ -2,6 +2,9 @@
 
 **Flarekit** 是一个现代的全栈 SaaS 启动模板，基于 **React Router v7**、**Better Auth**、**Hono** 和 **Cloudflare Workers** 构建。它内置了用户认证、Stripe 支付、邮件发送功能和 SQL 数据库，帮助你更快地构建和部署 SaaS 应用，兼顾速度、可扩展性和开发者体验。
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/mockkey/flarekit)
+
+
 🌐 [在线演示](https://flarekit.mockkey.com/)
 
 
@@ -43,32 +46,40 @@
 ## 🛠️ 快速开始
 
 ```bash
-# Clone the project
+# 克隆项目
 git clone https://github.com/mockkey/flarekit.git
 cd flarekit
 
-# Install dependencies
+#  安装依赖
 pnpm install
 
-# Copy and configure wrangler config
-cp apps/web/wrangler.toml.example apps/web/wrangler.toml
-# Edit the file with your secrets (auth, Stripe, DB, etc.)
+# 配置 Wrangler 和环境
+# 进入 Web 应用目录：
+cd app/web
 
-# Initialize database
+#创建 Cloudflare 资源：
+npx wrangler d1 create flare-d1
+npx wrangler kv namespace create APP_KV
+npx wrangler r2 bucket create flarekit
+
+# 请在 wrangler.toml 中添加你的 secret，例如：auth、Stripe、D1 等配置。
+
+
+# 数据库初始化
 pnpm run db:generate
-pnpm run db:push
+pnpm run db:local
 
-# Run in dev mode
+# 本地开发
 pnpm dev
 
 
-# Push schema to your remote D1 database
+# 推送 schema 到远程 D1：
 pnpm db:remote
 
-# Build the app
+# 构建项目
 pnpm build
 
-# Deploy
+# 部署到 Cloudflare
 pnpm deploy
 
 ```

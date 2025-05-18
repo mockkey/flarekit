@@ -29,7 +29,7 @@ STRIPE_PRICE_ID = "xxxx"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "kit-3"
+database_name = "flare-d1"
 database_id = "xxxxxx"
 migrations_dir = "drizzle"
 
