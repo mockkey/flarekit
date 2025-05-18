@@ -7,6 +7,7 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
+    "predeploy": "if [ -n \"$CF_PAGES\" ]; then cp ../../wrangler.jsonc ./wrangler.jsonc && wrangler d1 migrations apply DB --remote; else echo 'Skipping DB setup (not Cloudflare build)'; fi",
     "deploy": "wrangler deploy",
     "start": "wrangler dev",
     "db:generate": "drizzle-kit generate",

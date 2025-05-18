@@ -1,5 +1,4 @@
 node_modules
-drizzle
 test-results
 
 /.cache
@@ -9,4 +8,4 @@ test-results
 .react-router
 
 .wrangler
-wrangler.toml
+bun.lockb

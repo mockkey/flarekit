@@ -3,6 +3,7 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "workspaces": ["packages/*", "apps/*"],
   "scripts": {
     "dev": "pnpm -F @flarekit/web dev",
     "build": "pnpm -F @flarekit/web build",
