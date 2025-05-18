@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "pnpm -F @flarekit/web dev",
     "build": "pnpm -F @flarekit/web build",
+    "deploy:web": "pnpm build &&  pnpm run -F @flarekit/web deploy",
     "deploy": "wrangler deploy",
     "db:generate": "pnpm -F @flarekit/web db:generate",
     "db:local": "pnpm -F @flarekit/web db:local",
