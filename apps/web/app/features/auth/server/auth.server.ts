@@ -3,7 +3,6 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { apiKey } from "better-auth/plugins";
 import { drizzle } from "drizzle-orm/d1";
-import type { EnvType } from "load-context";
 import { Resend } from "resend";
 import * as schema from "~/db/schema";
 import ResetPasswordEmail from "~/features/email/components/reset-password";
@@ -11,8 +10,9 @@ import WelcomeEmail from "~/features/email/components/wecome";
 import { hashPassword, verifyPassword } from "../crypto.server";
 import { StripeClient } from "./stripe";
 let _auth: ReturnType<typeof betterAuth>;
+import { env } from "cloudflare:workers";
 
-export const serverAuth = (env: EnvType) => {
+export const serverAuth = () => {
   const stripeClient = StripeClient(env.STRIPE_SECRET_KEY!);
   const db = drizzle(env.DB, { schema });
   if (!_auth) {

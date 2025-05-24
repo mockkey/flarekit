@@ -31,7 +31,7 @@ interface ExtendedUser extends User {
 }
 
 app.post("/api/subscription/session", async (c) => {
-  const auth = serverAuth(c.env);
+  const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: c.req.header(),
   });
@@ -55,7 +55,7 @@ app.post("/api/subscription/session", async (c) => {
 });
 
 app.post("/api/api-key/create", async (c) => {
-  const auth = serverAuth(c.env);
+  const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: c.req.header(),
   });

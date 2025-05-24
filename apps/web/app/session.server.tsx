@@ -24,8 +24,8 @@ type ExtendedUser = User & {
   theme: string;
 };
 
-export const getTheme = async ({ request, context }: LoaderFunctionArgs) => {
-  const auth = serverAuth(context.cloudflare.env);
+export const getTheme = async ({ request }: LoaderFunctionArgs) => {
+  const auth = serverAuth();
   const data = await auth.api.getSession({
     headers: request.headers,
   });
