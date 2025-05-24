@@ -6,7 +6,7 @@ import {
 import { serverAuth } from "~/features/auth/server/auth.server";
 
 export async function action({ request, context }: ActionFunctionArgs) {
-  const auth = serverAuth(context.cloudflare.env);
+  const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: request.headers,
   });
@@ -84,8 +84,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 }
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-  const auth = serverAuth(context.cloudflare.env);
+export async function loader({ request }: LoaderFunctionArgs) {
+  const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: request.headers,
   });

@@ -15,11 +15,10 @@ export const action = async (args: ActionFunctionArgs) => {
   const themeAction = createThemeAction(themeSessionResolver);
   const themeSet = [null, "dark", "light"];
   const req = args.request.clone();
-  const context = args.context;
   const postData = await req.json();
   const theme = postData.theme;
   if (themeSet.indexOf(theme) >= 0) {
-    const auth = serverAuth(context.cloudflare.env);
+    const auth = serverAuth();
     const data = await auth.api.getSession({
       headers: req.headers,
     });

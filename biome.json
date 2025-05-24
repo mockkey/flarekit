@@ -11,6 +11,7 @@
       "packages/ui/src/**/*",
       "**/node_modules/**/*",
       "**/.react-router/**/*",
+      "**/worker-configuration.d.ts",
       "**/dist/**/*",
       "**/build/**/*",
       "**/dist/*",

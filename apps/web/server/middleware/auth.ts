@@ -13,7 +13,7 @@ export const requireAuth = (options: RequireAuthOptions = {}) => {
       const bearer = bearerAuth({
         verifyToken: async (token: string) => {
           if (!token) return false;
-          const auth = serverAuth(c.env);
+          const auth = serverAuth();
           // @ts-ignore
           const { key, error, valid } = await auth.api.verifyApiKey({
             body: {

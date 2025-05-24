@@ -9,7 +9,7 @@ assets = { directory = "./build/client" }
 
 [[kv_namespaces]]
 binding = "APP_KV"
-id = "xxxxxx"
+id = "string"
 preview_id = "mock-next"
 
 [limits]
@@ -17,20 +17,20 @@ cpu_ms = 30_000
 
 [vars]
 MY_VAR = "My Value"
-BETTER_AUTH_SECRET = "xxxx"
-BETTER_AUTH_URL = "xxxx"
-GITHUB_CLIENT_ID = "xxxx"
-GITHUB_CLIENT_SECRET = "xxxx"
-RESEND_API_KEY = "xxxxx"
-IMAGE_URL = "xxxx"
-STRIPE_SECRET_KEY = "xxxx"
-STRIPE_WEBHOOK_SECRET = "xxxxx"
-STRIPE_PRICE_ID = "xxxx"
+BETTER_AUTH_SECRET = "string"
+BETTER_AUTH_URL = "http://localhost:5173"
+GITHUB_CLIENT_ID = "string"
+GITHUB_CLIENT_SECRET = "string"
+RESEND_API_KEY = "string"
+IMAGE_URL = "string"
+STRIPE_SECRET_KEY = "string"
+STRIPE_WEBHOOK_SECRET = "string"
+STRIPE_PRICE_ID = "string"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "flare-d1"
-database_id = "xxxxxx"
+database_id = "string"
 migrations_dir = "drizzle"
 
 [[r2_buckets]]

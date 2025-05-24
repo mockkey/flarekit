@@ -20,8 +20,8 @@ export const meta: Route.MetaFunction = () => [
   },
 ];
 
-export const loader = async ({ request, context }: Route.LoaderArgs) => {
-  const auth = serverAuth(context.cloudflare.env);
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: request.headers,
   });
