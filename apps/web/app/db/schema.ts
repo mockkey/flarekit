@@ -109,3 +109,60 @@ export const apikey = sqliteTable("apikey", {
   permissions: text("permissions"),
   metadata: text("metadata"),
 });
+
+//file manager
+export const file = sqliteTable("files", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  hash: text("hash"),
+  name: text("name"),
+  size: integer("size"),
+  mime: text("mime"),
+  storagePath: text("storagePath"),
+  storageProvider: text("storage_provider")
+    .notNull()
+    .$default(() => "s3"),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+});
+
+export const userFiles = sqliteTable("user_files", {
+  id: text("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  fileId: text("fileId")
+    .notNull()
+    .references(() => file.id),
+  parentId: text("parentId"),
+  name: text("name"),
+  isDir: integer("isDir", { mode: "boolean" }).default(false),
+  deletedAt: integer("deletedAt", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }),
+});
+
+export const share = sqliteTable("share", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  userFileId: text("userFileId")
+    .notNull()
+    .references(() => userFiles.id),
+  expiresAt: integer("deletedAt", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }),
+});
+
+export const usageLog = sqliteTable("usageLog", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  fileId: text("userId")
+    .notNull()
+    .references(() => file.id),
+  action: text("action"), // upload / delete / restore
+  size: integer("size"),
+  createdAt: integer("created_at", { mode: "timestamp" }),
+});
