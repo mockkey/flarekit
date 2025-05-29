@@ -1,0 +1,19 @@
+{
+  "name": "@flarekit/common",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    "./fetch": "./src/fetch.ts",
+    "./user-agent": "./src/user-agent.ts",
+    "./utils": "./src/utils.ts"
+  },
+  "packageManager": "pnpm@10.5.0"
+}

@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDateToLong(dateString: Date): string {
+export function formatDateToLong(dateString: Date | number): string {
   const date = new Date(dateString);
   const formatted = date.toLocaleDateString("en-US", {
     year: "numeric",

@@ -1,0 +1,46 @@
+export async function fetchData<T>(url: string): Promise<T> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function postData<T>(url: string, data: unknown): Promise<T> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  console.log("response.ok", response.status);
+
+  if (!response.ok) {
+    const errorBody = await safeParseJSON(response);
+    throw new FetchError(response.status, errorBody?.error || "Unknown error");
+  }
+
+  return response.json();
+}
+
+async function safeParseJSON(res: Response) {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export class FetchError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "FetchError";
+  }
+}

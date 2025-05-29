@@ -3,8 +3,8 @@
 
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
-@source "../**/*.{ts,tsx}";
-@source "../../../**/*/components/**/*.{ts,tsx}";
+@source "../../../**/**.{ts,tsx}";
+@source "../../../**/components/**/*.{ts,tsx}";
 
 @plugin "tailwindcss-animate";
 

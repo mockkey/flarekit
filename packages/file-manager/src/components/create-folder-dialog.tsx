@@ -1,3 +1,5 @@
+import { useCreateFolder } from "@/hooks/use-file-manager";
+import { useFileStore } from "@/store/use-file-store";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,6 +12,7 @@ import {
 } from "@flarekit/ui/components/ui/alert-dialog";
 import { Input } from "@flarekit/ui/components/ui/input";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface CreateFolderDialogProps {
   open: boolean;
@@ -21,13 +24,25 @@ export function CreateFolderDialog({
   onOpenChange,
 }: CreateFolderDialogProps) {
   const [folderName, setFolderName] = useState("");
+  const createFolder = useCreateFolder();
+  const { currentFolderId } = useFileStore();
+  // const fetchFiles = useFetchFiles();
 
   const handleCreateFolder = () => {
     if (folderName.trim()) {
-      // TODO: Implement create folder logic here
-      console.log("Creating folder:", folderName);
-      // After successful creation, close the dialog
-      onOpenChange(false);
+      createFolder.mutate(
+        { name: folderName, parentId: currentFolderId },
+        {
+          onSuccess: () => {
+            toast.success("Folder created successfully");
+            setFolderName("");
+            onOpenChange(false);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      );
     }
   };
 
