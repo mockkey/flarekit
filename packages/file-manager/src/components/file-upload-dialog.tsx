@@ -1,63 +1,73 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@flarekit/ui/components/ui/alert-dialog";
-import { Input } from "@flarekit/ui/components/ui/input";
-import { useState } from "react";
+import Dashboard from "@uppy/react/lib/Dashboard";
+import "@uppy/core/dist/style.min.css";
+import "@uppy/dashboard/dist/style.min.css";
+import { queryKey } from "@/hooks/use-file-manager";
+import { useUppyStore } from "@/store/use-uppy-store";
+import { Button } from "@flarekit/ui/components/ui/button";
+import { RiCloseLine } from "@remixicon/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 interface FileUploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
 export function FileUploadDialog({
   open,
   onOpenChange,
 }: FileUploadDialogProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const { uppyInstance, hideUploadButton } = useUppyStore();
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    uppyInstance?.on("complete", async (result) => {
+      const successful = result.successful;
+      if (!successful?.length) return;
+      await queryClient.refetchQueries({
+        queryKey,
+        type: "active",
+      });
+    });
+  }, [uppyInstance]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    } else {
-      setFile(null);
-    }
-  };
-
-  const handleUpload = () => {
-    if (file) {
-      // TODO: Implement file upload logic here
-      console.log("Uploading file:", file);
-      // After successful upload, close the dialog
-      onOpenChange(false);
-    }
-  };
+  useEffect(() => {
+    uppyInstance?.clear();
+  }, [open]);
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Upload File</AlertDialogTitle>
-          <AlertDialogDescription>
-            Select a file to upload to your dashboard.
-          </AlertDialogDescription>
+          <AlertDialogCancel asChild>
+            <Button
+              variant="ghost"
+              className="absolute right-4 top-4 p-2"
+              size="icon"
+            >
+              <RiCloseLine />
+            </Button>
+          </AlertDialogCancel>
         </AlertDialogHeader>
-        <div className="grid gap-4 py-4">
-          <Input type="file" onChange={handleFileChange} />
-          {file && <p>Selected file: {file.name}</p>}
+        <div className="">
+          {!uppyInstance ? (
+            <>loading</>
+          ) : (
+            <Dashboard
+              hideUploadButton={hideUploadButton}
+              width={"100%"}
+              height={"300px"}
+              theme="auto"
+              uppy={uppyInstance}
+            />
+          )}
         </div>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleUpload} disabled={!file}>
-            Upload
-          </AlertDialogAction>
-        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );

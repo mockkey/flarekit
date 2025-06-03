@@ -26,7 +26,6 @@ export function CreateFolderDialog({
   const [folderName, setFolderName] = useState("");
   const createFolder = useCreateFolder();
   const { currentFolderId } = useFileStore();
-  // const fetchFiles = useFetchFiles();
 
   const handleCreateFolder = () => {
     if (folderName.trim()) {

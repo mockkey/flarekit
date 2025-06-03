@@ -2,6 +2,8 @@ import { zValidator } from "@hono/zod-validator";
 import { and, asc, count, desc, eq, isNull, like, ne } from "drizzle-orm";
 import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
+import { FileService } from "server/services/file-service";
+import { StorageService } from "server/services/storage-service";
 import { z } from "zod";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
@@ -18,6 +20,21 @@ const querySchema = z.object({
   parentId: z.string().nullable().optional(),
 });
 
+filesServer.get("/storage", async (c) => {
+  const user = c.get("user");
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  const storage = await StorageService.ensureStorage(user.id);
+  return c.json({
+    usedStorage: storage.usedStorage,
+    totalStorage: storage.storage,
+    isPro: storage.metadata
+      ? JSON.parse(storage.metadata).type !== "free"
+      : false,
+  });
+});
+
 filesServer.get("/", zValidator("query", querySchema), async (c) => {
   try {
     const query = c.req.valid("query");
@@ -31,6 +48,9 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
 
     // Base query conditions
     const conditions = [eq(userFiles.userId, user.id)];
+
+    // is not delete
+    conditions.push(isNull(userFiles.deletedAt));
 
     // Add parent directory condition
     if (query.parentId) {
@@ -67,9 +87,10 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
         type: userFiles.isDir,
         parentId: userFiles.parentId,
         size: file.size,
-        mimeType: file.mime,
+        mime: file.mime,
         createdAt: userFiles.createdAt,
-        storagePath: file.storagePath,
+        url: userFiles.fileId,
+        // storagePath: file.storagePath,
       })
       .from(userFiles)
       .leftJoin(file, eq(userFiles.fileId, file.id))
@@ -82,6 +103,7 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
       items: files.map((file) => ({
         ...file,
         type: file.type ? "folder" : "file",
+        url: file.url ? `/viewer/${file.url}` : null,
       })),
       total,
       page: query.page,
@@ -93,26 +115,15 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
   }
 });
 
-filesServer.post("/createFolder", async (c) => {
-  console.log("c", c);
-});
-
-filesServer.get("/upload/check", async (c) => {
-  console.log("c", c);
-
-  return c.json({
-    message: "Upload check endpoint",
-  });
-});
-
-const createFolderSchema = z.object({
-  name: z.string().min(1, "Folder name is required"),
-  parentId: z.string().nullable().optional(),
-});
-
 filesServer.post(
   "/folder/create",
-  zValidator("json", createFolderSchema),
+  zValidator(
+    "json",
+    z.object({
+      name: z.string().min(1, "Folder name is required"),
+      parentId: z.string().nullable().optional(),
+    }),
+  ),
   async (c) => {
     try {
       const user = c.get("user");
@@ -167,11 +178,10 @@ filesServer.post(
       const fileRecord = await db
         .insert(file)
         .values({
-          id: crypto.randomUUID(),
           name,
           size: 0,
-          mime: "folder",
           storageProvider: "local",
+          mime: "folder", // MIME type for directories
           createdAt: timestamp,
         })
         .returning()
@@ -180,7 +190,6 @@ filesServer.post(
       const newFolder = await db
         .insert(userFiles)
         .values({
-          id: crypto.randomUUID(),
           name,
           userId: user.id,
           parentId,
@@ -218,29 +227,7 @@ filesServer.post(
         return c.json({ error: "Unauthorized" }, 401);
       }
       const { id } = c.req.valid("json");
-      // Check if files exists and belongs to user
-      const folder = await db
-        .select()
-        .from(userFiles)
-        .where(and(eq(userFiles.id, id), eq(userFiles.userId, user.id)))
-        .get();
-
-      if (!folder) {
-        return c.json({ error: "Folder not found or not owned by user" }, 404);
-      }
-
-      if (folder.isDir) {
-        // Use transaction
-        // Delete files
-        await db.delete(userFiles).where(eq(userFiles.parentId, id));
-        // Delete floder
-        await db.delete(userFiles).where(eq(userFiles.id, id));
-      } else {
-        // Delete file
-        await db.delete(userFiles).where(eq(userFiles.id, id));
-      }
-      // Set user delet logs
-
+      await FileService.delete(user.id, id);
       return c.json({ success: true });
     } catch (error) {
       console.error("Error deleting folder:", error);
@@ -291,7 +278,7 @@ filesServer.post(
         and(
           eq(userFiles.name, name),
           eq(userFiles.userId, user.id),
-          eq(userFiles.isDir, currentFIles.isDir),
+          eq(userFiles.isDir, !currentFIles.isDir),
           ne(userFiles.id, id), // Exclude current folder
           currentFIles.parentId
             ? eq(userFiles.parentId, currentFIles.parentId)
@@ -354,7 +341,7 @@ filesServer.get("/breadcrumbs/:parentId", async (c) => {
         parentId: currentFolder.parentId,
       });
 
-      currentId = currentFolder.parentId;
+      currentId = currentFolder.parentId || "";
     }
 
     breadcrumbs.unshift({

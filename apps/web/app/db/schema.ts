@@ -120,14 +120,16 @@ export const file = sqliteTable("files", {
   size: integer("size"),
   mime: text("mime"),
   storagePath: text("storagePath"),
-  storageProvider: text("storage_provider")
+  storageProvider: text("storageProvider")
     .notNull()
     .$default(() => "s3"),
   createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
 });
 
 export const userFiles = sqliteTable("user_files", {
-  id: text("id").primaryKey(),
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
   userId: text("userId")
     .notNull()
     .references(() => user.id),
@@ -149,7 +151,7 @@ export const share = sqliteTable("share", {
     .notNull()
     .references(() => userFiles.id),
   expiresAt: integer("deletedAt", { mode: "timestamp" }),
-  createdAt: integer("created_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }),
 });
 
 export const usageLog = sqliteTable("usageLog", {
@@ -159,10 +161,43 @@ export const usageLog = sqliteTable("usageLog", {
   userId: text("userId")
     .notNull()
     .references(() => user.id),
-  fileId: text("userId")
+  fileId: text("fileId")
     .notNull()
     .references(() => file.id),
   action: text("action"), // upload / delete / restore
   size: integer("size"),
-  createdAt: integer("created_at", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }),
+});
+
+export const storageUsageLogs = sqliteTable("storage_usage_logs", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  fileId: text("fileId").notNull(),
+  action: text("action").notNull(),
+  oldUsage: integer("oldUsage"),
+  newUsage: integer("newUsage"),
+  size: integer("size").notNull(),
+  metadata: text("metadata"),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+});
+
+export const userStorage = sqliteTable("userStorage", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  planId: text("planId"),
+  storage: integer("storage").notNull(),
+  usedStorage: integer("usedStorage").notNull().default(0),
+  status: text("status").notNull().default("active"),
+  orderId: text("orderId"),
+  metadata: text("metadata"),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
 });

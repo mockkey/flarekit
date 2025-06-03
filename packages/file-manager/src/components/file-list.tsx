@@ -12,10 +12,15 @@ import {
   TableHeader,
   TableRow,
 } from "@flarekit/ui/components/ui/table";
-import { RiArrowDownSLine, RiArrowUpSLine } from "@remixicon/react";
+import {
+  RiArrowDownSLine,
+  RiArrowUpSLine,
+  RiInboxLine,
+} from "@remixicon/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { FileListItem } from "./file-list-item";
+import { FileListSkeleton } from "./file-list-skeleton";
 
 interface FileListProps {
   files: FileItem[];
@@ -95,12 +100,18 @@ export function FileList({
       <Table>
         <TableCaption>
           <div className="pb-4 flex items-center justify-between">
-            <div>
-              {files.length === 0
-                ? isLoading
-                  ? "Loading files..."
-                  : "No files found."
-                : `Found ${files.length} items`}
+            <div className="w-full">
+              {files.length === 0 ? (
+                <div className="w-full py-8 flex flex-col items-center justify-center text-muted-foreground">
+                  <RiInboxLine className="size-12 mb-4 text-muted-foreground/50" />
+                  <p className="text-sm font-medium">No files found</p>
+                  <p className="text-xs mt-1 text-muted-foreground/80">
+                    Upload some files to get started
+                  </p>
+                </div>
+              ) : (
+                `Found ${files.length} items`
+              )}
             </div>
             {files.length >= 10 && (
               <Button
@@ -165,21 +176,25 @@ export function FileList({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {files?.map((file) => (
-            <FileListItem
-              key={file.id}
-              file={file}
-              renamingFileId={renamingFileId}
-              newFileName={newFileName}
-              setRenamingFileId={setRenamingFileId}
-              setNewFileName={setNewFileName}
-              onRename={handleRename}
-              onDelete={async () => {
-                handleDelete(file.id);
-              }}
-              onFolderOpen={onFolderOpen}
-            />
-          ))}
+          {isLoading ? (
+            <FileListSkeleton />
+          ) : (
+            files?.map((file) => (
+              <FileListItem
+                key={file.id}
+                file={file}
+                renamingFileId={renamingFileId}
+                newFileName={newFileName}
+                setRenamingFileId={setRenamingFileId}
+                setNewFileName={setNewFileName}
+                onRename={handleRename}
+                onDelete={async () => {
+                  handleDelete(file.id);
+                }}
+                onFolderOpen={onFolderOpen}
+              />
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

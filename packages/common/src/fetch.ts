@@ -8,6 +8,23 @@ export async function fetchData<T>(url: string): Promise<T> {
   return response.json();
 }
 
+export async function putDate<T>(url: string, data: unknown): Promise<T> {
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorBody = await safeParseJSON(response);
+    throw new FetchError(response.status, errorBody?.error || "Unknown error");
+  }
+
+  return response.json();
+}
+
 export async function postData<T>(url: string, data: unknown): Promise<T> {
   const response = await fetch(url, {
     method: "POST",
@@ -16,8 +33,6 @@ export async function postData<T>(url: string, data: unknown): Promise<T> {
     },
     body: JSON.stringify(data),
   });
-
-  console.log("response.ok", response.status);
 
   if (!response.ok) {
     const errorBody = await safeParseJSON(response);

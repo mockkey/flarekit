@@ -26,6 +26,13 @@ IMAGE_URL = "string"
 STRIPE_SECRET_KEY = "string"
 STRIPE_WEBHOOK_SECRET = "string"
 STRIPE_PRICE_ID = "string"
+ACCOUNT_ID = "string"
+ACCESS_KEY_ID = "string"
+SECRET_KEY_ID = "string"
+AWS_REGION = "string"
+AWS_BUCKET = "string"
+AWS_ENDPOINT = "string"
+FREE_STORAGE_LIMIT = "number"
 
 [[d1_databases]]
 binding = "DB"

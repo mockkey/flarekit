@@ -2,6 +2,7 @@ import { fetchData, postData } from "@flarekit/common/fetch";
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 
@@ -12,7 +13,7 @@ export interface FileItem {
   name: string;
   type: "file" | "folder";
   size: number;
-  mimeType: string | null;
+  mime: string | null;
   createdAt: number;
   parentId: string | null;
   storagePath: string | null;
@@ -54,11 +55,11 @@ export function useFiles(options: UseFilesOptions = {}) {
     FilesResponse,
     Error,
     TFilesResponse,
-    string[],
+    (string | number | null | undefined)[],
     number
   >({
     queryKey: [
-      queryKey,
+      ...queryKey,
       options.page,
       options.limit,
       options.sort,
@@ -93,34 +94,6 @@ export function useFiles(options: UseFilesOptions = {}) {
   });
 }
 
-export const filesupload = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (queryString: string) => {
-      return postData<{ key: string }>("/rpc/file/upload", queryString);
-    },
-    onSuccess: async () => {
-      await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey });
-    },
-  });
-};
-
-export const fileCheckHash = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (queryString: string) => {
-      return postData<{ key: string }>("/rpc/file/check-hash", queryString);
-    },
-    onSuccess: async () => {
-      await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey });
-    },
-  });
-};
-
 interface createFileParams {
   name: string;
   parentId: string | null;
@@ -134,10 +107,7 @@ export const useCreateFolder = () => {
     },
     onSuccess: async () => {
       await queryClient.cancelQueries({ queryKey });
-      await queryClient.refetchQueries({
-        queryKey: [queryKey],
-        type: "active",
-      });
+      queryClient.refetchQueries({ queryKey });
     },
   });
 };
@@ -150,7 +120,7 @@ export const useChangeFileName = () => {
     },
     onSuccess: async () => {
       await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey: [queryKey], type: "active" });
+      queryClient.refetchQueries({ queryKey, type: "active" });
     },
   });
 };
@@ -163,7 +133,20 @@ export const useDeleteFile = () => {
     },
     onSuccess: async () => {
       await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey: [queryKey], type: "active" });
+      queryClient.refetchQueries({ queryKey, type: "active" });
     },
   });
 };
+
+export function useStorage() {
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
+      const res = await fetch("/rpc/files/storage");
+      if (!res.ok) {
+        throw new Error("Failed to fetch storage info");
+      }
+      return res.json();
+    },
+  });
+}

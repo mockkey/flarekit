@@ -13,16 +13,17 @@ import {
   RiRefreshLine,
   RiSearchLine,
 } from "@remixicon/react";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Breadcrumbs } from "./components/breadcrumbs";
 import { CreateFolderDialog } from "./components/create-folder-dialog";
 import { FileList } from "./components/file-list";
 import { FileUploadDialog } from "./components/file-upload-dialog";
 import { useBreadcrumbs } from "./hooks/use-breadcrumbs";
+import { useDebounce } from "./hooks/use-debounce";
 import { useFiles } from "./hooks/use-file-manager";
 import { type Sort, useFileStore } from "./store/use-file-store";
-
+import { useUppyStore } from "./store/use-uppy-store";
 interface DashboardProps {
   folderID?: string;
   rootPath?: string;
@@ -30,6 +31,12 @@ interface DashboardProps {
 
 const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
   const navigate = useNavigate();
+  const { setUppy, reset } = useUppyStore();
+
+  useEffect(() => {
+    setUppy();
+    return () => reset();
+  }, [setUppy, reset]);
 
   const {
     currentFolderId,
@@ -46,11 +53,14 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
   const { data, isLoading, error, refetch, fetchNextPage } = useFiles({
     page: pagination.currentPage,
     search,
-    parentId: currentFolderId,
+    parentId: folderID,
     sort,
     order,
   });
   const files = data?.pages.flatMap((p) => p.items) ?? [];
+  const [localSearch, setLocalSearch] = useState("");
+  const debouncedSearch = useDebounce(localSearch, 360);
+  const [isComposing, setIsComposing] = useState(false);
 
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [showCreateFolderDialog, setShowCreateFolderDialog] = useState(false);
@@ -58,15 +68,41 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
     setCurrentFolder(folderID || null);
   }, [folderID, rootPath]);
 
-  const { data: breadcrumbs } = useBreadcrumbs(currentFolderId);
+  useEffect(() => {
+    if (!isComposing) {
+      setSearch(debouncedSearch);
+    }
+  }, [debouncedSearch, setSearch, isComposing]);
 
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const target = e.target as HTMLInputElement;
+      setLocalSearch(target.value);
+    },
+    [],
+  );
+
+  const handleCompositionStart = useCallback(() => {
+    setIsComposing(true);
+  }, []);
+
+  const handleCompositionEnd = useCallback(
+    (e: React.CompositionEvent<HTMLInputElement>) => {
+      setIsComposing(false);
+      const target = e.target as HTMLInputElement;
+      setLocalSearch(target.value);
+    },
+    [],
+  );
+
+  const { data: breadcrumbs } = useBreadcrumbs(currentFolderId);
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle>Files</CardTitle>
+              <CardTitle>Resources</CardTitle>
               <CardDescription>Manage your files and folders</CardDescription>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -81,7 +117,6 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
               </Button>
               <Button
                 variant="outline"
-                className="hidden"
                 size="sm"
                 disabled={isLoading}
                 onClick={() => setShowUploadDialog(true)}
@@ -104,7 +139,7 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
           <div className="mb-4 space-y-4">
             <div className="bg-muted/30  py-2 rounded-lg">
               <Breadcrumbs
-                items={breadcrumbs || []}
+                items={breadcrumbs || [{ id: null, name: "Root" }]}
                 onNavigate={(id) => {
                   if (id) {
                     navigate(`/resources/floder/${id}`);
@@ -118,10 +153,12 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
               <Input
                 type="search"
                 placeholder="Search files..."
-                value={search}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setSearch(e.target.value);
-                }}
+                onChange={handleSearchChange}
+                onCompositionStart={handleCompositionStart}
+                onCompositionEnd={handleCompositionEnd}
+                // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                //     setSearch(e.target.value);
+                // }}
                 className="pl-10   transition-all duration-200 border-input hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
               />
               <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within/search:text-primary transition-colors duration-200" />

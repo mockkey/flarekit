@@ -5,8 +5,6 @@ import { TokenItemSkeleton } from "./token-item-skeleton";
 export default function TokenItemList() {
   const { data: apiKeys, isPending } = useApiKeyList();
 
-  console.log("apiKeys", apiKeys);
-
   if (isPending) {
     return (
       <div className="max-h-[600px] overflow-y-auto pr-2">

@@ -8,15 +8,11 @@ import {
 } from "@flarekit/ui/components/ui/dropdown-menu";
 import { Input } from "@flarekit/ui/components/ui/input";
 import { TableCell, TableRow } from "@flarekit/ui/components/ui/table";
-import {
-  RiCheckLine,
-  RiFileFill,
-  RiFolderFill,
-  RiMore2Fill,
-} from "@remixicon/react";
+import { RiCheckLine, RiMore2Fill } from "@remixicon/react";
 
 import type { FileItem } from "@/types";
-import { formatDateToLong } from "@flarekit/common/utils";
+import { formatBytes, formatDateToLong } from "@flarekit/common/utils";
+import { getFileIcon } from "./file-icon";
 
 interface FileListItemProps {
   file: FileItem;
@@ -42,13 +38,15 @@ export function FileListItem({
   return (
     <TableRow>
       <TableCell className="font-medium">
-        {file.type === "file" ? (
-          <RiFileFill className="size-5 text-blue-500" />
-        ) : (
-          <RiFolderFill className="size-5 text-amber-500" />
-        )}
+        {getFileIcon(file)}
+        {/* {file.type === "folder" ? (
+                    <RiFolderFill className="size-5 text-amber-500" />
+                ) :
+                    file.url ? <img src={file.url} /> :
+                        (<RiFileFill className="size-5 text-blue-500" />)
+                } */}
       </TableCell>
-      <TableCell>
+      <TableCell className="w-2/5">
         {renamingFileId === file.id ? (
           <div className="flex items-center gap-2">
             <Input
@@ -88,9 +86,7 @@ export function FileListItem({
         )}
       </TableCell>
       <TableCell>
-        {file.type === "file" && file.size
-          ? `${(file.size / 1024).toFixed(2)} KB`
-          : "-"}
+        {file.type === "file" && file.size ? `${formatBytes(file.size)}` : "-"}
       </TableCell>
       <TableCell>{formatDateToLong(file.createdAt)}</TableCell>
       <TableCell className="text-right">

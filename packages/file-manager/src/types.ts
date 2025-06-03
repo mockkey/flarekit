@@ -3,8 +3,9 @@ export interface FileItem {
   name: string;
   type: "file" | "folder";
   size: number;
-  mimeType: string | null;
+  mime: string | null;
   createdAt: number;
   parentId: string | null;
   storagePath: string | null;
+  url: string | null;
 }

@@ -15,6 +15,48 @@
       "when": 1748097624176,
       "tag": "0001_pink_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1748616719356,
+      "tag": "0002_fantastic_slyde",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1748885969735,
+      "tag": "0003_rare_khan",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1748886836604,
+      "tag": "0004_third_tarot",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1748918838456,
+      "tag": "0005_wise_spirit",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1748919069144,
+      "tag": "0006_aromatic_toro",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1748919444153,
+      "tag": "0007_new_the_leader",
+      "breakpoints": true
     }
   ]
 }

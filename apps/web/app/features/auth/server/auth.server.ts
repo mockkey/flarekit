@@ -1,7 +1,7 @@
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { apiKey } from "better-auth/plugins";
+import { apiKey, createAuthMiddleware } from "better-auth/plugins";
 import { Resend } from "resend";
 import ResetPasswordEmail from "~/features/email/components/reset-password";
 import WelcomeEmail from "~/features/email/components/wecome";
@@ -9,6 +9,7 @@ import { hashPassword, verifyPassword } from "../crypto.server";
 import { StripeClient } from "./stripe";
 let _auth: ReturnType<typeof betterAuth>;
 import { env } from "cloudflare:workers";
+import { StorageService } from "server/services/storage-service";
 import { db } from "~/db/db.server";
 
 export const serverAuth = () => {
@@ -134,6 +135,17 @@ export const serverAuth = () => {
           },
         }),
       ],
+      hooks: {
+        after: createAuthMiddleware(async (ctx) => {
+          if (ctx.path.startsWith("/sign-up")) {
+            const newSession = ctx.context.newSession;
+            if (newSession) {
+              const userId = newSession.user.id;
+              await StorageService.initializeUserStorage(userId);
+            }
+          }
+        }),
+      },
     });
   }
 

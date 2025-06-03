@@ -21,7 +21,10 @@
     "typegen": "wrangler types -c ./wrangler.toml  && react-router typegen"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.817.0",
+    "@aws-sdk/s3-request-presigner": "^3.817.0",
     "@better-auth/stripe": "^1.2.5",
+    "@cf-wasm/photon": "^0.1.30",
     "@flarekit/auth": "workspace:*",
     "@flarekit/file-manager": "workspace:*",
     "@flarekit/ui": "workspace:*",
@@ -33,6 +36,7 @@
     "@remixicon/react": "^4.6.0",
     "@tailwindcss/vite": "^4.0.17",
     "@tanstack/react-query": "^5.74.4",
+    "aws4fetch": "^1.0.20",
     "better-auth": "^1.2.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
