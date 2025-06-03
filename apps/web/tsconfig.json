@@ -11,13 +11,17 @@
     "**/.client/**/*.tsx"
   ],
   "compilerOptions": {
-    "types": ["vite/client", "@cloudflare/workers-types/2023-07-01"],
+    "types": [
+      "vite/client",
+      "@react-router/cloudflare",
+      "@cloudflare/workers-types"
+    ],
     "baseUrl": ".",
     "rootDirs": [".", "./.react-router/types"],
     "paths": {
       "~/*": ["./app/*"],
       "@flarekit/ui/components/*": ["packages/ui/src/components/*"],
-      "@flarekit/ui/app.css*": ["packages/ui/src/styles/app.css"]
+      "@flarekit/ui/app.css": ["packages/ui/src/styles/app.css"]
     },
     "noEmit": true
   }

@@ -1,3 +1,4 @@
+import { StorageUsage } from "@flarekit/file-manager";
 import {
   Sidebar,
   SidebarContent,
@@ -80,7 +81,7 @@ export default function SidebarNav({
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>{open && <StorageUsage />}</SidebarFooter>
     </Sidebar>
   );
 }

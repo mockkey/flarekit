@@ -39,7 +39,7 @@ export const createApiKey = () => {
 
   return useMutation({
     mutationFn: (queryString: string) => {
-      return postData<{ key: string }>("/api/api-key/create", queryString);
+      return postData<{ key: string }>("/rpc/api-key/create", queryString);
     },
     onSuccess: async () => {
       await queryClient.cancelQueries({ queryKey });

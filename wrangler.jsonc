@@ -40,7 +40,14 @@
     "IMAGE_URL": "https://222.mockkey.com",
     "STRIPE_SECRET_KEY": "sk_test_51Nl68tFskvTvScJI2ebMFNhmAB1cTiqJs50351Nl68tFskvTvScJI2ebMFNhmAB1cTiqJs503",
     "STRIPE_WEBHOOK_SECRET": "whsec_9nblxioA09nblxioA0WPr",
-    "STRIPE_PRICE_ID": "price_1RCb4ZF1RCb4ZFsk"
+    "STRIPE_PRICE_ID": "price_1RCb4ZF1RCb4ZFsk",
+    "ACCOUNT_ID": "xxxxxxx",
+    "ACCESS_KEY_ID": "xxxxxx",
+    "SECRET_KEY_ID": "xxxxx",
+    "AWS_REGION": "auto",
+    "AWS_BUCKET": "flarekit",
+    "AWS_ENDPOINT": "https://flarekit.s3.amazonaws.com",
+    "FREE_STORAGE_LIMIT": 100
   },
   "placement": {
     "mode": "smart"

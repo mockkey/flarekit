@@ -50,7 +50,8 @@
         "useSemanticElements": "off"
       },
       "complexity": {
-        "noForEach": "off"
+        "noForEach": "off",
+        "noThisInStatic": "off"
       }
     }
   },

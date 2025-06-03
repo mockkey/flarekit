@@ -29,7 +29,7 @@ export const useSubscriptionSession = () => {
   return useMutation({
     mutationFn: async () => {
       return (
-        await postData<{ url: string }>("/api/subscription/session", unknown)
+        await postData<{ url: string }>("/rpc/subscription/session", unknown)
       ).url;
     },
     onSuccess: async (url: string) => {

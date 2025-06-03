@@ -12,7 +12,6 @@ import SidebarNav from "~/components/dashboard/sidebar-nav";
 import { serverAuth } from "~/features/auth/server/auth.server";
 import type { ExtendedUser } from "~/features/auth/types";
 import type { Route } from "./+types/layout";
-
 export async function loader({ request }: Route.LoaderArgs) {
   const auth = serverAuth();
   const session = await auth.api.getSession({
@@ -24,6 +23,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   if (session.user.emailVerified === false) {
     throw redirect("/auth/sign-up/success");
   }
+
   return session;
 }
 

@@ -1,5 +1,9 @@
+import type { createAuthClient } from "better-auth/react";
 import type { Context } from "hono";
 import type { PlatformProxy } from "wrangler";
+export type AuthClient = ReturnType<typeof createAuthClient>;
+export type Session = AuthClient["$Infer"]["Session"]["session"];
+export type User = AuthClient["$Infer"]["Session"]["user"];
 
 export type EnvType = {
   MY_VAR: string;
@@ -12,6 +16,7 @@ export type EnvType = {
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
   STRIPE_PRICE_ID: string;
+  R2: R2Bucket;
   MY_BUCKET: R2Bucket;
   APP_KV: KVNamespace;
 };
@@ -20,8 +25,12 @@ type Env = {
   Bindings: EnvType;
   Variables: {
     MY_VAR_IN_VARIABLES: string;
+    user: User | null;
+    session: Session | null;
   };
 };
+
+export type HonoEnv = Env;
 
 type GetLoadContextArgs = {
   request: Request;
