@@ -50,13 +50,14 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
     setOrder,
   } = useFileStore();
 
-  const { data, isLoading, error, refetch, fetchNextPage } = useFiles({
-    page: pagination.currentPage,
-    search,
-    parentId: folderID,
-    sort,
-    order,
-  });
+  const { data, isLoading, error, refetch, fetchNextPage, hasNextPage } =
+    useFiles({
+      page: pagination.currentPage,
+      search,
+      parentId: folderID,
+      sort,
+      order,
+    });
   const files = data?.pages.flatMap((p) => p.items) ?? [];
   const [localSearch, setLocalSearch] = useState("");
   const debouncedSearch = useDebounce(localSearch, 360);
@@ -169,6 +170,7 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
             isLoading={isLoading}
             error={error}
             fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
             onSortChange={(field, order) => {
               setOrder(order);
               setSort(field as Sort);

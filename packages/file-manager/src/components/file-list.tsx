@@ -3,7 +3,6 @@ import {
   useChangeFileName,
   useDeleteFile,
 } from "@/hooks/use-file-manager";
-import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Table,
   TableBody,
@@ -21,6 +20,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { FileListItem } from "./file-list-item";
 import { FileListSkeleton } from "./file-list-skeleton";
+import { LoadMore } from "./load-more";
 
 interface FileListProps {
   files: FileItem[];
@@ -29,6 +29,7 @@ interface FileListProps {
   onSortChange: (sort: string, order: "asc" | "desc") => void;
   onFolderOpen: (folderId: string) => void;
   fetchNextPage: () => void;
+  hasNextPage?: boolean;
 }
 
 export function FileList({
@@ -38,6 +39,7 @@ export function FileList({
   onSortChange,
   onFolderOpen,
   fetchNextPage,
+  hasNextPage = false,
 }: FileListProps) {
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
   const [newFileName, setNewFileName] = useState("");
@@ -113,24 +115,6 @@ export function FileList({
                 `Found ${files.length} items`
               )}
             </div>
-            {files.length >= 10 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={fetchNextPage}
-                disabled={isLoading}
-                className="h-7 px-3 text-xs"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="size-3 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                    loading...
-                  </>
-                ) : (
-                  "Load More"
-                )}
-              </Button>
-            )}
           </div>
         </TableCaption>
         <TableHeader>
@@ -197,6 +181,11 @@ export function FileList({
           )}
         </TableBody>
       </Table>
+      <LoadMore
+        onLoadMore={fetchNextPage}
+        isLoading={isLoading}
+        hasMore={hasNextPage}
+      />
     </div>
   );
 }
