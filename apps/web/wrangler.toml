@@ -33,6 +33,7 @@ AWS_REGION = "string"
 AWS_BUCKET = "string"
 AWS_ENDPOINT = "string"
 FREE_STORAGE_LIMIT = "number"
+ADMIN_EMAIL = ""
 
 [[d1_databases]]
 binding = "DB"

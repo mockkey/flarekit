@@ -50,13 +50,14 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
     setOrder,
   } = useFileStore();
 
-  const { data, isLoading, error, refetch, fetchNextPage } = useFiles({
-    page: pagination.currentPage,
-    search,
-    parentId: folderID,
-    sort,
-    order,
-  });
+  const { data, isLoading, error, refetch, fetchNextPage, hasNextPage } =
+    useFiles({
+      page: pagination.currentPage,
+      search,
+      parentId: folderID,
+      sort,
+      order,
+    });
   const files = data?.pages.flatMap((p) => p.items) ?? [];
   const [localSearch, setLocalSearch] = useState("");
   const debouncedSearch = useDebounce(localSearch, 360);
@@ -98,7 +99,7 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
   const { data: breadcrumbs } = useBreadcrumbs(currentFolderId);
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="flex flex-col">
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -135,7 +136,7 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1 min-h-0">
           <div className="mb-4 space-y-4">
             <div className="bg-muted/30  py-2 rounded-lg">
               <Breadcrumbs
@@ -156,9 +157,6 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
                 onChange={handleSearchChange}
                 onCompositionStart={handleCompositionStart}
                 onCompositionEnd={handleCompositionEnd}
-                // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                //     setSearch(e.target.value);
-                // }}
                 className="pl-10   transition-all duration-200 border-input hover:border-primary/50 focus:ring-2 focus:ring-primary/20"
               />
               <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-muted-foreground group-focus-within/search:text-primary transition-colors duration-200" />
@@ -169,6 +167,7 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
             isLoading={isLoading}
             error={error}
             fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
             onSortChange={(field, order) => {
               setOrder(order);
               setSort(field as Sort);

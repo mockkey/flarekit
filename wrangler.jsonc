@@ -47,7 +47,8 @@
     "AWS_REGION": "auto",
     "AWS_BUCKET": "flarekit",
     "AWS_ENDPOINT": "https://flarekit.s3.amazonaws.com",
-    "FREE_STORAGE_LIMIT": 100
+    "FREE_STORAGE_LIMIT": 100,
+    "ADMIN_EMAIL": ""
   },
   "placement": {
     "mode": "smart"

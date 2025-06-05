@@ -2,8 +2,8 @@ import {
   type FileItem,
   useChangeFileName,
   useDeleteFile,
+  useGetDownloadUrl,
 } from "@/hooks/use-file-manager";
-import { Button } from "@flarekit/ui/components/ui/button";
 import {
   Table,
   TableBody,
@@ -21,6 +21,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { FileListItem } from "./file-list-item";
 import { FileListSkeleton } from "./file-list-skeleton";
+import { LoadMore } from "./load-more";
 
 interface FileListProps {
   files: FileItem[];
@@ -29,6 +30,7 @@ interface FileListProps {
   onSortChange: (sort: string, order: "asc" | "desc") => void;
   onFolderOpen: (folderId: string) => void;
   fetchNextPage: () => void;
+  hasNextPage?: boolean;
 }
 
 export function FileList({
@@ -38,6 +40,7 @@ export function FileList({
   onSortChange,
   onFolderOpen,
   fetchNextPage,
+  hasNextPage = false,
 }: FileListProps) {
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
   const [newFileName, setNewFileName] = useState("");
@@ -48,6 +51,8 @@ export function FileList({
 
   const changeFileNameHandle = useChangeFileName();
   const deleteFileHandle = useDeleteFile();
+  const getDownloadUrl = useGetDownloadUrl();
+
   const handleRename = async (id: string) => {
     if (!newFileName.trim()) return;
     changeFileNameHandle.mutate(
@@ -84,6 +89,15 @@ export function FileList({
     );
   };
 
+  const handleDownload = async (fileId: string) => {
+    try {
+      const url = await getDownloadUrl.mutateAsync(fileId);
+      window.open(url, "_blank");
+    } catch (_error) {
+      toast.error("Failed to generate download link");
+    }
+  };
+
   const handleSort = (column: "name" | "size" | "createdAt") => {
     const newDirection =
       sortColumn === column && sortDirection === "asc" ? "desc" : "asc";
@@ -97,106 +111,114 @@ export function FileList({
 
   return (
     <div className="space-y-4">
-      <Table>
-        <TableCaption>
-          <div className="pb-4 flex items-center justify-between">
-            <div className="w-full">
-              {files.length === 0 ? (
-                <div className="w-full py-8 flex flex-col items-center justify-center text-muted-foreground">
-                  <RiInboxLine className="size-12 mb-4 text-muted-foreground/50" />
-                  <p className="text-sm font-medium">No files found</p>
-                  <p className="text-xs mt-1 text-muted-foreground/80">
-                    Upload some files to get started
-                  </p>
-                </div>
-              ) : (
-                `Found ${files.length} items`
-              )}
-            </div>
-            {files.length >= 10 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={fetchNextPage}
-                disabled={isLoading}
-                className="h-7 px-3 text-xs"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="size-3 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                    loading...
-                  </>
+      <div className="relative h-[calc(100vh-360px)] overflow-auto">
+        <Table>
+          <TableCaption className="h-auto sticky top-0  z-10">
+            <div className="pb-4 flex items-center justify-between">
+              <div className="w-full">
+                {files.length === 0 ? (
+                  <div className="w-full py-8 flex flex-col items-center justify-center text-muted-foreground">
+                    <RiInboxLine className="size-12 mb-4 text-muted-foreground/50" />
+                    <p className="text-sm font-medium">No files found</p>
+                    <p className="text-xs mt-1 text-muted-foreground/80">
+                      Upload some files to get started
+                    </p>
+                  </div>
                 ) : (
-                  "Load More"
+                  `Found ${files.length} items`
                 )}
-              </Button>
+              </div>
+            </div>
+          </TableCaption>
+          <TableHeader className="sticky top-0 bg-background z-10">
+            <TableRow>
+              <TableHead className="w-[50px]">Type</TableHead>
+              <TableHead
+                onClick={() => handleSort("name")}
+                className="cursor-pointer"
+              >
+                Name
+                {sortColumn === "name" &&
+                  (sortDirection === "asc" ? (
+                    <RiArrowUpSLine className="inline-block size-4 ml-1" />
+                  ) : (
+                    <RiArrowDownSLine className="inline-block size-4 ml-1" />
+                  ))}
+              </TableHead>
+              <TableHead
+                onClick={() => handleSort("size")}
+                className="cursor-pointer"
+              >
+                Size
+                {sortColumn === "size" &&
+                  (sortDirection === "asc" ? (
+                    <RiArrowUpSLine className="inline-block size-4 ml-1" />
+                  ) : (
+                    <RiArrowDownSLine className="inline-block size-4 ml-1" />
+                  ))}
+              </TableHead>
+              <TableHead
+                onClick={() => handleSort("createdAt")}
+                className="cursor-pointer"
+              >
+                Created At
+                {sortColumn === "createdAt" &&
+                  (sortDirection === "asc" ? (
+                    <RiArrowUpSLine className="inline-block size-4 ml-1" />
+                  ) : (
+                    <RiArrowDownSLine className="inline-block size-4 ml-1" />
+                  ))}
+              </TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <FileListSkeleton />
+            ) : (
+              files?.map((file) => (
+                <FileListItem
+                  key={file.id}
+                  file={file}
+                  actions={[
+                    {
+                      label: "Rename",
+                      onClick: () => {
+                        setRenamingFileId(file.id);
+                        setNewFileName(file.name);
+                      },
+                    },
+                    ...(file.type === "file"
+                      ? [
+                          {
+                            label: "Download",
+                            onClick: () => handleDownload(file.id),
+                          },
+                        ]
+                      : []),
+                    {
+                      label: "Delete",
+                      onClick: () => handleDelete(file.id),
+                      separator: true,
+                    },
+                  ]}
+                  renamingFileId={renamingFileId}
+                  newFileName={newFileName}
+                  setRenamingFileId={setRenamingFileId}
+                  setNewFileName={setNewFileName}
+                  onRename={handleRename}
+                  onFolderOpen={onFolderOpen}
+                />
+              ))
             )}
-          </div>
-        </TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[50px]">Type</TableHead>
-            <TableHead
-              onClick={() => handleSort("name")}
-              className="cursor-pointer"
-            >
-              Name
-              {sortColumn === "name" &&
-                (sortDirection === "asc" ? (
-                  <RiArrowUpSLine className="inline-block size-4 ml-1" />
-                ) : (
-                  <RiArrowDownSLine className="inline-block size-4 ml-1" />
-                ))}
-            </TableHead>
-            <TableHead
-              onClick={() => handleSort("size")}
-              className="cursor-pointer"
-            >
-              Size
-              {sortColumn === "size" &&
-                (sortDirection === "asc" ? (
-                  <RiArrowUpSLine className="inline-block size-4 ml-1" />
-                ) : (
-                  <RiArrowDownSLine className="inline-block size-4 ml-1" />
-                ))}
-            </TableHead>
-            <TableHead
-              onClick={() => handleSort("createdAt")}
-              className="cursor-pointer"
-            >
-              Created At
-              {sortColumn === "createdAt" &&
-                (sortDirection === "asc" ? (
-                  <RiArrowUpSLine className="inline-block size-4 ml-1" />
-                ) : (
-                  <RiArrowDownSLine className="inline-block size-4 ml-1" />
-                ))}
-            </TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <FileListSkeleton />
-          ) : (
-            files?.map((file) => (
-              <FileListItem
-                key={file.id}
-                file={file}
-                renamingFileId={renamingFileId}
-                newFileName={newFileName}
-                setRenamingFileId={setRenamingFileId}
-                setNewFileName={setNewFileName}
-                onRename={handleRename}
-                onDelete={async () => {
-                  handleDelete(file.id);
-                }}
-                onFolderOpen={onFolderOpen}
-              />
-            ))
-          )}
-        </TableBody>
-      </Table>
+          </TableBody>
+        </Table>
+        <LoadMore
+          onLoadMore={fetchNextPage}
+          isLoading={isLoading}
+          hasMore={hasNextPage}
+        />
+      </div>
     </div>
   );
 }

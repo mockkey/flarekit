@@ -73,7 +73,7 @@ export function ProfileCard({
 
   const handleSubmit = () => {
     if (formRef.current) {
-      console.log(formRef.current.requestSubmit());
+      formRef.current.requestSubmit();
     }
   };
 

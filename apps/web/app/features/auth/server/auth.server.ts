@@ -11,6 +11,7 @@ let _auth: ReturnType<typeof betterAuth>;
 import { env } from "cloudflare:workers";
 import { StorageService } from "server/services/storage-service";
 import { db } from "~/db/db.server";
+import { user as userSchema } from "~/db/schema";
 
 export const serverAuth = () => {
   const stripeClient = StripeClient(env.STRIPE_SECRET_KEY!);
@@ -49,19 +50,25 @@ export const serverAuth = () => {
       emailVerification: {
         sendOnSignUp: true,
         sendVerificationEmail: async ({ user, token }) => {
-          const verificationUrl = `${
-            env.BETTER_AUTH_URL
-          }/api/auth/verify-email?token=${token}&callbackURL=${"/dashboard"}`;
-          const resend = new Resend(env.RESEND_API_KEY);
-          await resend.emails.send({
-            from: "Flarekit <welcome@mockkey.com>",
-            to: [user.email],
-            subject: "welcome",
-            react: WelcomeEmail({
-              username: user.name,
-              verifyUrl: verificationUrl,
-            }),
-          });
+          if (env.ADMIN_EMAIL === user.email) {
+            await db.update(userSchema).set({
+              emailVerified: true,
+            });
+          } else {
+            const verificationUrl = `${
+              env.BETTER_AUTH_URL
+            }/api/auth/verify-email?token=${token}&callbackURL=${"/dashboard"}`;
+            const resend = new Resend(env.RESEND_API_KEY);
+            await resend.emails.send({
+              from: "Flarekit <welcome@mockkey.com>",
+              to: [user.email],
+              subject: "welcome",
+              react: WelcomeEmail({
+                username: user.name,
+                verifyUrl: verificationUrl,
+              }),
+            });
+          }
         },
       },
       socialProviders: {

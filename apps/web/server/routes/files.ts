@@ -2,6 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { and, asc, count, desc, eq, isNull, like, ne } from "drizzle-orm";
 import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
+import { getDownloadPresignedUrl } from "server/lib/aws";
 import { FileService } from "server/services/file-service";
 import { StorageService } from "server/services/storage-service";
 import { z } from "zod";
@@ -355,4 +356,25 @@ filesServer.get("/breadcrumbs/:parentId", async (c) => {
     console.error("Error fetching breadcrumbs:", error);
     return c.json({ error: "Failed to fetch breadcrumbs" }, 500);
   }
+});
+
+filesServer.get("/download/:id", async (c) => {
+  const { id } = c.req.param();
+  const user = c.get("user");
+  if (!user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  const currentFile = await FileService.getFileById(user.id, id);
+  if (!currentFile || currentFile.user_files.isDir === true) {
+    return c.json({ error: "File not found or is a folder" }, 404);
+  }
+  const storagePath = currentFile.file?.storagePath;
+  if (!storagePath) {
+    return c.json({ error: "File not found" }, 404);
+  }
+  const presignedUrl = await getDownloadPresignedUrl(
+    storagePath,
+    currentFile.user_files.name || "unknown",
+  );
+  return c.json({ url: presignedUrl });
 });

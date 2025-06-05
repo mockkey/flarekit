@@ -5,6 +5,19 @@ import { StorageService } from "./storage-service";
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class FileService {
+  // get file by id
+  static async getFileById(userId: string, fileId: string) {
+    return await db
+      .select({
+        user_files: userFiles,
+        file: file,
+      })
+      .from(userFiles)
+      .leftJoin(file, eq(userFiles.fileId, file.id))
+      .where(and(eq(userFiles.id, fileId), eq(userFiles.userId, userId)))
+      .get();
+  }
+
   // Add new file
   static async addFile(params: {
     userId: string;
