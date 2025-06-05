@@ -6,7 +6,7 @@ import {
 } from "react-router";
 import { serverAuth } from "~/features/auth/server/auth.server";
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: request.headers,
