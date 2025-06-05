@@ -17,6 +17,7 @@ export interface FileItem {
   createdAt: number;
   parentId: string | null;
   storagePath: string | null;
+  url: string | null;
 }
 
 interface FilesResponse {
@@ -150,3 +151,14 @@ export function useStorage() {
     },
   });
 }
+
+export const useGetDownloadUrl = () => {
+  return useMutation({
+    mutationFn: async (fileId: string) => {
+      const response = await fetchData<{ url: string }>(
+        `/rpc/files/download/${fileId}`,
+      );
+      return response.url;
+    },
+  });
+};

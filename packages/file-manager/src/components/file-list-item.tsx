@@ -14,38 +14,36 @@ import type { FileItem } from "@/types";
 import { formatBytes, formatDateToLong } from "@flarekit/common/utils";
 import { getFileIcon } from "./file-icon";
 
+interface FileAction {
+  label: string;
+  onClick: () => void;
+  separator?: boolean;
+}
+
 interface FileListItemProps {
   file: FileItem;
+  actions: FileAction[];
   renamingFileId: string | null;
   newFileName: string;
   setRenamingFileId: (id: string | null) => void;
   setNewFileName: (name: string) => void;
   onRename: (id: string) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
   onFolderOpen: (id: string) => void;
 }
 
 export function FileListItem({
   file,
+  actions,
   renamingFileId,
   newFileName,
   setRenamingFileId,
   setNewFileName,
   onRename,
-  onDelete,
   onFolderOpen,
 }: FileListItemProps) {
   return (
     <TableRow>
-      <TableCell className="font-medium">
-        {getFileIcon(file)}
-        {/* {file.type === "folder" ? (
-                    <RiFolderFill className="size-5 text-amber-500" />
-                ) :
-                    file.url ? <img src={file.url} /> :
-                        (<RiFileFill className="size-5 text-blue-500" />)
-                } */}
-      </TableCell>
+      <TableCell className="font-medium">{getFileIcon(file)}</TableCell>
       <TableCell className="w-2/5">
         {renamingFileId === file.id ? (
           <div className="flex items-center gap-2">
@@ -97,18 +95,14 @@ export function FileListItem({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" forceMount>
-            <DropdownMenuItem
-              onClick={() => {
-                setRenamingFileId(file.id);
-                setNewFileName(file.name);
-              }}
-            >
-              Rename
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onDelete(file.id)}>
-              Delete
-            </DropdownMenuItem>
+            {actions.map((action) => (
+              <div key={action.label}>
+                {action.separator && <DropdownMenuSeparator />}
+                <DropdownMenuItem onClick={action.onClick}>
+                  {action.label}
+                </DropdownMenuItem>
+              </div>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

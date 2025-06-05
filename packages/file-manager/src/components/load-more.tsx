@@ -41,7 +41,7 @@ export function LoadMore({ onLoadMore, isLoading, hasMore }: LoadMoreProps) {
         {isLoading ? (
           <>
             <div className="size-3 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-            xxxx Loading more...
+            Loading more...
           </>
         ) : (
           "Load More"
