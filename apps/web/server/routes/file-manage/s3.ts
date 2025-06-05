@@ -4,6 +4,8 @@ import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
 import {
   CreateMultipartUpload,
+  deleteMultipart,
+  getMultipart,
   getmultipartSign,
   multipartComplete,
 } from "server/lib/aws";
@@ -66,10 +68,7 @@ S3Server.post(
         },
       });
     }
-
-    console.log("existingFile", existingFile);
-    const newuploadId = await CreateMultipartUpload(hash, type);
-    console.log("newuploadId", newuploadId);
+    await CreateMultipartUpload(hash, type);
   },
 );
 
@@ -93,7 +92,6 @@ S3Server.post(
     }
     const key = `${S3_KEY_PREFIX}${hash}/${name}`;
     const newuploadId = await CreateMultipartUpload(key, type);
-    console.log(newuploadId);
     if (newuploadId) {
       await c.env.APP_KV.put(
         newuploadId,
@@ -110,6 +108,46 @@ S3Server.post(
       );
     }
     return c.json({ uploadId: newuploadId, key });
+  },
+);
+
+S3Server.delete(
+  "/multipart/:uploadId",
+  zValidator(
+    "query",
+    z.object({
+      key: z.string(),
+    }),
+  ),
+  async (c) => {
+    const { key } = c.req.valid("query");
+    if (key) {
+      const { uploadId } = c.req.param();
+      const { key } = c.req.query();
+      const SignUrl = await deleteMultipart(key, uploadId);
+      return c.json({
+        url: SignUrl,
+      });
+    }
+  },
+);
+
+S3Server.get(
+  "/multipart/:uploadId",
+  zValidator(
+    "query",
+    z.object({
+      key: z.string(),
+    }),
+  ),
+  async (c) => {
+    const { key } = c.req.valid("query");
+    if (key) {
+      const { uploadId } = c.req.param();
+      const { key } = c.req.query();
+      const SignUrl = await getMultipart(key, uploadId);
+      return c.json(SignUrl);
+    }
   },
 );
 

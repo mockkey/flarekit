@@ -6,6 +6,7 @@
   "workspaces": ["packages/*", "apps/*"],
   "scripts": {
     "dev": "pnpm -F @flarekit/web dev",
+    "prebuild": "bash ./cloudflare-setup.sh",
     "build": "pnpm -F @flarekit/web build",
     "deploy": "pnpm build &&  pnpm run -F @flarekit/web deploy",
     "db:generate": "pnpm -F @flarekit/web db:generate",

@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { AwsClient } from "aws4fetch";
+import { XMLParser } from "fast-xml-parser";
 import { parseXmlTag } from "./utils";
 
 export const aws = new AwsClient({
@@ -84,6 +85,7 @@ export async function getmultipartSign(
   const signedRequest = await aws.sign(request, {
     aws: { signQuery: true },
   });
+
   return signedRequest.url;
 }
 
@@ -120,4 +122,62 @@ export async function multipartComplete(
   const responseText = await response.text();
   const locationFromXml = parseXmlTag(responseText, "Location");
   return locationFromXml;
+}
+
+export async function getMultipart(key: string, uploadId: string) {
+  try {
+    const s3Host = `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`;
+    const url = new URL(`${s3Host}/${env.AWS_BUCKET}/${key}`);
+    url.searchParams.set("uploadId", uploadId);
+    url.searchParams.set("list-parts", "");
+    const request = new Request(url.toString(), {
+      method: "GET",
+      headers: {
+        Host: s3Host,
+      },
+    });
+    const signedRequest = await aws.sign(request);
+    const response = await fetch(signedRequest);
+    const responseText = await response.text();
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      ignoreDeclaration: true,
+      removeNSPrefix: true,
+    });
+    const json = parser.parse(responseText);
+    return json.ListPartsResult.Part ? json.ListPartsResult.Part : [];
+  } catch {
+    throw new Error("Failed to sign request.");
+  }
+}
+
+export async function deleteMultipart(key: string, uploadId: string) {
+  try {
+    const s3Host = `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`;
+    const url = new URL(`${s3Host}/${env.AWS_BUCKET}/${key}`);
+    url.searchParams.set("uploadId", uploadId);
+    const request = new Request(url.toString(), {
+      method: "DELETE",
+      headers: {
+        Host: s3Host,
+      },
+    });
+    const signedRequest = await aws.sign(request);
+    const response = await fetch(signedRequest);
+    const responseText = await response.text();
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      ignoreDeclaration: true,
+      removeNSPrefix: true,
+    });
+    const json = parser.parse(responseText);
+
+    return {
+      parts: json.Part,
+      isTruncated: json.IsTruncated,
+      nextPartNumberMarker: json.NextPartNumberMarker,
+    };
+  } catch {
+    throw new Error("Failed to sign request.");
+  }
 }

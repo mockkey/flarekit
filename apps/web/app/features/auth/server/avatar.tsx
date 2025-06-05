@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
@@ -51,13 +52,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
   try {
     const contentType = file.type;
     const blob = new Blob([file], { type: contentType });
-    await context.cloudflare.env.MY_BUCKET.put(key, blob, {
+    await env.MY_BUCKET.put(key, blob, {
       httpMetadata: {
         contentType: contentType,
       },
     });
 
-    const imageURL = `${context.cloudflare.env.IMAGE_URL}/${key}`;
+    const imageURL = `${env.IMAGE_URL}/${key}`;
 
     return new Response(
       JSON.stringify({
