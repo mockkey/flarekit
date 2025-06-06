@@ -137,6 +137,7 @@ export class FileService {
       .update(userFiles)
       .set({
         deletedAt: new Date(),
+        isLatestVersion: false,
       })
       .where(inArray(userFiles.id, allItemIds));
 
@@ -209,6 +210,7 @@ export class FileService {
       .update(userFiles)
       .set({
         deletedAt: new Date(),
+        isLatestVersion: false,
       })
       .where(eq(userFiles.id, userFileId));
 
@@ -248,6 +250,7 @@ export class FileService {
       .update(userFiles)
       .set({
         deletedAt: new Date(),
+        isLatestVersion: false,
       })
       .where(
         and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
@@ -282,7 +285,13 @@ export class FileService {
       })
       .from(userFiles)
       .leftJoin(file, eq(file.id, userFiles.fileId))
-      .where(and(eq(userFiles.id, userFileId), eq(userFiles.userId, userId)))
+      .where(
+        and(
+          eq(userFiles.id, userFileId),
+          eq(userFiles.userId, userId),
+          eq(userFiles.isLatestVersion, true),
+        ),
+      )
       .get();
 
     if (!userFile) throw new Error("File not found");
@@ -301,6 +310,7 @@ export class FileService {
       .update(userFiles)
       .set({
         deletedAt: null,
+        isLatestVersion: true,
       })
       .where(eq(userFiles.id, userFileId));
 

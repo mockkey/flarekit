@@ -51,6 +51,19 @@ CREATE TABLE `files` (
 	`createdAt` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE `file_thumbnail` (
+	`id` text PRIMARY KEY NOT NULL,
+	`fileId` text NOT NULL,
+	`variant` text NOT NULL,
+	`storagePath` text NOT NULL,
+	`mime` text,
+	`size` integer,
+	`width` integer,
+	`height` integer,
+	`createdAt` integer NOT NULL,
+	FOREIGN KEY (`fileId`) REFERENCES `files`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`userId` text NOT NULL,
@@ -135,6 +148,7 @@ CREATE TABLE `user_files` (
 	`isDir` integer DEFAULT false,
 	`deletedAt` integer,
 	`createdAt` integer,
+	`isLatestVersion` integer DEFAULT true,
 	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`fileId`) REFERENCES `files`(`id`) ON UPDATE no action ON DELETE no action
 );

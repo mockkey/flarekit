@@ -126,6 +126,22 @@ export const file = sqliteTable("files", {
   createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
 });
 
+export const fileThumbnail = sqliteTable("file_thumbnail", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  fileId: text("fileId")
+    .notNull()
+    .references(() => file.id),
+  variant: text("variant").notNull(), // 'small', 'medium', 'small@2x'
+  storagePath: text("storagePath").notNull(),
+  mime: text("mime"),
+  size: integer("size"),
+  width: integer("width"),
+  height: integer("height"),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+});
+
 export const userFiles = sqliteTable("user_files", {
   id: text("id")
     .$defaultFn(() => createId())
@@ -141,6 +157,9 @@ export const userFiles = sqliteTable("user_files", {
   isDir: integer("isDir", { mode: "boolean" }).default(false),
   deletedAt: integer("deletedAt", { mode: "timestamp" }),
   createdAt: integer("createdAt", { mode: "timestamp" }),
+  isLatestVersion: integer("isLatestVersion", { mode: "boolean" }).default(
+    true,
+  ),
 });
 
 export const share = sqliteTable("share", {

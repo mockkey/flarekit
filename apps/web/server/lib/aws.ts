@@ -14,8 +14,11 @@ export const S3Path = `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com/${env.
 
 export async function createPresignedPutUrl(key: string) {
   const url = `${S3Path}/${key}`;
+  const r2Url = new URL(url);
+  //checksum 256
+  r2Url.searchParams.set("X-Amz-Checksum-Algorithm", "SHA256");
   const res = await aws.sign(
-    new Request(url, {
+    new Request(r2Url, {
       method: "PUT",
     }),
     {
@@ -28,7 +31,6 @@ export async function createPresignedPutUrl(key: string) {
 export async function getS3Resource(url: string) {
   const preUrl = `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com/${env.AWS_BUCKET}/`;
   const key = url.split(preUrl)[1];
-
   const signed = await aws.sign(
     new Request(url, {
       method: "GET",
@@ -57,7 +59,9 @@ export async function getS3Resource(url: string) {
 
 export async function CreateMultipartUpload(key: string, type: string) {
   const url = `${S3Path}/${key}?uploads`;
-  const request = new Request(url.toString(), {
+  const r2Url = new URL(url);
+  r2Url.searchParams.set("X-Amz-Checksum-Algorithm", "SHA256");
+  const request = new Request(r2Url.toString(), {
     method: "POST",
     headers: {
       "Content-Type": type || "application/octet-stream",
