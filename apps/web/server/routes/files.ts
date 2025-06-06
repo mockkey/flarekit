@@ -7,7 +7,7 @@ import { FileService } from "server/services/file-service";
 import { StorageService } from "server/services/storage-service";
 import { z } from "zod";
 import { db } from "~/db/db.server";
-import { file, userFiles } from "~/db/schema";
+import { file, fileThumbnail, userFiles } from "~/db/schema";
 
 export const filesServer = new Hono<HonoEnv>();
 
@@ -91,10 +91,11 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
         mime: file.mime,
         createdAt: userFiles.createdAt,
         url: userFiles.fileId,
-        // storagePath: file.storagePath,
+        thumbnail: fileThumbnail.storagePath,
       })
       .from(userFiles)
       .leftJoin(file, eq(userFiles.fileId, file.id))
+      .leftJoin(fileThumbnail, eq(userFiles.fileId, fileThumbnail.fileId))
       .where(and(...conditions))
       .orderBy(query.order === "desc" ? desc(sortField) : asc(sortField))
       .offset(offset)
@@ -104,7 +105,10 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
       items: files.map((file) => ({
         ...file,
         type: file.type ? "folder" : "file",
-        url: file.url ? `/viewer/${file.url}` : null,
+        url:
+          file.mime?.startsWith("image/") && file.mime !== "image/svg+xml"
+            ? file.thumbnail
+            : `/viewer/${file.url}`,
       })),
       total,
       page: query.page,
@@ -163,6 +167,7 @@ filesServer.post(
             eq(userFiles.name, name),
             eq(userFiles.userId, user.id),
             eq(userFiles.isDir, true),
+            eq(userFiles.isLatestVersion, true),
             parentId
               ? eq(userFiles.parentId, parentId)
               : isNull(userFiles.parentId),

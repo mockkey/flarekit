@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { zValidator } from "@hono/zod-validator";
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
@@ -18,7 +19,7 @@ import { file, userFiles } from "~/db/schema";
 
 export const S3Server = new Hono<HonoEnv>();
 
-const S3_KEY_PREFIX = "uploads/";
+const S3_KEY_PREFIX = "uploads";
 
 S3Server.post(
   "/check/multipart",
@@ -90,7 +91,7 @@ S3Server.post(
     if (uploadId) {
       return c.json({ uploadId: uploadId });
     }
-    const key = `${S3_KEY_PREFIX}${hash}/${name}`;
+    const key = `${S3_KEY_PREFIX}/${hash}/${name}`;
     const newuploadId = await CreateMultipartUpload(key, type);
     if (newuploadId) {
       await c.env.APP_KV.put(
@@ -209,6 +210,12 @@ S3Server.post(
         parentId: filemate.parentId,
       });
       await c.env.APP_KV.delete(uploadId);
+      //check if file is image and push queue to generate thumbnail
+      if (filemate.type.includes("image")) {
+        env.THUMBNAIL_QUEUE.send({
+          fileId: fileRecord.id,
+        });
+      }
       return c.json({
         location: location,
         data: fileRecord,

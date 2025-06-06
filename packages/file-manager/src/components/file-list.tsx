@@ -92,7 +92,10 @@ export function FileList({
   const handleDownload = async (fileId: string) => {
     try {
       const url = await getDownloadUrl.mutateAsync(fileId);
-      window.open(url, "_blank");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileId;
+      a.click();
     } catch (_error) {
       toast.error("Failed to generate download link");
     }
@@ -188,14 +191,10 @@ export function FileList({
                         setNewFileName(file.name);
                       },
                     },
-                    ...(file.type === "file"
-                      ? [
-                          {
-                            label: "Download",
-                            onClick: () => handleDownload(file.id),
-                          },
-                        ]
-                      : []),
+                    {
+                      label: "Download",
+                      onClick: () => handleDownload(file.id),
+                    },
                     {
                       label: "Delete",
                       onClick: () => handleDelete(file.id),

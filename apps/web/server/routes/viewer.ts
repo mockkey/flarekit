@@ -59,7 +59,6 @@ viewerServer.get("/resize/:key", async (c) => {
     const inputBytes = await fetch(signed.url, signed)
       .then((res) => res.arrayBuffer())
       .then((buffer) => new Uint8Array(buffer));
-
     const inputImage = PhotonImage.new_from_byteslice(inputBytes);
     const maxDimension = 300;
     const width = inputImage.get_width();
@@ -78,7 +77,6 @@ viewerServer.get("/resize/:key", async (c) => {
 
     inputImage.free();
     outputImage.free();
-
     // return the Response instance
     return new Response(outputBytes, {
       headers: {

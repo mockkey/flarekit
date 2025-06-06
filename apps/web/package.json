@@ -11,6 +11,7 @@
     "start": "wrangler dev",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:drop": "drizzle-kit drop",
     "db:local": "wrangler d1 migrations apply DB --local",
     "db:remote": "wrangler d1 migrations apply DB --remote",
     "typecheck": "react-router typegen && tsc",
