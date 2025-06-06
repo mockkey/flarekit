@@ -3,7 +3,10 @@
   "name": "flarekit",
   "compatibility_date": "2025-04-01",
   "main": "./worker.ts",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ],
   "assets": {
     "directory": "./build/client"
   },
@@ -30,6 +33,14 @@
       "binding": "MY_BUCKET"
     }
   ],
+  "queues": {
+    "producers": [
+      {
+        "queue": "thumbnails",
+        "binding": "THUMBNAIL_QUEUE"
+      }
+    ]
+  },
   "vars": {
     "MY_VAR": "My Value",
     "BETTER_AUTH_SECRET": "518e273c9b135179518e273c9b135179",

@@ -61,6 +61,7 @@ cd app/web
 npx wrangler d1 create flare-d1
 npx wrangler kv namespace create APP_KV
 npx wrangler r2 bucket create flarekit
+npx wrangler queues create thumbnails
 
 # 请在 wrangler.toml 中添加你的 secret，例如：auth、Stripe、D1 等配置。
 

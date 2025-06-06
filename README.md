@@ -61,6 +61,7 @@ cd app/web
 npx wrangler d1 create flare-d1
 npx wrangler kv namespace create APP_KV
 npx wrangler r2 bucket create flarekit
+npx wrangler queues create thumbnails
 
 # Be sure to update wrangler.toml with your secrets (auth keys, Stripe keys, D1 DB name, etc.)
 
