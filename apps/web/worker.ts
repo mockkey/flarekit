@@ -1,4 +1,5 @@
 import { createRequestHandler } from "react-router";
+import { setThumbnailFileId } from "server/routes/viewer";
 import app from "./server";
 
 app.use(async (c) => {
@@ -9,4 +10,24 @@ app.use(async (c) => {
   return result;
 });
 
-export default app;
+export default {
+  fetch: app.fetch,
+  queue: async (batch: MessageBatch) => {
+    switch (batch.queue) {
+      case "thumbnails":
+        await thumbnailHandler(batch);
+        break;
+      default:
+        console.log("default");
+        break;
+    }
+  },
+};
+
+const thumbnailHandler = async (batch: MessageBatch) => {
+  for (const message of batch.messages) {
+    const body = message.body as { fileId: string; userId: string };
+    const { fileId } = body;
+    await setThumbnailFileId(fileId);
+  }
+};

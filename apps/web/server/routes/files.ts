@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { zValidator } from "@hono/zod-validator";
 import { and, asc, count, desc, eq, isNull, like, ne } from "drizzle-orm";
 import { Hono } from "hono";
@@ -108,6 +109,8 @@ filesServer.get("/", zValidator("query", querySchema), async (c) => {
         url:
           file.mime?.startsWith("image/") && file.mime !== "image/svg+xml"
             ? file.thumbnail
+              ? `${env.IMAGE_URL}/${file.thumbnail}`
+              : null
             : `/viewer/${file.url}`,
       })),
       total,

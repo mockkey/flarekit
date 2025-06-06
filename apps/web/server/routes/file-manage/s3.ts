@@ -212,8 +212,9 @@ S3Server.post(
       await c.env.APP_KV.delete(uploadId);
       //check if file is image and push queue to generate thumbnail
       if (filemate.type.includes("image")) {
-        env.THUMBNAIL_QUEUE.send({
+        await env.THUMBNAIL_QUEUE.send({
           fileId: fileRecord.id,
+          userId: user.id,
         });
       }
       return c.json({

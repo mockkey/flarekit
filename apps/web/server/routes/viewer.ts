@@ -1,10 +1,11 @@
+import { env } from "cloudflare:workers";
 import { PhotonImage, SamplingFilter, resize } from "@cf-wasm/photon";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
 import { aws } from "server/lib/aws";
 import { db } from "~/db/db.server";
-import { file } from "~/db/schema";
+import { file, fileThumbnail } from "~/db/schema";
 
 export const viewerServer = new Hono<HonoEnv>();
 
@@ -85,3 +86,77 @@ viewerServer.get("/resize/:key", async (c) => {
     });
   }
 });
+
+interface WebpFile {
+  fileId: string;
+  size: number;
+  mime: string;
+  width: number;
+  height: number;
+  hash: string;
+}
+
+export async function getBytesWebpByFileId(
+  id: string,
+): Promise<{ imgArray: Uint8Array; file: WebpFile }> {
+  const existingFile = await db.query.file.findFirst({
+    where: eq(file.id, id),
+  });
+  if (!existingFile || !existingFile.storagePath) {
+    return Promise.reject(new Error("File not found or storage path is null"));
+  }
+  const signed = await aws.sign(
+    new Request(existingFile?.storagePath, {
+      method: "GET",
+    }),
+    {
+      aws: { signQuery: true },
+    },
+  );
+  const inputBytes = await fetch(signed.url, signed)
+    .then((res) => res.arrayBuffer())
+    .then((buffer) => new Uint8Array(buffer));
+  const inputImage = PhotonImage.new_from_byteslice(inputBytes);
+  const maxDimension = 300;
+  const originWidth = inputImage.get_width();
+  const originHeight = inputImage.get_height();
+  const factor = maxDimension / Math.max(originWidth, originHeight);
+  const width = inputImage.get_width() * factor;
+  const height = inputImage.get_height() * factor;
+  // resize image using photon
+  const outputImage = resize(inputImage, width, height, SamplingFilter.Nearest);
+
+  // get webp bytes
+  const outputBytes = outputImage.get_bytes_webp();
+
+  inputImage.free();
+  outputImage.free();
+  // return the Response instance
+  return {
+    imgArray: outputBytes,
+    file: {
+      size: outputBytes.byteLength,
+      mime: "image/wep",
+      height,
+      width,
+      hash: existingFile.hash || `fileId/${existingFile.id}`,
+      fileId: existingFile.id,
+    },
+  };
+}
+
+export async function setThumbnailFileId(id: string) {
+  const { imgArray, file } = await getBytesWebpByFileId(id);
+  const storagePath = `thumbnail/${file.hash}/x300.webp`;
+  await env.MY_BUCKET.put(storagePath, imgArray);
+  await db.insert(fileThumbnail).values({
+    fileId: id,
+    variant: "‘thumb’",
+    storagePath,
+    mime: file.mime,
+    size: file.size,
+    width: file.width,
+    height: file.height,
+    createdAt: new Date(),
+  });
+}
