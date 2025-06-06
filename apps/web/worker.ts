@@ -27,7 +27,7 @@ export default {
 const thumbnailHandler = async (batch: MessageBatch) => {
   for (const message of batch.messages) {
     const body = message.body as { fileId: string; userId: string };
-    const { fileId, userId } = body;
+    const { fileId } = body;
     await setThumbnailFileId(fileId);
   }
 };
