@@ -30,6 +30,9 @@ export function FileUploadDialog({
       const successful = result.successful;
       if (!successful?.length) return;
       queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKey],
+      });
     });
   }, [uppyInstance]);
 
