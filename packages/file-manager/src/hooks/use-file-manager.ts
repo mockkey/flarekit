@@ -147,8 +147,20 @@ export const useCreateFolder = () => {
       });
       return { previousFilesData };
     },
+    onError(_error, _variables, context) {
+      context?.previousFilesData.map((previousFilesData) => {
+        const queryKey = previousFilesData[0];
+        const preData = previousFilesData[1];
+        queryClient.setQueryData(queryKey, preData);
+      });
+    },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKey],
+      });
     },
   });
 };
@@ -189,11 +201,20 @@ export const useChangeFileName = () => {
       });
       return { previousFilesData };
     },
-    onError: () => {
-      console.error("rename:");
+    onError(_error, _variables, context) {
+      context?.previousFilesData.map((previousFilesData) => {
+        const queryKey = previousFilesData[0];
+        const preData = previousFilesData[1];
+        queryClient.setQueryData(queryKey, preData);
+      });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKey],
+      });
     },
   });
 };
@@ -233,7 +254,12 @@ export const useDeleteFile = () => {
       console.error("rename:");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKey],
+      });
     },
   });
 };

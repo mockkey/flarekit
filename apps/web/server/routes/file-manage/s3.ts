@@ -16,6 +16,7 @@ import type { fileMeta } from "server/types/file";
 import { z } from "zod";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
+import { setThumbnailFileId } from "../viewer";
 
 export const S3Server = new Hono<HonoEnv>();
 
@@ -212,11 +213,16 @@ S3Server.post(
       await c.env.APP_KV.delete(uploadId);
       //check if file is image and push queue to generate thumbnail
       if (filemate.type.includes("image")) {
-        await env.THUMBNAIL_QUEUE.send({
-          fileId: fileRecord.id,
-          userId: user.id,
-        });
+        if (env.THUMBNAIL_QUEUE) {
+          await env.THUMBNAIL_QUEUE.send({
+            fileId: fileRecord.id,
+            userId: user.id,
+          });
+        } else {
+          await setThumbnailFileId(fileRecord.id);
+        }
       }
+
       return c.json({
         location: location,
         data: fileRecord,

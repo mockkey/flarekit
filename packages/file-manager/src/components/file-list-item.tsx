@@ -42,7 +42,13 @@ export function FileListItem({
   onFolderOpen,
 }: FileListItemProps) {
   return (
-    <TableRow>
+    <TableRow
+      onDoubleClick={() => {
+        if (file.type === "folder") {
+          onFolderOpen(file.id);
+        }
+      }}
+    >
       <TableCell className="font-medium">{getFileIcon(file)}</TableCell>
       <TableCell className="w-2/5">
         {renamingFileId === file.id ? (
@@ -73,11 +79,6 @@ export function FileListItem({
             className={
               file.type === "folder" ? "cursor-pointer hover:text-blue-500" : ""
             }
-            onDoubleClick={() => {
-              if (file.type === "folder") {
-                onFolderOpen(file.id);
-              }
-            }}
           >
             {file.name}
           </span>

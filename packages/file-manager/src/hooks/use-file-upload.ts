@@ -8,10 +8,7 @@ export const useCheckHash = () => {
     mutationFn: (queryString: string) => {
       return postData<{ key: string }>("/rpc/file/check-hash", queryString);
     },
-    onSuccess: async () => {
-      await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey });
-    },
+    onSuccess: async () => {},
   });
 };
 
@@ -20,9 +17,6 @@ export const useGetUploadIdByHash = () => {
     mutationFn: (queryString: string) => {
       return postData<{ key: string }>("/rpc/file/check-hash", queryString);
     },
-    onSuccess: async () => {
-      await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey });
-    },
+    onSuccess: async () => {},
   });
 };
