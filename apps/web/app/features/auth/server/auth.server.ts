@@ -1,10 +1,9 @@
 import { stripe } from "@better-auth/stripe";
+import { ResetPasswordEmail, WelcomeEmail } from "@flarekit/email";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { apiKey, createAuthMiddleware } from "better-auth/plugins";
 import { Resend } from "resend";
-import ResetPasswordEmail from "~/features/email/components/reset-password";
-import WelcomeEmail from "~/features/email/components/wecome";
 import { hashPassword, verifyPassword } from "../crypto.server";
 import { StripeClient } from "./stripe";
 let _auth: ReturnType<typeof betterAuth>;

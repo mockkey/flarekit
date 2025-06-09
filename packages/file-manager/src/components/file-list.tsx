@@ -55,6 +55,8 @@ export function FileList({
 
   const handleRename = async (id: string) => {
     if (!newFileName.trim()) return;
+    setRenamingFileId(null);
+    setNewFileName("");
     changeFileNameHandle.mutate(
       {
         id: id,
@@ -63,8 +65,6 @@ export function FileList({
       {
         onSuccess: () => {
           toast.success("File renamed successfully");
-          setRenamingFileId(null);
-          setNewFileName("");
         },
         onError: (error) => {
           toast.error(error.message || "Failed to rename file");

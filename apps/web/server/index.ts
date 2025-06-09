@@ -6,7 +6,6 @@ import rpc from "./routes";
 import { viewerServer } from "./routes/viewer";
 
 const app = new Hono<HonoEnv>();
-
 app.route("/rpc", rpc);
 app.route("/viewer", viewerServer);
 

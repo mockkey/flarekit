@@ -29,10 +29,7 @@ export function FileUploadDialog({
     uppyInstance?.on("complete", async (result) => {
       const successful = result.successful;
       if (!successful?.length) return;
-      await queryClient.refetchQueries({
-        queryKey,
-        type: "active",
-      });
+      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
     });
   }, [uppyInstance]);
 

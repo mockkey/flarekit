@@ -1,0 +1,13 @@
+{
+  "extends": "@flarekit/config-typescript/base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "jsxImportSource": "react/jsx",
+  "include": ["emails"],
+  "exclude": ["node_modules"],
+  "noEmit": true
+}

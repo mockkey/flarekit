@@ -287,7 +287,7 @@ filesServer.post(
         and(
           eq(userFiles.name, name),
           eq(userFiles.userId, user.id),
-          eq(userFiles.isDir, !currentFIles.isDir),
+          eq(userFiles.isDir, true),
           ne(userFiles.id, id), // Exclude current folder
           currentFIles.parentId
             ? eq(userFiles.parentId, currentFIles.parentId)
