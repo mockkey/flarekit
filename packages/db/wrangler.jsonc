@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "flarekit-db",
+  "compatibility_date": "2025-04-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "kit-3",
+      "database_id": "2774e536-4d2d-4eb0-be5c-c5d57f4f385b",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

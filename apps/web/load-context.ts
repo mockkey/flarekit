@@ -27,6 +27,7 @@ type Env = {
     MY_VAR_IN_VARIABLES: string;
     user: User | null;
     session: Session | null;
+    db: D1Database;
   };
 };
 

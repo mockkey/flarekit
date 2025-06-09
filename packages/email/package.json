@@ -1,0 +1,27 @@
+{
+  "name": "@flarekit/email",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "email dev"
+  },
+  "keywords": [],
+  "dependencies": {
+    "@react-email/components": "0.0.35",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.0",
+  "devDependencies": {
+    "@flarekit/config-typescript": "workspace:*",
+    "@types/react": "^19.0.0",
+    "react-email": "4.0.16"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

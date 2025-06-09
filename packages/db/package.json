@@ -1,0 +1,31 @@
+{
+  "name": "@flarekit/db",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:drop": "drizzle-kit drop",
+    "db:local": "wrangler d1 migrations apply DB --local --persist-to=../../.wrangler/state",
+    "db:check": "drizzle-kit check:sqlite",
+    "db:studio": "drizzle-kit studio --verbose"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.41.0",
+    "@paralleldrive/cuid2": "^2.2.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.30.6",
+    "@flarekit/config-typescript": "workspace:*",
+    "@cloudflare/workers-types": "^4.20250528.0",
+    "wrangler": "^4.9.1"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.0"
+}

@@ -1,5 +1,6 @@
 import { fetchData, postData } from "@flarekit/common/fetch";
 import {
+  type InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -14,7 +15,7 @@ export interface FileItem {
   type: "file" | "folder";
   size: number;
   mime: string | null;
-  createdAt: number;
+  createdAt: number | string;
   parentId: string | null;
   storagePath: string | null;
   url: string | null;
@@ -60,6 +61,7 @@ export function useFiles(options: UseFilesOptions = {}) {
     number
   >({
     queryKey: [
+      "file-list",
       ...queryKey,
       options.page,
       options.limit,
@@ -106,9 +108,47 @@ export const useCreateFolder = () => {
     mutationFn: (queryString: createFileParams) => {
       return postData<{ key: string }>("/rpc/files/folder/create", queryString);
     },
-    onSuccess: async () => {
+    onMutate: async (variables: { name: string; parentId: string | null }) => {
       await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<FilesResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: [
+                {
+                  id: crypto.randomUUID(),
+                  name: variables.name,
+                  type: "folder" as const,
+                  parentId: variables.parentId,
+                  size: 0,
+                  mime: null,
+                  storagePath: null,
+                  url: null,
+                  createdAt: new Date().toISOString(),
+                },
+                ...items.items,
+              ],
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
     },
   });
 };
@@ -117,11 +157,43 @@ export const useChangeFileName = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (queryString: { id: string; name: string }) => {
+      console.log("mutationFn");
       return postData<{ key: string }>("/rpc/files/change-name", queryString);
     },
-    onSuccess: async () => {
+    onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey, type: "active" });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<FilesResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: items.items.map((file) =>
+                file.id === variables.id
+                  ? { ...file, name: variables.name }
+                  : file,
+              ),
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onError: () => {
+      console.error("rename:");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
     },
   });
 };
@@ -132,9 +204,36 @@ export const useDeleteFile = () => {
     mutationFn: (queryString: { id: string }) => {
       return postData<{ key: string }>("/rpc/files/delete", queryString);
     },
-    onSuccess: async () => {
+    onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey });
-      queryClient.refetchQueries({ queryKey, type: "active" });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<FilesResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: items.items.filter((file) => file.id !== variables.id),
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onError: () => {
+      console.error("rename:");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["file-list", ...queryKey] });
     },
   });
 };
