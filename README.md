@@ -85,5 +85,33 @@ pnpm deploy
 
 ```
 
+```r2
+    [
+  {
+    "AllowedOrigins": [
+      "*"
+    ],
+    "AllowedMethods": [
+      "PUT",
+      "GET",
+      "HEAD",
+      "POST",
+      "DELETE"
+    ],
+    "AllowedHeaders": [
+      "*"
+    ],
+    "ExposeHeaders": [
+      "ETag"
+    ],
+    "MaxAgeSeconds": 3600
+  }
+]
+
+```
+
+
+
+
 ## 📜 License
 This project is licensed under the MIT License.
