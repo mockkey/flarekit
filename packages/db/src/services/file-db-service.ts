@@ -1,4 +1,3 @@
-import { dbService } from "@/client";
 import * as schema from "@/schema";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
@@ -17,7 +16,6 @@ type CreateShareParams = Omit<schema.Share, "id" | "createdAt">;
 export class FileDbService {
   constructor(private db: DrizzleD1Database<typeof schema>) {
     this.db = db;
-    console.log("FileDbService", dbService);
   }
 
   async getFileById(fileId: string) {
@@ -132,6 +130,22 @@ export class FileDbService {
       .values({
         createdAt: new Date(),
         ...data,
+      })
+      .returning()
+      .get();
+  }
+
+  async createFolder(
+    params: Omit<CreateFileParams, "mime" | "storageProvider">,
+  ) {
+    return this.db
+      .insert(schema.file)
+      .values({
+        ...params,
+        createdAt: new Date(),
+        mime: "floder",
+        storageProvider: "local",
+        size: 0,
       })
       .returning()
       .get();

@@ -9,6 +9,6 @@ const app = new Hono<HonoEnv>();
 app.route("/rpc", rpc);
 app.route("/viewer", viewerServer);
 
-app.route("/admin/api", api);
+app.route("/api/v1", api);
 
 export default app;

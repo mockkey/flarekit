@@ -1,7 +1,10 @@
 import { Hono } from "hono";
+import { filesServer } from "server/routes/files";
 import { requireAuth } from "../middleware/auth";
 
 const api = new Hono();
+
+api.route("/file", filesServer);
 
 api.get(
   "/files",

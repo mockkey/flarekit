@@ -138,84 +138,17 @@ filesServer.post(
       if (!user) {
         return c.json({ error: "Unauthorized" }, 401);
       }
-
       const { name, parentId } = c.req.valid("json");
-
-      if (parentId) {
-        const parentFolder = await db
-          .select()
-          .from(userFiles)
-          .where(
-            and(
-              eq(userFiles.id, parentId),
-              eq(userFiles.userId, user.id),
-              eq(userFiles.isDir, true),
-            ),
-          )
-          .get();
-
-        if (!parentFolder) {
-          return c.json(
-            { error: "Parent folder not found or not owned by user" },
-            404,
-          );
-        }
-      }
-
-      const existingFolder = await db
-        .select()
-        .from(userFiles)
-        .where(
-          and(
-            eq(userFiles.name, name),
-            eq(userFiles.userId, user.id),
-            eq(userFiles.isDir, true),
-            eq(userFiles.isLatestVersion, true),
-            parentId
-              ? eq(userFiles.parentId, parentId)
-              : isNull(userFiles.parentId),
-          ),
-        )
-        .get();
-
-      if (existingFolder) {
-        return c.json({ error: "Folder already exists" }, 409);
-      }
-
-      const timestamp = new Date();
-
-      const fileRecord = await db
-        .insert(file)
-        .values({
-          name,
-          size: 0,
-          storageProvider: "local",
-          mime: "folder", // MIME type for directories
-          createdAt: timestamp,
-        })
-        .returning()
-        .get();
-
-      const newFolder = await db
-        .insert(userFiles)
-        .values({
-          name,
-          userId: user.id,
-          parentId,
-          isDir: true,
-          fileId: fileRecord.id,
-          createdAt: timestamp,
-        })
-        .returning()
-        .get();
-
+      const newFolder = await FileService.createFolder(user.id, name, parentId);
       return c.json({
         success: true,
         folder: newFolder,
       });
     } catch (error) {
-      console.error("Error creating folder:", error);
-      return c.json({ error: "Failed to create folder" }, 500);
+      if (error instanceof Error) {
+        return c.json({ error: error.message }, 500);
+      }
+      return c.json({ error: "Failed to create folder" }, 400);
     }
   },
 );
