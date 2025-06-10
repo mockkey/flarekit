@@ -33,8 +33,9 @@ export async function loader(argument: LoaderFunctionArgs) {
 export function App() {
   const [theme] = useTheme();
   const data = useLoaderData();
+  const themeCurrent = String(theme) === "null" ? "system" : theme;
   return (
-    <html lang="en" data-theme={theme ?? ""} suppressHydrationWarning>
+    <html lang="en" data-theme={themeCurrent ?? ""} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,7 +47,7 @@ export function App() {
         <ProgressBar />
         <Toaster
           position="top-right"
-          theme={theme as "light" | "dark"}
+          theme={themeCurrent as "light" | "dark"}
           closeButton
           richColors
           expand={false}

@@ -25,14 +25,18 @@ type ExtendedUser = User & {
 };
 
 export const getTheme = async ({ request }: LoaderFunctionArgs) => {
-  const auth = serverAuth();
-  const data = await auth.api.getSession({
-    headers: request.headers,
-  });
-  const user = data?.user as ExtendedUser;
-  if (user) {
-    return user.theme;
+  try {
+    const auth = serverAuth();
+    const data = await auth.api.getSession({
+      headers: request.headers,
+    });
+    const user = data?.user as ExtendedUser;
+    if (user) {
+      return user.theme;
+    }
+    const { getTheme } = await themeSessionResolver(request);
+    return getTheme();
+  } catch {
+    return "system";
   }
-  const { getTheme } = await themeSessionResolver(request);
-  return getTheme();
 };
