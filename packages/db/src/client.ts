@@ -29,15 +29,22 @@ export function getDb(d1: D1Database): DrizzleD1Database<typeof schema> {
   return drizzle(d1, { schema });
 }
 
-export const dbService = (d1: D1Database) => {
-  const db = getDb(d1);
-  return {
-    files: new FileDbService(db),
-    users: new UserDbService(db),
-    storags: new StorageDbService(db),
-    storageUsageLogs: new StorageUsageLogsDbService(db),
-    db: db,
-  } as const;
+let _dbService: DBService;
+
+export const DbService = (d1: D1Database) => {
+  if (_dbService) {
+    return _dbService;
+  }
+  if (!_dbService) {
+    const db = getDb(d1);
+    _dbService = {
+      files: new FileDbService(db),
+      users: new UserDbService(db),
+      storag: new StorageDbService(db),
+      storageUsageLogs: new StorageUsageLogsDbService(db),
+    };
+    return _dbService;
+  }
 };
 
 export type DBService = {

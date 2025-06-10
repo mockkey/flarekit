@@ -1,10 +1,64 @@
-import { and, eq, inArray, isNull } from "drizzle-orm";
+import { env } from "cloudflare:workers";
+import { DbService } from "@flarekit/db";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
 import { StorageService } from "./storage-service";
 
+const dbService = DbService(env.DB);
+
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class FileService {
+  static async createFolder(
+    userId: string,
+    name: string,
+    parentId?: string | null,
+  ) {
+    if (parentId) {
+      const parentFolder = await dbService?.files.getUserFileById(
+        parentId,
+        userId,
+      );
+      if (parentFolder.isDir === false) {
+        throw new Error("Parent folder not found or not owned by user");
+      }
+    }
+    const existingFolder = await db
+      .select()
+      .from(userFiles)
+      .where(
+        and(
+          eq(userFiles.name, name),
+          eq(userFiles.userId, userId),
+          eq(userFiles.isDir, true),
+          eq(userFiles.isLatestVersion, true),
+          parentId
+            ? eq(userFiles.parentId, parentId)
+            : isNull(userFiles.parentId),
+        ),
+      )
+      .get();
+
+    if (existingFolder) {
+      throw new Error("Folder already exists");
+    }
+
+    const fileRecord = await dbService?.files.createFolder({
+      name,
+    });
+
+    const newFolder = await dbService?.files.createUserFile({
+      name,
+      userId: userId,
+      parentId,
+      isDir: true,
+      fileId: fileRecord.id,
+    });
+    return {
+      folder: newFolder,
+    };
+  }
+
   // get file by id
   static async getFileById(userId: string, fileId: string) {
     return await db
@@ -121,18 +175,41 @@ export class FileService {
     if (!folder) throw new Error("Folder not found");
 
     // 2. Get all descendants (files and subfolders)
-    const descendants = await this.getAllDescendants(userId, folderId);
+    const result = await db
+      .select({
+        totalSize: sql<number>`COALESCE(SUM(${file.size}), 0)`,
+        fileIds: sql<string>`GROUP_CONCAT(DISTINCT ${file.id})`,
+        userFileIds: sql<string>`GROUP_CONCAT(DISTINCT ${userFiles.id})`,
+      })
+      .from(file)
+      .innerJoin(userFiles, eq(file.id, userFiles.fileId))
+      .where(
+        sql`${userFiles.id} IN (
+        WITH RECURSIVE folder_tree AS (
+          SELECT ${userFiles.id}, ${userFiles.parentId}, ${userFiles.fileId}, ${userFiles.isDir}
+          FROM ${userFiles}
+          WHERE ${userFiles.id} = ${folderId}
+          AND ${userFiles.deletedAt} IS NULL
+          UNION ALL
+          SELECT uf.id, uf.parentId, uf.fileId, uf.isDir
+          FROM ${userFiles} uf
+          INNER JOIN folder_tree ft ON uf.parentId = ft.id
+          WHERE uf.userId = ${userId}
+          AND uf.deletedAt IS NULL
+        )
+        SELECT id FROM folder_tree 
+      )`,
+      )
+      .execute();
 
-    // 3. Get all file IDs and calculate total size
-    const fileDescendants = descendants.filter((d) => !d.isDir);
-    const fileIds = fileDescendants.map((f) => f.fileId);
-
-    const files = await db.select().from(file).where(inArray(file.id, fileIds));
-
-    const totalSize = files.reduce((sum, file) => sum + (file.size ?? 0), 0);
+    const { totalSize, fileIds, userFileIds } = result[0] || {
+      totalSize: 0,
+      fileIds: "",
+      userFileIds: "",
+    };
 
     // 4. Soft delete folder and all descendants
-    const allItemIds = [folderId, ...descendants.map((d) => d.id)];
+    const allItemIds = userFileIds.split(",");
     await db
       .update(userFiles)
       .set({
@@ -150,17 +227,17 @@ export class FileService {
       metadata: {
         folderName: !folder.name,
         deleteType: "folder_delete",
-        fileCount: fileDescendants.length,
-        totalFolders: descendants.filter((d) => d.isDir).length,
-        fileIds: fileIds.join(","),
+        fileCount: allItemIds.length,
+        totalFolders: allItemIds.length,
+        fileIds: fileIds,
       },
     });
 
     return {
       folder,
-      descendants,
+      userFileIds,
       totalSize,
-      fileCount: fileDescendants.length,
+      fileCount: allItemIds.length,
     };
   }
 
