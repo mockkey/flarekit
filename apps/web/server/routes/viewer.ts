@@ -151,7 +151,7 @@ export async function setThumbnailFileId(id: string) {
   await env.MY_BUCKET.put(storagePath, imgArray);
   await db.insert(fileThumbnail).values({
     fileId: id,
-    variant: "‘thumb’",
+    variant: "thumb",
     storagePath,
     mime: file.mime,
     size: file.size,
