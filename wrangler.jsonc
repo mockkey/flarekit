@@ -39,6 +39,12 @@
         "queue": "thumbnails",
         "binding": "THUMBNAIL_QUEUE"
       }
+    ],
+    "consumers": [
+      {
+        "queue": "thumbnails",
+        "max_batch_timeout": 3
+      }
     ]
   },
   "vars": {

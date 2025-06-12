@@ -51,11 +51,15 @@ English | [简体中文](./README-zh_CN.md)
 git clone https://github.com/mockkey/flarekit.git
 cd flarekit
 
+
 # Install dependencies
 pnpm install
 
+# Copy wrangler.jsonc
+cp  ./wrangler.jsonc ./apps/web/wrangler.jsonc
+
 # Navigate to the web app directory:
-cd app/web
+cd apps/web
 
 #Create Cloudflare resources:
 npx wrangler d1 create flare-d1
@@ -85,6 +89,9 @@ pnpm deploy
 
 ```
 
+## 🛠️ Setting R2  CORS
+
+
 ```r2
     [
   {
@@ -107,7 +114,6 @@ pnpm deploy
     "MaxAgeSeconds": 3600
   }
 ]
-
 ```
 
 
