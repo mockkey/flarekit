@@ -53,9 +53,14 @@ cd flarekit
 #  安装依赖
 pnpm install
 
-# 配置 Wrangler 和环境
+
+
+# 配置 Wrangler 和环境 
+cp  ./wrangler.jsonc ./apps/web/wrangler.jsonc
+
+
 # 进入 Web 应用目录：
-cd app/web
+cd apps/web
 
 #创建 Cloudflare 资源：
 npx wrangler d1 create flare-d1
@@ -64,6 +69,7 @@ npx wrangler r2 bucket create flarekit
 npx wrangler queues create thumbnails
 
 # 请在 wrangler.toml 中添加你的 secret，例如：auth、Stripe、D1 等配置。
+
 
 
 # 数据库初始化
@@ -83,6 +89,35 @@ pnpm build
 # 部署到 Cloudflare
 pnpm deploy
 
+```
+
+
+## 🛠️ 设置R2 CORS  
+
+更具自己的网址替换AllowedOrigins内容防止跨域
+
+```r2
+    [
+  {
+    "AllowedOrigins": [
+      "*"     
+    ],
+    "AllowedMethods": [
+      "PUT",
+      "GET",
+      "HEAD",
+      "POST",
+      "DELETE"
+    ],
+    "AllowedHeaders": [
+      "*"
+    ],
+    "ExposeHeaders": [
+      "ETag"
+    ],
+    "MaxAgeSeconds": 3600
+  }
+]
 ```
 
 ## 📜 License

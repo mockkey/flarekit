@@ -51,4 +51,8 @@ migrations_dir = "drizzle"
 [[queues.producers]]
   queue = "thumbnails"
   binding = "THUMBNAIL_QUEUE"
+[[queues.consumers]]
+  queue = "thumbnails"
+  binding = "THUMBNAIL_QUEUE"
+
   
