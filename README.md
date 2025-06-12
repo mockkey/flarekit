@@ -29,9 +29,12 @@ English | [简体中文](./README-zh_CN.md)
 ├── apps/
 │   └── web/              # Main web frontend
 ├── packages/
-│   ├── auth/        # Auth client SDK
-│   ├── ui/                 # Shared UI components (shadcn styled)
-│   └── config-typescript/  # Typescript config files
+│   ├── auth/             # Authentication client SDK
+│   ├── ui/               # Shared UI components (shadcn styled)
+│   ├── config-typescript/  # TypeScript configuration files
+│   ├── email/            # React email templates for transactional emails
+│   ├── db/               # Database schema definitions and client setup
+│   └── file-manager/     # Frontend components, hooks, and utilities for file and folder management
 ```
 
 ### Folder Overview
