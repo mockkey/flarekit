@@ -26,11 +26,14 @@
 
 ```
 ├── apps/
-│   └── web/              # Main web frontend
+│   └── web/              # 主前端应用
 ├── packages/
-│   ├── auth/        # Auth client SDK
-│   ├── ui/                 # Shared UI components (shadcn styled)
-│   └── config-typescript/  # Typescript config files
+│   ├── auth/             # 认证客户端 SDK
+│   ├── ui/               # 共享 UI 组件 (shadcn 风格)
+│   ├── config-typescript/  # TypeScript 配置文件
+│   ├── email/            # React 邮件模板，用于事务性邮件
+│   ├── db/               # 数据库 schema 定义和客户端设置
+│   └── file-manager/     # 文件和文件夹管理的前端组件、钩子及工具
 ```
 
 ### 文件夹说明
