@@ -28,6 +28,7 @@ type Env = {
     user: User | null;
     session: Session | null;
     db: D1Database;
+    userId: string;
   };
 };
 

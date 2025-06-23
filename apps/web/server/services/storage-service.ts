@@ -89,7 +89,12 @@ export class StorageService {
   static async updateStorageWithLog(params: {
     userId: string;
     fileId: string;
-    action: "upload" | "delete" | "restore" | "create_folder";
+    action:
+      | "upload"
+      | "delete"
+      | "restore"
+      | "create_folder"
+      | "permanent_delete";
     size: number;
     metadata?: Record<string, string | number | boolean | null>;
   }) {
@@ -107,7 +112,7 @@ export class StorageService {
       case "upload":
         newUsage = oldUsage + params.size;
         break;
-      case "delete":
+      case "permanent_delete":
         newUsage = Math.max(0, oldUsage - params.size);
         break;
       case "restore":

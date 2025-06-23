@@ -22,14 +22,19 @@ import { FileUploadDialog } from "./components/file-upload-dialog";
 import { useBreadcrumbs } from "./hooks/use-breadcrumbs";
 import { useDebounce } from "./hooks/use-debounce";
 import { useFiles } from "./hooks/use-file-manager";
-import { type Sort, useFileStore } from "./store/use-file-store";
+import { type Sort, type Theme, useFileStore } from "./store/use-file-store";
 import { useUppyStore } from "./store/use-uppy-store";
 interface DashboardProps {
   folderID?: string;
   rootPath?: string;
+  theme?: Theme;
 }
 
-const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
+const Dashboard = ({
+  folderID,
+  rootPath = "/dashboard",
+  theme = "auto",
+}: DashboardProps) => {
   const navigate = useNavigate();
   const { setUppy, reset } = useUppyStore();
 
@@ -48,7 +53,12 @@ const Dashboard = ({ folderID, rootPath = "/dashboard" }: DashboardProps) => {
     sort,
     order,
     setOrder,
+    setTheme,
   } = useFileStore();
+
+  useEffect(() => {
+    setTheme(theme);
+  }, [theme]);
 
   const { data, isLoading, error, refetch, fetchNextPage, hasNextPage } =
     useFiles({

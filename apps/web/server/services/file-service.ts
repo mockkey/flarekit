@@ -1,6 +1,8 @@
 import { env } from "cloudflare:workers";
 import { DbService } from "@flarekit/db";
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, ne, sql } from "drizzle-orm";
+import { getDownloadPresignedUrl } from "server/lib/aws";
+import { ConflictError, NotFoundError } from "server/lib/error";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
 import { StorageService } from "./storage-service";
@@ -14,15 +16,6 @@ export class FileService {
     name: string,
     parentId?: string | null,
   ) {
-    if (parentId) {
-      const parentFolder = await dbService?.files.getUserFileById(
-        parentId,
-        userId,
-      );
-      if (parentFolder.isDir === false) {
-        throw new Error("Parent folder not found or not owned by user");
-      }
-    }
     const existingFolder = await db
       .select()
       .from(userFiles)
@@ -32,6 +25,7 @@ export class FileService {
           eq(userFiles.userId, userId),
           eq(userFiles.isDir, true),
           eq(userFiles.isLatestVersion, true),
+          isNull(userFiles.deletedAt),
           parentId
             ? eq(userFiles.parentId, parentId)
             : isNull(userFiles.parentId),
@@ -40,36 +34,205 @@ export class FileService {
       .get();
 
     if (existingFolder) {
-      throw new Error("Folder already exists");
+      throw new ConflictError("Folder already exists");
     }
 
-    const fileRecord = await dbService?.files.createFolder({
+    const newFolder = await dbService?.files.createFolder({
       name,
+      parentId: parentId || null,
+      userId,
     });
 
-    const newFolder = await dbService?.files.createUserFile({
-      name,
-      userId: userId,
-      parentId,
-      isDir: true,
-      fileId: fileRecord.id,
-    });
     return {
-      folder: newFolder,
+      id: newFolder.id,
+      name: newFolder.name,
+      isDir: true,
+      parentId: newFolder.parentId,
+      createdAt: newFolder.createdAt,
     };
   }
 
-  // get file by id
-  static async getFileById(userId: string, fileId: string) {
-    return await db
-      .select({
-        user_files: userFiles,
-        file: file,
-      })
-      .from(userFiles)
-      .leftJoin(file, eq(userFiles.fileId, file.id))
-      .where(and(eq(userFiles.id, fileId), eq(userFiles.userId, userId)))
-      .get();
+  static async getList(
+    query: {
+      page?: number;
+      limit?: number;
+      sort?: "name" | "size" | "createdAt";
+      order?: "asc" | "desc";
+      search?: string;
+      parentId?: string | null;
+    },
+    userId: string,
+  ) {
+    const files = await dbService?.files.searchUserFilesWithPagination(
+      query,
+      userId,
+    );
+
+    return {
+      items: files?.files.map((file) => {
+        const userFile = file.userFile;
+        if (userFile.isDir) {
+          return {
+            id: userFile.id,
+            name: userFile.name,
+            type: "folder",
+            parentId: userFile.parentId,
+            createdAt: userFile.createdAt,
+            updatedAt: userFile.createdAt,
+          };
+        }
+
+        return {
+          id: userFile.id,
+          name: userFile.name,
+          type: "file",
+          parentId: userFile.parentId,
+          size: file.file.size,
+          mime: file.file.mime,
+          downloadUrl: `/files/${userFile.id}/download`,
+          thumbnail: file.thumbnail?.storagePath,
+          url:
+            file.file.mime?.startsWith("image/") &&
+            file.file.mime !== "image/svg+xml"
+              ? file.thumbnail?.storagePath
+                ? `${env.IMAGE_URL}/${file.thumbnail?.storagePath}`
+                : null
+              : `/viewer/${userFile.fileId}`,
+          createdAt: userFile.createdAt,
+          updatedAt: userFile.createdAt,
+        };
+      }),
+      ...files?.pagination,
+    };
+  }
+
+  static async getTrashList(
+    query: {
+      page?: number;
+      limit?: number;
+      sort?: "name" | "size" | "deletedAt";
+      order?: "asc" | "desc";
+      search?: string;
+    },
+    userId: string,
+  ) {
+    const files = await dbService?.files.searchTrashFilesWithPagination(
+      query,
+      userId,
+    );
+
+    return {
+      items: files?.files.map((file) => {
+        const userFile = file.userFile;
+        if (userFile.isDir) {
+          return {
+            id: userFile.id,
+            name: userFile.name,
+            type: "folder",
+            parentId: userFile.parentId,
+            createdAt: userFile.createdAt,
+            updatedAt: userFile.createdAt,
+          };
+        }
+
+        return {
+          id: userFile.id,
+          name: userFile.name,
+          type: "file",
+          parentId: userFile.parentId,
+          size: file.file.size,
+          mime: file.file.mime,
+          thumbnail: file.thumbnail?.storagePath,
+          url:
+            file.file.mime?.startsWith("image/") &&
+            file.file.mime !== "image/svg+xml"
+              ? file.thumbnail?.storagePath
+                ? `${env.IMAGE_URL}/${file.thumbnail?.storagePath}`
+                : null
+              : `/viewer/${userFile.fileId}`,
+          createdAt: userFile.createdAt,
+          updatedAt: userFile.createdAt,
+        };
+      }),
+      ...files,
+    };
+  }
+
+  static async getFileById(id: string, userId: string) {
+    const file = await dbService?.files.getUserFileById(id, userId);
+    if (!file) {
+      throw new NotFoundError("Current files not found or not owned by user");
+    }
+    return {
+      id: file.userFile.id,
+      name: file.userFile.name,
+      type: file.userFile.isDir ? "floder" : "file",
+      parentId: file.userFile.parentId,
+      size: file.file.size,
+      mime: file.file.mime,
+      downloadUrl: `/files/${file.userFile.id}/download`,
+      thumbnail: file.thumbnail?.storagePath,
+      createdAt: file.userFile.createdAt,
+      updatedAt: file.userFile.createdAt,
+    };
+  }
+
+  static async downloadUserFile(userId: string, id: string) {
+    const currentFile = await dbService?.files.getUserFileById(id, userId);
+    if (!currentFile || currentFile.userFile.isDir === true) {
+      throw new NotFoundError("File not found or is a folder");
+    }
+    const storagePath = currentFile.file?.storagePath;
+    if (!storagePath) {
+      throw new NotFoundError(
+        "File content path is missing. The file might be corrupted or improperly stored.",
+      );
+    }
+    const presignedUrl = await getDownloadPresignedUrl(
+      storagePath,
+      currentFile.userFile.name || "unknown",
+    );
+    return presignedUrl;
+  }
+
+  // Rename file
+  static async renameFile(userFileId: string, userId: string, newName: string) {
+    const currentFIles = await dbService?.files.getUserFileById(
+      userFileId,
+      userId,
+    );
+
+    if (!currentFIles) {
+      throw new NotFoundError("Current files not found or not owned by user");
+    }
+
+    if (currentFIles.userFile.isDir) {
+      const existingFolder = await db
+        .select()
+        .from(userFiles)
+        .where(
+          and(
+            eq(userFiles.name, newName),
+            eq(userFiles.userId, userId),
+            eq(userFiles.isDir, true),
+            isNull(userFiles.deletedAt),
+            ne(userFiles.id, userFileId), // Exclude current folder
+            currentFIles.userFile.parentId
+              ? eq(userFiles.parentId, currentFIles.userFile.parentId)
+              : isNull(userFiles.parentId),
+          ),
+        )
+        .get();
+      if (existingFolder) {
+        throw new ConflictError(
+          `An item named "${newName}" already exists in this location.`,
+        );
+      }
+    }
+
+    return await dbService?.files.updateUserFile(userFileId, userId, {
+      name: newName,
+    });
   }
 
   // Add new file
@@ -158,7 +321,11 @@ export class FileService {
   }
 
   // Delete folder with all its contents
-  static async deleteFolder(userId: string, folderId: string) {
+  static async deleteFolder(
+    folderId: string,
+    userId: string,
+    ispermanent = false,
+  ) {
     // 1. Get folder information
     const folder = await db
       .select()
@@ -210,19 +377,21 @@ export class FileService {
 
     // 4. Soft delete folder and all descendants
     const allItemIds = userFileIds.split(",");
-    await db
-      .update(userFiles)
-      .set({
-        deletedAt: new Date(),
-        isLatestVersion: false,
-      })
-      .where(inArray(userFiles.id, allItemIds));
-
-    // 5. Update storage usage and log
+    if (ispermanent) {
+      await db.delete(userFiles).where(inArray(userFiles.id, allItemIds));
+    } else {
+      await db
+        .update(userFiles)
+        .set({
+          deletedAt: new Date(),
+          isLatestVersion: false,
+        })
+        .where(inArray(userFiles.id, allItemIds));
+    }
     await StorageService.updateStorageWithLog({
       userId,
       fileId: folderId,
-      action: "delete",
+      action: ispermanent ? "permanent_delete" : "delete",
       size: totalSize,
       metadata: {
         folderName: !folder.name,
@@ -232,7 +401,6 @@ export class FileService {
         fileIds: fileIds,
       },
     });
-
     return {
       folder,
       userFileIds,
@@ -242,7 +410,7 @@ export class FileService {
   }
 
   // Common delete method that handles both files and folders
-  static async delete(userId: string, itemId: string) {
+  static async delete(itemId: string, userId: string, ispermanent = false) {
     // 1. Get item information
     const item = await db
       .select({
@@ -254,21 +422,30 @@ export class FileService {
       })
       .from(userFiles)
       .leftJoin(file, eq(userFiles.fileId, file.id))
-      .where(and(eq(userFiles.id, itemId), eq(userFiles.userId, userId)))
+      .where(
+        and(
+          eq(userFiles.id, itemId),
+          eq(userFiles.userId, userId),
+          isNull(userFiles.deletedAt),
+        ),
+      )
       .get();
-
     if (!item) {
-      throw new Error("Item not found");
+      throw new NotFoundError("File missing or deleted from storage");
     }
 
     if (item.isDir) {
-      return this.deleteFolder(userId, itemId);
+      return this.deleteFolder(itemId, userId, ispermanent);
     }
-    return this.deleteFile(userId, itemId);
+    return this.deleteFile(itemId, userId, ispermanent);
   }
 
   // Delete single file
-  static async deleteFile(userId: string, userFileId: string) {
+  static async deleteFile(
+    userFileId: string,
+    userId: string,
+    ispermanent = false,
+  ) {
     // 1. Get file information
     const userFile = await db
       .select({
@@ -281,28 +458,29 @@ export class FileService {
       .get();
 
     if (!userFile) throw new Error("File not found");
-
-    // 2. Soft delete user-file association
-    await db
-      .update(userFiles)
-      .set({
-        deletedAt: new Date(),
-        isLatestVersion: false,
-      })
-      .where(eq(userFiles.id, userFileId));
+    if (ispermanent) {
+      await db.delete(userFiles).where(eq(userFiles.id, userFileId));
+    } else {
+      await db
+        .update(userFiles)
+        .set({
+          deletedAt: new Date(),
+          isLatestVersion: false,
+        })
+        .where(eq(userFiles.id, userFileId));
+    }
 
     // 3. Update storage usage and log
     await StorageService.updateStorageWithLog({
       userId,
       fileId: userFile.file?.id || "",
-      action: "delete",
+      action: ispermanent ? "permanent_delete" : "delete",
       size: userFile?.file?.size || 0,
       metadata: {
         fileName: !userFile.userFile.name,
         deleteType: "user_request",
       },
     });
-
     return userFile;
   }
 
@@ -407,13 +585,45 @@ export class FileService {
     return userFile;
   }
 
-  // Rename file
-  static async renameFile(userId: string, userFileId: string, newName: string) {
-    await db
-      .update(userFiles)
-      .set({
-        name: newName,
-      })
-      .where(and(eq(userFiles.id, userFileId), eq(userFiles.userId, userId)));
+  static async getBreadcrumbs(folderId: string | null, userId: string) {
+    // 如果当前是根目录，直接返回根目录信息
+    if (!folderId) {
+      return [
+        {
+          id: null,
+          name: "Root",
+          parentId: null,
+        },
+      ];
+    }
+
+    // 获取文件夹层级
+    const folders = await dbService?.files.getFolderHierarchy(folderId, userId);
+    if (!folders) return [];
+
+    // 构建面包屑数组
+    const folderMap = new Map(folders.map((folder) => [folder.id, folder]));
+    const breadcrumbs = [];
+    let currentFolder = folderMap.get(folderId);
+
+    while (currentFolder) {
+      breadcrumbs.unshift({
+        id: currentFolder.id,
+        name: currentFolder.name,
+        parentId: currentFolder.parentId,
+      });
+      currentFolder = currentFolder.parentId
+        ? folderMap.get(currentFolder.parentId)
+        : undefined;
+    }
+
+    // 添加根目录
+    breadcrumbs.unshift({
+      id: null,
+      name: "Root",
+      parentId: null,
+    });
+
+    return breadcrumbs;
   }
 }

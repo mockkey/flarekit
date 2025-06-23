@@ -55,21 +55,25 @@ export function CreateTokenDialog({
   const mutation = createApiKey();
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<string, string[]>
-  >({
-    files: [],
-    users: [],
-    admin: [],
-  });
+  >(
+    Object.keys(permissionGroups).reduce(
+      (acc, key) => {
+        acc[key] = [];
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    ),
+  );
 
   const filteredPermissionGroups = Object.entries(permissionGroups).reduce(
     (acc, [resource, group]) => {
       const filteredPermissions = group.permissions.filter(
         (permission) =>
+          !searchQuery ||
           permission.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
           permission.description
             ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          group.name.toLowerCase().includes(searchQuery.toLowerCase()),
+            .includes(searchQuery.toLowerCase()),
       );
 
       if (filteredPermissions.length > 0) {
@@ -92,6 +96,55 @@ export function CreateTokenDialog({
     }));
   };
 
+  /**
+   * Checks if all filtered permissions within a specific resource group are selected.
+   * @param resource The key of the resource group.
+   * @returns True if all permissions are selected, false otherwise.
+   */
+  const areAllFilteredPermissionsSelected = (resource: string) => {
+    const groupPermissions =
+      filteredPermissionGroups[resource]?.permissions || [];
+    const selected = selectedPermissions[resource] || [];
+    return (
+      groupPermissions.length > 0 &&
+      groupPermissions.every((p) => selected.includes(p.id))
+    );
+  };
+
+  /**
+   * Checks if some (but not all) filtered permissions within a specific resource group are selected.
+   * Used to control the indeterminate state of the "Select All" checkbox.
+   * @param resource The key of the resource group.
+   * @returns True if some permissions are selected, false otherwise.
+   */
+  const areSomeFilteredPermissionsSelected = (resource: string) => {
+    const groupPermissions =
+      filteredPermissionGroups[resource]?.permissions || [];
+    const selected = selectedPermissions[resource] || [];
+    const hasSome = groupPermissions.some((p) => selected.includes(p.id));
+    const hasAll = areAllFilteredPermissionsSelected(resource);
+    return hasSome && !hasAll;
+  };
+
+  /**
+   * Handles the "Select All" operation for a resource group.
+   * @param resource The key of the resource group.
+   * @param checked The checked state of the checkbox (true to select all, false to deselect all).
+   */
+  const handleSelectAllGroup = (resource: string, checked: boolean) => {
+    setSelectedPermissions((current) => {
+      const groupPermissions =
+        filteredPermissionGroups[resource]?.permissions || [];
+      const newPermissionsForResource = checked
+        ? groupPermissions.map((p) => p.id)
+        : [];
+      return {
+        ...current,
+        [resource]: newPermissionsForResource,
+      };
+    });
+  };
+
   const handleCreateToken = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -111,6 +164,7 @@ export function CreateTokenDialog({
             validatedData.expiresIn === "never"
               ? null
               : Number.parseInt(validatedData.expiresIn),
+          // Submit the currently selected permissions
           permissions: selectedPermissions,
         });
 
@@ -153,7 +207,7 @@ export function CreateTokenDialog({
             <InputField
               label="Token Name"
               name="name"
-              placeholder="e.g. Development Token"
+              placeholder="Development Token"
               disabled={isPending}
               required
             />
@@ -195,14 +249,54 @@ export function CreateTokenDialog({
                   Object.entries(filteredPermissionGroups).map(
                     ([resource, group]) => (
                       <div key={resource} className="p-4 space-y-3">
-                        <div className="space-y-1">
-                          <h4 className="font-medium text-sm">{group.name}</h4>
-                          {group.description && (
-                            <p className="text-xs text-muted-foreground">
-                              {group.description}
-                            </p>
+                        {/* Permission group title and "Select All" checkbox */}
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-1">
+                            <h4 className="font-medium text-sm">
+                              {group.name}
+                            </h4>
+                            {group.description && (
+                              <p className="text-xs text-muted-foreground">
+                                {group.description}
+                              </p>
+                            )}
+                          </div>
+                          {/* Only show "Select All" if there are filterable permissions in the group */}
+                          {group.permissions.length > 0 && (
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`select-all-${resource}`}
+                                checked={areAllFilteredPermissionsSelected(
+                                  resource,
+                                )}
+                                ref={(el) => {
+                                  if (el) {
+                                    const input = el.querySelector(
+                                      'input[type="checkbox"]',
+                                    ) as HTMLInputElement | null;
+                                    if (input) {
+                                      input.indeterminate =
+                                        areSomeFilteredPermissionsSelected(
+                                          resource,
+                                        );
+                                    }
+                                  }
+                                }}
+                                onCheckedChange={(checked: boolean) =>
+                                  handleSelectAllGroup(resource, checked)
+                                }
+                                disabled={isPending}
+                              />
+                              <label
+                                htmlFor={`select-all-${resource}`}
+                                className="text-sm font-medium leading-none cursor-pointer"
+                              >
+                                Select All
+                              </label>
+                            </div>
                           )}
                         </div>
+
                         <div className="grid gap-3">
                           {group.permissions.map((permission) => (
                             <div
@@ -225,7 +319,7 @@ export function CreateTokenDialog({
                               <div className="grid gap-0.5">
                                 <label
                                   htmlFor={`${resource}:${permission.id}`}
-                                  className="text-sm leading-none"
+                                  className="text-sm leading-none cursor-pointer"
                                 >
                                   {permission.label}
                                 </label>

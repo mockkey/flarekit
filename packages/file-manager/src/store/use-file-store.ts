@@ -1,10 +1,11 @@
 import { create } from "zustand";
 
 export type Sort = "name" | "size" | "createdAt" | undefined;
+export type Theme = "auto" | "light" | "dark";
 
 interface FileState {
   currentFolderId: string | null;
-
+  theme: Theme;
   isLoading: boolean;
   error: Error | null;
   pagination: {
@@ -24,6 +25,7 @@ interface FileState {
   setOrder: (order: FileState["order"]) => void;
   setSearch: (search: string) => void;
   setBreadcrumbs: (breadcrumbs: { id: string | null; name: string }[]) => void;
+  setTheme: (theme: Theme) => void;
 }
 
 export const useFileStore = create<FileState>((set) => ({
@@ -35,6 +37,7 @@ export const useFileStore = create<FileState>((set) => ({
     totalPages: 1,
     limit: 10,
   },
+  theme: "auto",
   sort: "createdAt",
   order: "desc",
   search: "",
@@ -79,4 +82,6 @@ export const useFileStore = create<FileState>((set) => ({
     }),
 
   setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
+
+  setTheme: (theme) => set({ theme }),
 }));

@@ -11,9 +11,14 @@ export default [
     index("routes/marketing/landing.tsx"),
   ]),
 
+  layout("routes/docs/layout.tsx", [
+    route("/docs/*", "routes/docs/[...slug].tsx"),
+  ]),
+
   layout("routes/dashboard/layout.tsx", [
     route("dashboard", "routes/dashboard/dashboard.tsx"),
     route("/resources", "routes/dashboard/resources/home.tsx"),
+    route("/recycle-bin", "routes/dashboard/resources/recycle-bin.tsx"),
     route("/resources/floder/:floder", "routes/dashboard/resources/floder.tsx"),
     ...prefix("settings", [index("routes/dashboard/settings/profile.tsx")]),
     route("/billing", "routes/dashboard/billing/billing.tsx"),

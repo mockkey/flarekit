@@ -42,6 +42,14 @@ export interface UseFilesOptions {
   parentId?: string | null;
 }
 
+export interface UseFilesTrashOptions {
+  page?: number;
+  limit?: number;
+  sort?: "name" | "size" | "deletedAt";
+  order?: "asc" | "desc";
+  search?: string;
+}
+
 export const DEFAULT_OPTIONS: UseFilesOptions = {
   page: 1,
   limit: 10,
@@ -169,7 +177,6 @@ export const useChangeFileName = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (queryString: { id: string; name: string }) => {
-      console.log("mutationFn");
       return postData<{ key: string }>("/rpc/files/change-name", queryString);
     },
     onMutate: async (variables) => {
@@ -256,9 +263,6 @@ export const useDeleteFile = () => {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["file-list", ...queryKey],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [...queryKey],
       });
     },
   });

@@ -18,6 +18,7 @@ interface FileAction {
   label: string;
   onClick: () => void;
   separator?: boolean;
+  variant?: "default" | "destructive" | undefined;
 }
 
 interface FileListItemProps {
@@ -28,7 +29,7 @@ interface FileListItemProps {
   setRenamingFileId: (id: string | null) => void;
   setNewFileName: (name: string) => void;
   onRename: (id: string) => Promise<void>;
-  onFolderOpen: (id: string) => void;
+  onFolderOpen?: (id: string) => void;
 }
 
 export function FileListItem({
@@ -44,9 +45,7 @@ export function FileListItem({
   return (
     <TableRow
       onDoubleClick={() => {
-        if (file.type === "folder") {
-          onFolderOpen(file.id);
-        }
+        onFolderOpen?.(file.id);
       }}
     >
       <TableCell className="font-medium">{getFileIcon(file)}</TableCell>
@@ -77,7 +76,9 @@ export function FileListItem({
         ) : (
           <span
             className={
-              file.type === "folder" ? "cursor-pointer hover:text-blue-500" : ""
+              file.type === "folder" && onFolderOpen !== undefined
+                ? "cursor-pointer hover:text-blue-500"
+                : ""
             }
           >
             {file.name}
@@ -89,23 +90,32 @@ export function FileListItem({
       </TableCell>
       <TableCell>{formatDateToLong(file.createdAt)}</TableCell>
       <TableCell className="text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <RiMore2Fill className="size-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" forceMount>
-            {actions.map((action) => (
-              <div key={action.label}>
-                {action.separator && <DropdownMenuSeparator />}
-                <DropdownMenuItem onClick={action.onClick}>
-                  {action.label}
-                </DropdownMenuItem>
-              </div>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {actions.length === 1 ? (
+          <Button variant="secondary" size={"sm"} onClick={actions[0].onClick}>
+            {actions[0].label}
+          </Button>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <RiMore2Fill className="size-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" forceMount>
+              {actions.map((action) => (
+                <div key={action.label}>
+                  {action.separator && <DropdownMenuSeparator />}
+                  <DropdownMenuItem
+                    onClick={action.onClick}
+                    variant={action.variant}
+                  >
+                    {action.label}
+                  </DropdownMenuItem>
+                </div>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </TableCell>
     </TableRow>
   );

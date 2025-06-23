@@ -1,5 +1,7 @@
 import { Dashboard as FileDashboard } from "@flarekit/file-manager";
+import { useTheme } from "remix-themes";
 
 export default function Dashboard() {
-  return <FileDashboard />;
+  const [theme] = useTheme();
+  return <FileDashboard theme={theme !== null ? theme : "auto"} />;
 }

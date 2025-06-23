@@ -1,0 +1,82 @@
+# Getting Started
+
+Welcome to FlareKit! This guide will help you quickly set up FlareKit for local development or deploy it to Cloudflare with a single click.
+
+## 🚀 One-Click Deploy (Recommended)
+
+You can deploy FlareKit to Cloudflare Workers and D1 instantly:
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button?url=https://github.com/mockkey/flarekit)](https://deploy.workers.cloudflare.com/?url=https://github.com/mockkey/flarekit)
+
+- This will automatically set up your project on Cloudflare, including D1 database configuration.
+- Follow the prompts to complete the deployment and get your own FlareKit instance online.
+
+---
+
+## 🛠️ Local Development
+
+You can also run FlareKit locally for development and testing. By default, the project uses SQLite for local development and Cloudflare D1 for production.
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/mockkey/flarekit.git
+cd flarekit
+```
+
+### 2. Install dependencies
+```bash
+pnpm install
+# or npm install / yarn install
+```
+
+### 3. Copy Wrangler config
+Copy the `wrangler.jsonc` config file to the `apps/web` directory:
+```bash
+cp wrangler.jsonc apps/web/
+```
+> _This file is used for local Cloudflare Worker configuration._
+
+### 4. Local Environment Variables
+Before running locally, copy the example file and fill in your own values:
+```bash
+cp .dev.vars.example .dev.vars
+# Then edit .dev.vars with your credentials
+```
+> _You can find these in your Cloudflare Dashboard. For local development, this step is optional unless you plan to deploy._
+
+
+### 5. Initialize the local SQLite database
+Run the provided script or migration command to set up the local database:
+```bash
+pnpm run db:generate
+
+# or
+pnpm run db:local
+```
+> _Make sure the SQLite database file is created in your project directory._
+
+
+### 6. Start the development server
+```bash
+pnpm dev
+```
+
+### 7. Open in your browser
+Visit [http://localhost:5173](http://localhost:5173) to access your local FlareKit instance.
+
+---
+
+## Database Configuration
+
+- **Local development** uses SQLite by default for simplicity.
+- **Production deployments** (Cloudflare) use [Cloudflare D1](https://developers.cloudflare.com/d1/) as the database backend.
+- The project will automatically select the correct database based on your environment.
+
+---
+
+## Troubleshooting
+
+- If you encounter issues with dependencies or database setup, check your Node.js and pnpm versions.
+- For Cloudflare-specific issues, refer to the [Wrangler documentation](https://developers.cloudflare.com/workers/wrangler/).
+- For help, open a [GitHub Issue](https://github.com/mockkey/flarekit/issues)
+
