@@ -15,6 +15,7 @@ import {
 import {
   RiArrowDownSLine,
   RiArrowUpSLine,
+  RiFile3Fill,
   RiInboxLine,
 } from "@remixicon/react";
 import { useState } from "react";
@@ -109,8 +110,27 @@ export function FileList({
     onSortChange(column, newDirection);
   };
 
-  if (isLoading) return <div>Loading files...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isLoading) {
+    return (
+      <div className="py-16 text-center text-muted-foreground">Loading...</div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="py-16 text-center text-destructive">
+        Failed to load files.
+      </div>
+    );
+  }
+  if (!files || files.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
+        <RiFile3Fill />
+        <div className="text-lg font-medium mb-2">No files found</div>
+        <div className="text-sm">Upload files to get started.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -197,6 +217,7 @@ export function FileList({
                     },
                     {
                       label: "Delete",
+                      variant: "destructive",
                       onClick: () => handleDelete(file.id),
                       separator: true,
                     },

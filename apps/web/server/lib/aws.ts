@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { AwsClient } from "aws4fetch";
 import { XMLParser } from "fast-xml-parser";
-import { parseXmlTag } from "./utils";
+import { parseXmlTag, stripEtag } from "./utils";
 
 export const aws = new AwsClient({
   accessKeyId: env.ACCESS_KEY_ID,
@@ -26,6 +26,63 @@ export async function createPresignedPutUrl(key: string) {
     },
   );
   return res.url;
+}
+
+export async function upload(key: string, file: Blob | ArrayBuffer) {
+  const url = `${S3Path}/${key}`;
+  const res = await aws.fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/octet-stream",
+      "Content-Length":
+        file instanceof Blob
+          ? file.size.toString()
+          : file.byteLength.toString(),
+    },
+    body: file,
+  });
+
+  if (!res.ok) {
+    throw new Error(`Upload failed: ${res.status} ${await res.text()}`);
+  }
+
+  const etag = res.headers.get("etag");
+  if (!etag) {
+    throw new Error("Failed to upload file");
+  }
+  const hash = stripEtag(etag);
+
+  return {
+    hash,
+    url: res.url,
+  };
+}
+
+export function getUrl(url: string) {
+  try {
+    const url2 = new URL(url);
+    const pathArr = url2.pathname.split(env.AWS_BUCKET);
+    const pathname = pathArr[pathArr.length - 1];
+    return env.IMAGE_URL
+      ? `${env.IMAGE_URL}${pathname}`
+      : `${S3Path}${pathname}`;
+  } catch {
+    return env.IMAGE_URL ? `${env.IMAGE_URL}/${url}` : `${S3Path}/${url}`;
+  }
+}
+
+export function getKey(url: string) {
+  try {
+    const url2 = new URL(url);
+    const pathArr = url2.pathname.split(`${env.AWS_BUCKET}/`);
+    return pathArr[pathArr.length - 1];
+  } catch {
+    return url;
+  }
+}
+
+export function getLocalstion(key: string) {
+  return `${S3Path}/${key}`;
 }
 
 export async function getS3Resource(url: string) {

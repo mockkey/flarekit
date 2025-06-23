@@ -9,6 +9,7 @@ import Dashboard from "@uppy/react/lib/Dashboard";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
 import { queryKey } from "@/hooks/use-file-manager";
+import { useFileStore } from "@/store/use-file-store";
 import { useUppyStore } from "@/store/use-uppy-store";
 import { Button } from "@flarekit/ui/components/ui/button";
 import { RiCloseLine } from "@remixicon/react";
@@ -24,6 +25,7 @@ export function FileUploadDialog({
   onOpenChange,
 }: FileUploadDialogProps) {
   const { uppyInstance, hideUploadButton } = useUppyStore();
+  const { theme } = useFileStore();
   const queryClient = useQueryClient();
   useEffect(() => {
     uppyInstance?.on("complete", async (result) => {
@@ -63,7 +65,7 @@ export function FileUploadDialog({
               hideUploadButton={hideUploadButton}
               width={"100%"}
               height={"300px"}
-              theme="auto"
+              theme={theme}
               uppy={uppyInstance}
             />
           )}

@@ -8,11 +8,17 @@ export default function Layout() {
     <>
       <header className="h-[65px] border-b  bg-white/80 dark:bg-black/80 px-4">
         <nav className="h-full container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold flex flex-row gap-x-2">
-            <RiSparklingFill className="text-primary size-8" />
-            Flare Kit
-          </h1>
-          <div className="flex items-center space-x-6">
+          <Link to={"/"}>
+            <h1 className="text-xl font-bold flex flex-row gap-x-2">
+              <RiSparklingFill className="text-primary size-8" />
+              Flare Kit
+            </h1>
+          </Link>
+          <div className="flex items-center space-x-2">
+            <Link to="/docs">
+              {" "}
+              <Button variant="link">Docs</Button>
+            </Link>
             <Link to="https://github.com/mockkey/flarekit" target="_blank">
               <Button variant="link">GitHub</Button>
             </Link>

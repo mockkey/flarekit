@@ -5,6 +5,7 @@
     "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.mdx",
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
@@ -23,6 +24,10 @@
       "@flarekit/ui/components/*": ["packages/ui/src/components/*"],
       "@flarekit/ui/app.css": ["packages/ui/src/styles/app.css"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true
   }
 }

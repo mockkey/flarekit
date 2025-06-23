@@ -34,7 +34,7 @@ apiKeyServer.post("create", async (c) => {
         expiresIn: reqExpiresIn,
         prefix: "fk_",
         remaining: 100,
-        refillAmount: 100,
+        refillAmount: 10000,
         refillInterval: 60 * 60 * 24 * 7, // 7 days
         rateLimitTimeWindow: 1000 * 60 * 60 * 24, // everyday
         rateLimitMax: 100, // every day, they can use up to 100 requests

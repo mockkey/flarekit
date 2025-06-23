@@ -15,38 +15,65 @@ export interface PermissionGroup {
 export const permissionGroups: Record<string, PermissionGroup> = {
   files: {
     name: "Files",
-    description: "Manage file operations",
+    description: "Manage file and folder operations",
     permissions: [
       {
         id: "read",
-        label: "Read files",
-        description: "View and download files",
+        label: "View files and folders",
+        description: "List and view files and folders",
       },
       {
         id: "write",
-        label: "Create and modify files",
-        description: "Upload and edit files",
+        label: "Create, rename, and move files/folders",
+        description: "Upload, create, rename, or move files and folders",
       },
       {
         id: "delete",
-        label: "Delete files",
-        description: "Permanently remove files",
+        label: "Delete files and folders",
+        description: "Move files and folders to the trash",
       },
     ],
   },
-  users: {
-    name: "Users",
-    description: "Manage user operations",
+  trash: {
+    name: "Trash",
+    description: "Manage trash operations",
     permissions: [
       {
         id: "read",
-        label: "View user information",
-        description: "Access user profiles and settings",
+        label: "View trash",
+        description: "List and view items in the trash",
       },
       {
-        id: "write",
-        label: "Modify user settings",
-        description: "Update user information and preferences",
+        id: "restore",
+        label: "Restore from trash",
+        description: "Restore deleted files and folders",
+      },
+      {
+        id: "delete",
+        label: "Permanently delete",
+        description: "Permanently delete files and folders from the trash",
+      },
+    ],
+  },
+  upload: {
+    name: "Upload",
+    description: "Manage file uploads",
+    permissions: [
+      {
+        id: "create",
+        label: "Upload files",
+        description: "Upload new files to storage",
+      },
+    ],
+  },
+  storage: {
+    name: "storage",
+    description: "Manage storage operations",
+    permissions: [
+      {
+        id: "read",
+        label: "View storage quota",
+        description: "View used and total storage quota",
       },
     ],
   },
@@ -72,7 +99,8 @@ export const permissionsSchema = z
 
 export const defaultPermissions: ResourcePermissions = {
   files: ["read"],
-  users: ["read"],
+  upload: ["create"],
+  trash: ["read"],
 };
 
 export function hasPermission(

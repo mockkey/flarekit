@@ -12,6 +12,7 @@ import {
 import {
   RiBankCard2Fill,
   RiKeyFill,
+  RiRecycleFill,
   RiSettings2Fill,
   RiSparklingFill,
 } from "@remixicon/react";
@@ -26,6 +27,11 @@ interface NavItem {
 
 export const navItems: NavItem[] = [
   { icon: RiSparklingFill, label: "Dashboard", href: "/dashboard" },
+  {
+    icon: RiRecycleFill,
+    label: "Recycle Bin",
+    href: "/recycle-bin",
+  },
   {
     icon: RiSettings2Fill,
     label: "Settings",
