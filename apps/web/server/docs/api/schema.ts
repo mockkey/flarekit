@@ -1,7 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { createFolderSchema, fileListquerySchema } from "server/types/file";
 import { MAX_FILE_SIZE } from "server/types/upload";
-// import { z } from "zod";
 
 const ErrorSchema = z.object({
   error: z.string(),
@@ -53,7 +52,7 @@ export const listFilesRoute = createRoute({
   },
 });
 
-export const floderListRoute = createRoute({
+export const folderListRoute = createRoute({
   method: "get",
   path: "/files/folder-tree",
   tags: ["Files"],
