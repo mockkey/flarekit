@@ -55,17 +55,6 @@ export const permissionGroups: Record<string, PermissionGroup> = {
       },
     ],
   },
-  upload: {
-    name: "Upload",
-    description: "Manage file uploads",
-    permissions: [
-      {
-        id: "create",
-        label: "Upload files",
-        description: "Upload new files to storage",
-      },
-    ],
-  },
   storage: {
     name: "storage",
     description: "Manage storage operations",
@@ -99,8 +88,8 @@ export const permissionsSchema = z
 
 export const defaultPermissions: ResourcePermissions = {
   files: ["read"],
-  upload: ["create"],
   trash: ["read"],
+  storage: ["read"],
 };
 
 export function hasPermission(

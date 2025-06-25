@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { FileListItem } from "./file-list-item";
 import { FileListSkeleton } from "./file-list-skeleton";
 import { LoadMore } from "./load-more";
+import { ImageViewerDialog } from "./viewer/image-viewer-dialog";
 
 interface FileListProps {
   files: FileItem[];
@@ -43,6 +44,8 @@ export function FileList({
   fetchNextPage,
   hasNextPage = false,
 }: FileListProps) {
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
   const [newFileName, setNewFileName] = useState("");
   const [sortColumn, setSortColumn] = useState<"name" | "size" | "createdAt">(
@@ -211,10 +214,27 @@ export function FileList({
                         setNewFileName(file.name);
                       },
                     },
-                    {
-                      label: "Download",
-                      onClick: () => handleDownload(file.id),
-                    },
+                    ...(file.type === "file"
+                      ? [
+                          {
+                            label: "Download",
+                            onClick: () => handleDownload(file.id),
+                          },
+                        ]
+                      : []),
+                    ...(file.type === "file" &&
+                    String(file.mime).indexOf("image") >= 0
+                      ? [
+                          {
+                            label: "Preview",
+                            onClick: () => {
+                              setCurrentImage(file.url!);
+                              setViewerOpen(true);
+                            },
+                          },
+                        ]
+                      : []),
+
                     {
                       label: "Delete",
                       variant: "destructive",
@@ -239,6 +259,11 @@ export function FileList({
           hasMore={hasNextPage}
         />
       </div>
+      <ImageViewerDialog
+        open={viewerOpen}
+        onOpenChange={setViewerOpen}
+        imageUrl={currentImage || ""}
+      />
     </div>
   );
 }

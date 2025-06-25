@@ -19,7 +19,7 @@ export default [
     route("dashboard", "routes/dashboard/dashboard.tsx"),
     route("/resources", "routes/dashboard/resources/home.tsx"),
     route("/recycle-bin", "routes/dashboard/resources/recycle-bin.tsx"),
-    route("/resources/floder/:floder", "routes/dashboard/resources/floder.tsx"),
+    route("/resources/folder/:folder", "routes/dashboard/resources/folder.tsx"),
     ...prefix("settings", [index("routes/dashboard/settings/profile.tsx")]),
     route("/billing", "routes/dashboard/billing/billing.tsx"),
     route("/token", "routes/dashboard/token/token.tsx"),

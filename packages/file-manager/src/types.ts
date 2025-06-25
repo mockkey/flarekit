@@ -8,4 +8,5 @@ export interface FileItem {
   parentId: string | null;
   storagePath: string | null;
   url: string | null;
+  thumbnail: string;
 }

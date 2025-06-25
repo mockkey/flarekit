@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { DbService } from "@flarekit/db";
 import { and, eq, inArray, isNull, ne, sql } from "drizzle-orm";
-import { getDownloadPresignedUrl } from "server/lib/aws";
+import { getDownloadPresignedUrl, getUrl } from "server/lib/aws";
 import { ConflictError, NotFoundError } from "server/lib/error";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
@@ -90,8 +90,12 @@ export class FileService {
           size: file.file.size,
           mime: file.file.mime,
           downloadUrl: `/files/${userFile.id}/download`,
-          thumbnail: file.thumbnail?.storagePath,
           url:
+            file.file.mime?.startsWith("image/") &&
+            file.file.mime !== "image/svg+xml"
+              ? getUrl(file.file.storagePath)
+              : null,
+          thumbnail:
             file.file.mime?.startsWith("image/") &&
             file.file.mime !== "image/svg+xml"
               ? file.thumbnail?.storagePath
@@ -103,6 +107,48 @@ export class FileService {
         };
       }),
       ...files?.pagination,
+    };
+  }
+
+  static async getFolderList(
+    query: {
+      page?: number;
+      limit?: number;
+      sort?: "name" | "size" | "createdAt";
+      order?: "asc" | "desc";
+      search?: string;
+      parentId?: string | null;
+    },
+    userId: string,
+  ) {
+    const folderList = await dbService?.files.searchUserFoldersWithPagination(
+      query,
+      userId,
+    );
+    if (!folderList) {
+      return {
+        items: [],
+        page: 1,
+        limit: 10,
+        total: 0,
+      };
+    }
+
+    return {
+      items: folderList?.folders?.map((file) => {
+        const userFile = file.userFile;
+        if (userFile.isDir) {
+          return {
+            id: userFile.id,
+            name: userFile.name,
+            type: "folder",
+            parentId: userFile.parentId,
+            createdAt: userFile.createdAt,
+            updatedAt: userFile.createdAt,
+          };
+        }
+      }),
+      ...folderList?.pagination,
     };
   }
 
@@ -166,7 +212,7 @@ export class FileService {
     return {
       id: file.userFile.id,
       name: file.userFile.name,
-      type: file.userFile.isDir ? "floder" : "file",
+      type: file.userFile.isDir ? "folder" : "file",
       parentId: file.userFile.parentId,
       size: file.file.size,
       mime: file.file.mime,

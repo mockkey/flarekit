@@ -27,6 +27,19 @@ filesApi.get(
 );
 
 filesApi.get(
+  "/folder-tree",
+  requireAuth({ files: ["read"] }),
+  zValidator("query", fileListquerySchema),
+  async (c) => {
+    const userId = c.get("userId");
+    const query = c.req.valid("query");
+    const tree = await FileService.getFolderList(query, userId);
+    console.log("tree", tree);
+    return c.json(tree);
+  },
+);
+
+filesApi.get(
   "/:id",
   requireAuth({
     files: ["read"],

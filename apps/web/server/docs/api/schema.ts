@@ -53,6 +53,28 @@ export const listFilesRoute = createRoute({
   },
 });
 
+export const floderListRoute = createRoute({
+  method: "get",
+  path: "/files/folder-tree",
+  tags: ["Files"],
+  summary: "List folders",
+  description: "Get a list of folders in the current directory",
+  security: [{ Bearer: [] }],
+  request: {
+    query: fileListquerySchema,
+  },
+  responses: {
+    200: {
+      description: "List of folders",
+      content: {
+        "application/json": {
+          schema: FileListSchema,
+        },
+      },
+    },
+  },
+});
+
 export const getFileRoute = createRoute({
   method: "get",
   path: "/files/{id}",
