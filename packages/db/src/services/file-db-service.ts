@@ -265,7 +265,7 @@ export class FileDbService {
       .values({
         name: params.name,
         createdAt: new Date(),
-        mime: "floder",
+        mime: "folder",
         storageProvider: "local",
         size: 0,
       })
@@ -460,6 +460,82 @@ export class FileDbService {
         ),
       )
       .orderBy(desc(schema.userFiles.createdAt));
+  }
+
+  async searchUserFoldersWithPagination(
+    {
+      page = 1,
+      limit = 10,
+      sort = "createdAt",
+      order = "desc",
+      search,
+      parentId,
+    }: {
+      page?: number;
+      limit?: number;
+      sort?: "name" | "size" | "createdAt";
+      order?: "asc" | "desc";
+      search?: string;
+      parentId?: string | null;
+    },
+    userId: string,
+  ): Promise<{
+    folders: Array<{
+      userFile: typeof schema.userFiles.$inferSelect;
+      file: typeof schema.file.$inferSelect | null;
+    }>;
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }> {
+    const offset = (page - 1) * limit;
+    const baseQuery = this.db
+      .select({
+        userFile: schema.userFiles,
+        file: schema.file,
+      })
+      .from(schema.userFiles)
+      .leftJoin(schema.file, eq(schema.userFiles.fileId, schema.file.id))
+      .where(
+        and(
+          eq(schema.userFiles.userId, userId),
+          eq(schema.userFiles.isDir, true),
+          isNull(schema.userFiles.deletedAt),
+          search ? like(schema.userFiles.name, `%${search}%`) : undefined,
+          parentId
+            ? eq(schema.userFiles.parentId, parentId)
+            : isNull(schema.userFiles.parentId),
+        ),
+      );
+
+    const countResult = await baseQuery;
+    const total = countResult.length;
+
+    const sortColumn = {
+      name: schema.userFiles.name,
+      size: schema.file.size,
+      createdAt: schema.userFiles.createdAt,
+    }[sort];
+
+    const orderByClause = order === "desc" ? desc(sortColumn) : asc(sortColumn);
+
+    const folders = await baseQuery
+      .orderBy(orderByClause)
+      .limit(limit)
+      .offset(offset);
+
+    return {
+      folders,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async searchUserFilesWithPagination(

@@ -20,9 +20,13 @@ export const getFileIcon = (file: FileItem) => {
   if (file.url && file.mime?.startsWith("image/")) {
     return (
       <img
-        src={file.url}
+        src={file.thumbnail}
         alt={file.name}
         className="size-5 object-cover rounded"
+        onError={(e) => {
+          e.currentTarget.src =
+            "data:image/svg+xml;utf8,<svg width='20' height='20' xmlns='http://www.w3.org/2000/svg'><rect width='20' height='20' rx='4' fill='%23e5e7eb'/><text x='10' y='15' font-size='10' text-anchor='middle' fill='%23999'>IMG</text></svg>";
+        }}
       />
     );
   }

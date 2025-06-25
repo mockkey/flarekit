@@ -45,7 +45,7 @@ export function FileListItem({
   return (
     <TableRow
       onDoubleClick={() => {
-        onFolderOpen?.(file.id);
+        file.type === "folder" && onFolderOpen?.(file.id);
       }}
     >
       <TableCell className="font-medium">{getFileIcon(file)}</TableCell>

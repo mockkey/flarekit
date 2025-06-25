@@ -153,7 +153,7 @@ const Dashboard = ({
                 items={breadcrumbs || [{ id: null, name: "Root" }]}
                 onNavigate={(id) => {
                   if (id) {
-                    navigate(`/resources/floder/${id}`);
+                    navigate(`/resources/folder/${id}`);
                   } else {
                     navigate(rootPath);
                   }
@@ -182,7 +182,7 @@ const Dashboard = ({
               setOrder(order);
               setSort(field as Sort);
             }}
-            onFolderOpen={(id) => navigate(`/resources/floder/${id}`)}
+            onFolderOpen={(id) => navigate(`/resources/folder/${id}`)}
           />
         </CardContent>
       </Card>

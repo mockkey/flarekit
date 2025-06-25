@@ -10,7 +10,7 @@ export interface fileMeta {
 
 export const fileListquerySchema = z.object({
   page: z.string().transform(Number).default("1"),
-  limit: z.string().transform(Number).default("10"),
+  limit: z.enum(["10", "20", "30", "50"]).transform(Number).default("10"),
   sort: z.enum(["name", "size", "createdAt"]).default("createdAt"),
   order: z.enum(["asc", "desc"]).default("desc"),
   search: z.string().optional(),

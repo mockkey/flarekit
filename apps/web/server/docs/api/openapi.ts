@@ -6,6 +6,7 @@ import {
   deleteTrashItemRoute,
   downloadFileRoute,
   folderCreateRoute,
+  folderListRoute,
   getFileRoute,
   listFilesRoute,
   listTrashRoute,
@@ -20,6 +21,19 @@ const api = new OpenAPIHono();
 
 // Register routes
 api.openapi(listFilesRoute, (c: Context) => {
+  return c.json(
+    {
+      items: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    },
+    200,
+  );
+});
+
+api.openapi(folderListRoute, (c: Context) => {
   return c.json(
     {
       items: [],

@@ -21,7 +21,16 @@ interface Breadcrumb {
   label: string;
 }
 
-const navigation = [
+type NavigationItem = {
+  title: string;
+  href: string;
+  target?: string;
+};
+
+const navigation: {
+  title: string;
+  items: NavigationItem[];
+}[] = [
   {
     title: "Getting Started",
     items: [
@@ -33,6 +42,10 @@ const navigation = [
   {
     title: "API Reference",
     items: [{ title: "Swagger", href: "/docs/api/swagger" }],
+  },
+  {
+    title: "LLM resources",
+    items: [{ title: "llms", href: "/llms.txt", target: "_blank" }],
   },
 ];
 
@@ -188,6 +201,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
                                 ? "text-foreground font-medium"
                                 : "text-muted-foreground",
                             )}
+                            target={item.target}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
                             {item.title}
@@ -221,6 +235,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
                       <li key={item.href}>
                         <Link
                           to={item.href}
+                          target={item.target}
                           className={cn(
                             "block py-1 text-sm hover:text-foreground",
                             location.pathname === item.href

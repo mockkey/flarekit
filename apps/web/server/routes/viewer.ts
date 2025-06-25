@@ -1,9 +1,8 @@
-import { env } from "cloudflare:workers";
 import { PhotonImage, SamplingFilter, resize } from "@cf-wasm/photon";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
-import { aws } from "server/lib/aws";
+import { aws, upload } from "server/lib/aws";
 import { db } from "~/db/db.server";
 import { file, fileThumbnail } from "~/db/schema";
 
@@ -148,7 +147,7 @@ export async function getBytesWebpByFileId(
 export async function setThumbnailFileId(id: string) {
   const { imgArray, file } = await getBytesWebpByFileId(id);
   const storagePath = `thumbnail/${file.hash}/x300.webp`;
-  await env.MY_BUCKET.put(storagePath, imgArray);
+  await upload(storagePath, imgArray);
   await db.insert(fileThumbnail).values({
     fileId: id,
     variant: "thumb",

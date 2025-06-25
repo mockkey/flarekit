@@ -33,7 +33,6 @@ export async function upload(key: string, file: Blob | ArrayBuffer) {
   const res = await aws.fetch(url, {
     method: "PUT",
     headers: {
-      "Content-Type": "application/octet-stream",
       "Content-Length":
         file instanceof Blob
           ? file.size.toString()
