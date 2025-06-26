@@ -33,11 +33,11 @@ apiKeyServer.post("create", async (c) => {
         name: reqName,
         expiresIn: reqExpiresIn,
         prefix: "fk_",
-        remaining: 100,
+        remaining: 10000,
         refillAmount: 10000,
         refillInterval: 60 * 60 * 24 * 7, // 7 days
         rateLimitTimeWindow: 1000 * 60 * 60 * 24, // everyday
-        rateLimitMax: 100, // every day, they can use up to 100 requests
+        rateLimitMax: 10000, // every day, they can use up to 100 requests
         rateLimitEnabled: true,
         userId: user.id, // the user id to create the API key for
         permissions: validatedPermissions,
