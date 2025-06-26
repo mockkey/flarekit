@@ -1,90 +1,45 @@
-# FlareKit API LLMs Prompt Summary (EN)
+# flarekit.mockkey.com llms.txt
 
-## 1. List Files & Folders
-- Path: `/files` (GET)
-- Description: Get a list of files and folders in the current directory
-- Params: page, limit (10/20/30/50), sort, order, search, parentId
-- Response: items[], total, page, limit, totalPages
+## 📘 Documentation
 
-## 2. List Folders Only (Folder Tree)
-- Path: `/files/folder-tree` (GET)
-- Description: Get a list of folders in the current directory
-- Params: page, limit, sort, order, search, parentId
-- Response: items[], total, page, limit, totalPages
+- [FlareKit Overview](https://flarekit.mockkey.com/docs/introduction)  
+  Introduction to FlareKit — an open-source cloud file management platform with features, tech stack, and deployment details.
 
-## 3. File/Folder Details
-- Path: `/files/{id}` (GET)
-- Description: Get details of a specific file or folder
-- Params: id (path)
-- Response: file/folder detail object
+- [Getting Started Guide](https://flarekit.mockkey.com/docs/getting-started)  
+  Step-by-step instructions to deploy or run FlareKit locally, including database setup.
 
-## 4. Upload File
-- Path: `/file/upload` (PUT)
-- Description: Upload a file (multipart/form-data)
-- Params: parentId, hash, file
-- Response: fileId, name, size, mime, url, parentId
+- [Documentation Home](https://flarekit.mockkey.com/docs)  
+  Centralized documentation hub for using and deploying FlareKit.
 
-## 5. Create Folder
-- Path: `/files/folder/create` (POST)
-- Description: Create a new folder
-- Params: name, parentId
-- Response: id, name, isDir, parentId, createdAt
+## 📡 API References
 
-## 6. Download File
-- Path: `/files/{id}/download` (GET)
-- Description: Download file (302 redirect)
-- Params: id (path)
-- Response: Location header (download URL)
+- [API Overview](https://flarekit.mockkey.com/docs/api)  
+  Overview of the FlareKit API for managing cloud files and folders.
 
-## 7. Soft Delete (Move to Trash)
-- Path: `/files/delete` (DELETE)
-- Description: Soft delete files/folders (move to trash)
-- Params: ids[]
-- Response: success
+- [Swagger UI](https://flarekit.mockkey.com/docs/api/swagger)  
+  Interactive Swagger interface to explore and test API endpoints.
 
-## 8. Permanent Delete
-- Path: `/files/permanent-delete` (DELETE)
-- Description: Permanently delete files/folders
-- Params: ids[]
-- Response: success
+- [API Getting Started Guide](https://flarekit.mockkey.com/docs/api/getting-started)  
+  Learn how to authenticate, make requests, manage files, and handle errors with the FlareKit API.
 
-## 9. List Trash
-- Path: `/files/trash` (GET)
-- Description: List files/folders in trash
-- Params: page, limit
-- Response: items[], total, page, limit, totalPages
+- [OpenAPI JSON Spec](https://flarekit.mockkey.com/doc/api-docs)  
+  Machine-readable OpenAPI 3.0 JSON specification for use with tools like Swagger and Postman.
 
-## 10. Restore from Trash
-- Path: `/files/trash/restore/{id}` (POST)
-- Description: Restore file/folder from trash
-- Params: id (path)
-- Response: file/folder info
+## 🚀 Starter & Deployment
 
-## 11. Permanently Delete Single Trash Item
-- Path: `/files/trash/{id}` (DELETE)
-- Description: Permanently delete a single file/folder from trash
-- Params: id (path)
-- Response: success
+- [FlareKit Starter](https://flarekit.mockkey.com)  
+  A ready-to-use starter kit with React Router and Cloudflare integration to quickly build and deploy web apps.
 
-## 12. Rename
-- Path: `/files/rename` (POST)
-- Description: Rename a file or folder
-- Params: id, name
-- Response: message, data (file/folder info)
+## 🔐 Authentication
 
-## 13. Breadcrumbs
-- Path: `/files/breadcrumbs/{parentId}` (GET)
-- Description: Get breadcrumb navigation for a folder
-- Params: parentId (path)
-- Response: [{id, name, parentId}]
+- [User Login Page](https://flarekit.mockkey.com/dashboard)  
+  Login portal for Sass Inc. dashboard access via Apple, Google, GitHub, or email.
 
-## 14. Storage Quota
-- Path: `/storage/remaining` (GET)
-- Description: Get current user's storage usage and quota
-- Response: usedStorage, totalStorage, isPro
+- [Sign-In Page](https://flarekit.mockkey.com/auth/sign-in)  
+  Dedicated login page supporting email and social authentication.
 
----
+- [Sign-Up Page](https://flarekit.mockkey.com/auth/sign-up)  
+  Register a new account using GitHub or email.
 
-- All endpoints require Bearer Token authentication.
-- See OpenAPI spec for detailed fields, params, and response structure.
-- For LLMs/Agent quick understanding of FlareKit file management API capabilities.
+- [Password Reset](https://flarekit.mockkey.com/auth/reset-password)  
+  Request a password reset via email if access is lost.
