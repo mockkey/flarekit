@@ -21,6 +21,11 @@ type UpdateAccountParams = Partial<
   Omit<schema.Account, "id" | "createdAt" | "updatedAt">
 >;
 
+type Session = {
+  session: schema.Session | null;
+  user: schema.User | null;
+};
+
 export class UserDbService {
   constructor(private db: DrizzleD1Database<typeof schema>) {}
 
@@ -100,6 +105,18 @@ export class UserDbService {
       .select()
       .from(schema.session)
       .where(eq(schema.session.id, sessionId))
+      .get();
+  }
+
+  async getUserSessionByToken(token: string): Promise<Session | undefined> {
+    return this.db
+      .select({
+        user: schema.user,
+        session: schema.session,
+      })
+      .from(schema.session)
+      .leftJoin(schema.user, eq(schema.user.id, schema.session.userId))
+      .where(eq(schema.session.token, token))
       .get();
   }
 

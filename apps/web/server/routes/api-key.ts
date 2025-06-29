@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
 import { validatePermissions } from "~/config/permissions";
 import { serverAuth } from "~/features/auth/server/auth.server";
-
 export const apiKeyServer = new Hono<HonoEnv>();
 
 apiKeyServer.post("create", async (c) => {

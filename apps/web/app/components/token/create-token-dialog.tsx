@@ -52,7 +52,7 @@ export function CreateTokenDialog({
   const [isPending, startTransition] = useTransition();
   const [newToken, setNewToken] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const mutation = createApiKey();
+  const createApiKeyHandle = createApiKey();
   const [selectedPermissions, setSelectedPermissions] = useState<
     Record<string, string[]>
   >(
@@ -168,7 +168,7 @@ export function CreateTokenDialog({
           permissions: selectedPermissions,
         });
 
-        mutation.mutate(queryString, {
+        await createApiKeyHandle.mutateAsync(queryString, {
           onSuccess: (data) => {
             setNewToken(data.key);
             toast.success("Token created successfully");

@@ -1,6 +1,7 @@
 import type { Context, Next } from "hono";
 import { bearerAuth } from "hono/bearer-auth";
 import { createMiddleware } from "hono/factory";
+import { getSession } from "server/lib/better/better-session";
 import { AppError, ForbiddenError } from "server/lib/error";
 import { serverAuth } from "~/features/auth/server/auth.server";
 
@@ -71,8 +72,7 @@ export const requireAuth = (options?: RequireAuthOptions) => {
 };
 
 export const checkAuth = createMiddleware(async (c, next) => {
-  const auth = serverAuth();
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  const session = await getSession(c);
   if (!session) {
     return c.json({ error: "Unauthorized" }, 401);
   }
