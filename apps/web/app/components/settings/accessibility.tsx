@@ -119,7 +119,7 @@ export default function Accessibility() {
           dark themes, or sync with your system preferences.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-y-4">
         <RadioGroup
           defaultValue={theme as Theme}
           onValueChange={(value) => {

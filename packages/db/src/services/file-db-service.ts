@@ -1,5 +1,3 @@
-import * as schema from "@/schema";
-import type { UserFiles } from "@/schema";
 import {
   type SQL,
   and,
@@ -14,6 +12,8 @@ import {
   sql,
 } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
+import * as schema from "../schema";
+import type { UserFiles } from "../schema";
 import { getOrderByClause } from "./lib";
 
 type CreateFileParams = Omit<schema.File, "id" | "createdAt">;

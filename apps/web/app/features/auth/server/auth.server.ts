@@ -21,6 +21,25 @@ export const serverAuth = () => {
       database: drizzleAdapter(db, {
         provider: "sqlite",
       }),
+      secondaryStorage: {
+        get: async (key) => {
+          return await env.APP_KV.get(`_auth:${key}`, "json");
+        },
+        set: async (key, value, ttl) => {
+          return await env.APP_KV.put(`_auth:${key}`, JSON.stringify(value), {
+            expirationTtl: ttl,
+          });
+        },
+        delete: async (key) => {
+          return await env.APP_KV.delete(`_auth:${key}`);
+        },
+      },
+      rateLimit: {
+        enabled: true,
+        storage: "secondary-storage",
+        window: 60,
+        max: 10,
+      },
       emailAndPassword: {
         enabled: true,
         autoSignIn: true,
@@ -80,13 +99,6 @@ export const serverAuth = () => {
         deleteUser: {
           enabled: true,
           afterDelete: async () => {},
-        },
-        additionalFields: {
-          theme: {
-            type: "string",
-            required: false,
-            defaultValue: "null",
-          },
         },
       },
       account: {

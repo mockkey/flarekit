@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f44ae501-0465-4100-b180-b13253dbc6bf",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "210f896e-6e13-4144-8510-fce83d194e50",
+  "prevId": "f6cab8c2-be0d-4c0b-9b63-e8f92e73fa03",
   "tables": {
     "account": {
       "name": "account",
@@ -271,6 +271,74 @@
         "apikey_userId_user_id_fk": {
           "name": "apikey_userId_user_id_fk",
           "tableFrom": "apikey",
+          "tableTo": "user",
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "appearance": {
+      "name": "appearance",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "theme": {
+          "name": "theme",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "language": {
+          "name": "language",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "appearance_userId_unique": {
+          "name": "appearance_userId_unique",
+          "columns": ["userId"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "appearance_userId_user_id_fk": {
+          "name": "appearance_userId_user_id_fk",
+          "tableFrom": "appearance",
           "tableTo": "user",
           "columnsFrom": ["userId"],
           "columnsTo": ["id"],
@@ -877,13 +945,6 @@
         },
         "stripeCustomerId": {
           "name": "stripeCustomerId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "theme": {
-          "name": "theme",
           "type": "text",
           "primaryKey": false,
           "notNull": false,

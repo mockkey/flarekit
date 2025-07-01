@@ -1,5 +1,5 @@
-import * as schema from "@/schema";
 import { type SQL, asc, desc } from "drizzle-orm";
+import * as schema from "../schema";
 
 export function getOrderByClause(
   sort: "name" | "size" | "deletedAt",

@@ -12,7 +12,20 @@ export const user = sqliteTable("user", {
   createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
   stripeCustomerId: text("stripeCustomerId"),
+});
+
+export const appearance = sqliteTable("appearance", {
+  id: text("id")
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .unique()
+    .references(() => user.id),
   theme: text("theme"),
+  language: text("language"),
+  createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
 export const session = sqliteTable("session", {

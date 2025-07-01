@@ -10,28 +10,64 @@ import { type Theme, useTheme } from "remix-themes";
 import Header from "~/components/dashboard/header";
 import SidebarNav from "~/components/dashboard/sidebar-nav";
 import { serverAuth } from "~/features/auth/server/auth.server";
-import type { ExtendedUser } from "~/features/auth/types";
+
+import { SettingService } from "server/services/setting-service";
 import type { Route } from "./+types/layout";
 export async function loader({ request }: Route.LoaderArgs) {
   const auth = serverAuth();
   const session = await auth.api.getSession({
     headers: request.headers,
+    query: {
+      disableCookieCache: true,
+      disableRefresh: true,
+    },
   });
+
   if (!session) {
     throw redirect("/auth/sign-in");
   }
+  //add theme to session
+  const theme = await SettingService.getTheme(session.user.id);
   if (session.user.emailVerified === false) {
+    const context = await auth.$context;
+    const user = await context.internalAdapter.findUserById(session.user.id);
+    if (user?.emailVerified === session.user.emailVerified) {
+      throw redirect("/auth/sign-up/success");
+    }
+    //set session
+    if (user?.emailVerified === true) {
+      session.user.emailVerified = true;
+      await context.secondaryStorage?.set(
+        session.session.token,
+        JSON.stringify({
+          user: session.user,
+          session: session.session,
+        }),
+        Math.floor(
+          (new Date(session.session.expiresAt).getTime() - Date.now()) / 1000,
+        ),
+      );
+      return {
+        theme: theme?.theme,
+        ...session,
+      };
+    }
     throw redirect("/auth/sign-up/success");
   }
-
-  return session;
+  return {
+    theme: theme?.theme,
+    ...session,
+  };
 }
 
-export default function Layout({ loaderData: { user } }: Route.ComponentProps) {
+export default function Layout({
+  loaderData: { user, theme },
+}: Route.ComponentProps) {
   const [, setTheme] = useTheme();
   useEffect(() => {
-    const themeCurrent = (user as ExtendedUser).theme;
-    setTheme(themeCurrent as Theme);
+    if (theme) {
+      setTheme(theme === "system" ? null : (theme as Theme));
+    }
   }, [user]);
   return (
     <SidebarProvider>
