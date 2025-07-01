@@ -1,3 +1,4 @@
+import { AppearanceDBService } from "./appearance-db-service";
 import { FileDbService } from "./file-db-service";
 import { StorageDbService } from "./storage-db-service";
 import { StorageUsageLogsDbService } from "./storage-usage-logs-db-service";
@@ -8,4 +9,5 @@ export {
   UserDbService,
   StorageDbService,
   StorageUsageLogsDbService,
+  AppearanceDBService,
 };

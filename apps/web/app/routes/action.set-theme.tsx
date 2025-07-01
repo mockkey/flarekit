@@ -1,37 +1,27 @@
-import type { User } from "better-auth";
 import type { ActionFunctionArgs } from "react-router";
 import { createThemeAction } from "remix-themes";
+import { SettingService } from "server/services/setting-service";
+import { z } from "zod";
 import { serverAuth } from "~/features/auth/server/auth.server";
 import { themeSessionResolver } from "../session.server";
 
-// export const themeAction = createThemeAction(themeSessionResolver);
-
-type ExtendedUser = User & {
-  theme: string;
-};
+export const themeSchema = z.object({
+  theme: z.enum(["light", "dark", "system"]).nullable(),
+});
 
 export const action = async (args: ActionFunctionArgs) => {
-  // const { themeSessionResolver } = await import("../session.server");
   const themeAction = createThemeAction(themeSessionResolver);
-  const themeSet = [null, "dark", "light"];
   const req = args.request.clone();
   const postData = await req.json();
-  const theme = postData.theme;
-  if (themeSet.indexOf(theme) >= 0) {
+  const parsed = themeSchema.safeParse(postData);
+  if (parsed.data) {
     const auth = serverAuth();
-    const data = await auth.api.getSession({
+    const Session = await auth.api.getSession({
       headers: req.headers,
     });
-    if (data) {
-      await auth.api.updateUser({
-        headers: req.headers,
-        method: "POST",
-        body: {
-          theme: theme,
-        } as ExtendedUser,
-      });
-    }
-    if (data) {
+    if (Session) {
+      const theme = parsed.data.theme;
+      await SettingService.setTheme(Session.user.id, theme || "system");
       return themeAction(args);
     }
   }

@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { DbService } from "@flarekit/db";
+import { getUrl } from "server/lib/aws";
 import { ConflictError, NotFoundError } from "server/lib/error";
 import { StorageService } from "./storage-service";
 
@@ -17,7 +18,6 @@ export class FileTrashService {
     },
     userId: string,
   ) {
-    // 直接传递分页参数给数据库查询
     const files = await dbService?.files.searchTrashFilesWithPagination(
       {
         page: query.page,
@@ -30,8 +30,10 @@ export class FileTrashService {
     );
 
     const items =
-      files?.files.map((file) => {
-        const userFile = file.userFile;
+      files?.files.map((files) => {
+        const userFile = files.userFile;
+        const file = files.file;
+        const thumbnail = files.thumbnail;
         return userFile.isDir
           ? {
               id: userFile.id,
@@ -48,14 +50,16 @@ export class FileTrashService {
               name: userFile.name,
               type: "file" as const,
               parentId: userFile.parentId,
-              size: file.file.size,
-              mime: file.file.mime,
-              thumbnail: file.thumbnail?.storagePath,
-              url:
-                file.file.mime?.startsWith("image/") &&
-                file.file.mime !== "image/svg+xml"
-                  ? file.thumbnail?.storagePath
-                    ? `${env.IMAGE_URL}/${file.thumbnail?.storagePath}`
+              size: file?.size,
+              mime: file?.mime,
+              url: file?.mime?.startsWith("image/")
+                ? file?.storagePath && getUrl(file.storagePath)
+                : `/viewer/${userFile.fileId}`,
+              thumbnail:
+                file?.mime?.startsWith("image/") &&
+                file?.mime !== "image/svg+xml"
+                  ? thumbnail?.storagePath
+                    ? `${env.IMAGE_URL}/${thumbnail?.storagePath}`
                     : null
                   : `/viewer/${userFile.fileId}`,
               createdAt: userFile.createdAt,
@@ -137,7 +141,7 @@ export class FileTrashService {
         userId,
         fileId: currentFile.file?.id ?? "",
         action: "permanent_delete",
-        size: currentFile.file.size,
+        size: currentFile?.file?.size || 0,
         metadata: {
           fileName: currentFile.userFile.name ?? "",
           deleteType: "permanent",
@@ -172,7 +176,7 @@ export class FileTrashService {
       fileUserId,
       userId,
     );
-    if (!trashFile) {
+    if (!trashFile?.file || !trashFile.userFile.name) {
       throw new NotFoundError(
         "File not found in Trash or you do not have permission to restore it.",
       );
@@ -234,7 +238,7 @@ export class FileTrashService {
       folderId,
       userId,
     );
-    if (!trashFolder) {
+    if (!trashFolder || !trashFolder.userFile.name) {
       throw new NotFoundError(
         "Folder not found in Trash or you do not have permission to restore it.",
       );

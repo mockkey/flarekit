@@ -37,7 +37,11 @@ export function SessionsCard({
       ) : (
         sessions?.map((session) => {
           return (
-            <SessionCell refetch={refetch} key={session.id} session={session} />
+            <SessionCell
+              key={session.token}
+              refetch={refetch}
+              session={session}
+            />
           );
         })
       )}

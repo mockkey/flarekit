@@ -17,8 +17,7 @@ trashApi.get(
       const userId = c.get("userId");
       const files = await FileTrashService.getList(query, userId);
       return c.json(files);
-    } catch (error) {
-      console.error("Error fetching files:", error);
+    } catch (_error) {
       return c.json({ error: "Failed to fetch files" }, 500);
     }
   },

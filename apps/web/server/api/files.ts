@@ -34,7 +34,6 @@ filesApi.get(
     const userId = c.get("userId");
     const query = c.req.valid("query");
     const tree = await FileService.getFolderList(query, userId);
-    console.log("tree", tree);
     return c.json(tree);
   },
 );
@@ -158,7 +157,6 @@ filesApi.get(
 filesApi.get("/download/:id", requireAuth({ files: ["write"] }), async (c) => {
   const { id } = c.req.param();
   const userId = c.get("userId");
-  console.log("/download", userId);
   const presignedUrl = await FileService.downloadUserFile(userId, id);
   return c.json({ url: presignedUrl });
 });

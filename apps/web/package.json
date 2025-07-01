@@ -24,7 +24,6 @@
     "@aws-sdk/client-s3": "^3.817.0",
     "@aws-sdk/s3-request-presigner": "^3.817.0",
     "@better-auth/stripe": "^1.2.5",
-    "@better-auth/utils": "^0.2.5",
     "@cf-wasm/photon": "^0.1.30",
     "@flarekit/auth": "workspace:*",
     "@flarekit/db": "workspace:*",

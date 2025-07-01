@@ -69,8 +69,10 @@ export class FileService {
     );
 
     return {
-      items: files?.files.map((file) => {
-        const userFile = file.userFile;
+      items: files?.files.map((files) => {
+        const userFile = files.userFile;
+        const file = files.file;
+        const thumbnail = files.thumbnail;
         if (userFile.isDir) {
           return {
             id: userFile.id,
@@ -87,19 +89,16 @@ export class FileService {
           name: userFile.name,
           type: "file",
           parentId: userFile.parentId,
-          size: file.file.size,
-          mime: file.file.mime,
+          size: file?.size,
+          mime: file?.mime,
           downloadUrl: `/files/${userFile.id}/download`,
-          url:
-            file.file.mime?.startsWith("image/") &&
-            file.file.mime !== "image/svg+xml"
-              ? getUrl(file.file.storagePath)
-              : null,
+          url: file?.mime?.startsWith("image/")
+            ? file?.storagePath && getUrl(file.storagePath)
+            : `/viewer/${userFile.fileId}`,
           thumbnail:
-            file.file.mime?.startsWith("image/") &&
-            file.file.mime !== "image/svg+xml"
-              ? file.thumbnail?.storagePath
-                ? `${env.IMAGE_URL}/${file.thumbnail?.storagePath}`
+            file?.mime?.startsWith("image/") && file?.mime !== "image/svg+xml"
+              ? thumbnail?.storagePath
+                ? `${env.IMAGE_URL}/${thumbnail?.storagePath}`
                 : null
               : `/viewer/${userFile.fileId}`,
           createdAt: userFile.createdAt,
@@ -168,8 +167,10 @@ export class FileService {
     );
 
     return {
-      items: files?.files.map((file) => {
-        const userFile = file.userFile;
+      items: files?.files.map((files) => {
+        const userFile = files.userFile;
+        const file = files.file;
+        const thumbnail = files.thumbnail;
         if (userFile.isDir) {
           return {
             id: userFile.id,
@@ -186,14 +187,18 @@ export class FileService {
           name: userFile.name,
           type: "file",
           parentId: userFile.parentId,
-          size: file.file.size,
-          mime: file.file.mime,
-          thumbnail: file.thumbnail?.storagePath,
+          size: file?.size,
+          mime: file?.mime,
+          thumbnail:
+            file?.mime?.startsWith("image/") && file?.mime !== "image/svg+xml"
+              ? thumbnail?.storagePath
+                ? `${env.IMAGE_URL}/${thumbnail?.storagePath}`
+                : null
+              : `/viewer/${userFile.fileId}`,
           url:
-            file.file.mime?.startsWith("image/") &&
-            file.file.mime !== "image/svg+xml"
-              ? file.thumbnail?.storagePath
-                ? `${env.IMAGE_URL}/${file.thumbnail?.storagePath}`
+            file?.mime?.startsWith("image/") && file?.mime !== "image/svg+xml"
+              ? file?.storagePath
+                ? `${env.IMAGE_URL}/${file?.storagePath}`
                 : null
               : `/viewer/${userFile.fileId}`,
           createdAt: userFile.createdAt,
@@ -214,8 +219,8 @@ export class FileService {
       name: file.userFile.name,
       type: file.userFile.isDir ? "folder" : "file",
       parentId: file.userFile.parentId,
-      size: file.file.size,
-      mime: file.file.mime,
+      size: file?.file?.size,
+      mime: file?.file?.mime,
       downloadUrl: `/files/${file.userFile.id}/download`,
       thumbnail: file.thumbnail?.storagePath,
       createdAt: file.userFile.createdAt,

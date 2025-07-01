@@ -22,7 +22,8 @@
     "wrangler": "^4.9.1"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
   },
   "keywords": [],
   "author": "",

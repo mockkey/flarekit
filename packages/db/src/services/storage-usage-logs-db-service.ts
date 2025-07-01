@@ -1,6 +1,6 @@
-import * as schema from "@/schema";
 import { desc, eq } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
+import * as schema from "../schema";
 
 type CreateStorageUsageLogParams = Omit<
   schema.StorageUsageLogs,

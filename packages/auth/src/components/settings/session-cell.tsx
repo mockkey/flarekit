@@ -20,7 +20,7 @@ export function SessionCell({ refetch, session }: SessionCellProps) {
     mutators: { revokeSession },
   } = useAuth();
   const { data: sessionData } = useSession();
-  const isCurrentSession = session.id === sessionData?.session?.id;
+  const isCurrentSession = session.token === sessionData?.session.token;
   const parser = UAParser(session.userAgent as string);
   const isMobile = parser.device.type === "mobile";
   const browser = parser.browser.name;

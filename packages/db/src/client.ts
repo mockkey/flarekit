@@ -15,6 +15,7 @@ import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 
 import * as schema from "./schema";
 import {
+  AppearanceDBService,
   FileDbService,
   StorageDbService,
   StorageUsageLogsDbService,
@@ -42,6 +43,7 @@ export const DbService = (d1: D1Database) => {
       users: new UserDbService(db),
       storag: new StorageDbService(db),
       storageUsageLogs: new StorageUsageLogsDbService(db),
+      appearances: new AppearanceDBService(db),
     };
     return _dbService;
   }
@@ -52,6 +54,7 @@ export type DBService = {
   users: UserDbService;
   storag: StorageDbService;
   storageUsageLogs: StorageUsageLogsDbService;
+  appearances: AppearanceDBService;
 };
 
 export { sql, eq, and, inArray, isNull, desc, asc, count, sum, like, ne };
