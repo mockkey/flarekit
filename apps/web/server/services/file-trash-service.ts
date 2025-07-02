@@ -152,6 +152,104 @@ export class FileTrashService {
     return { success: true };
   }
 
+  static async permanentDeleteBatch(fileUserIds: string[], userId: string) {
+    if (!fileUserIds.length) return;
+
+    // 1. Batch get all file information
+    const trashFiles = await Promise.all(
+      fileUserIds.map((fileUserId) =>
+        dbService?.files.getTrashFileById(fileUserId, userId),
+      ),
+    );
+
+    // Filter out non-existent files
+    const validFiles = trashFiles.filter(
+      (file): file is NonNullable<typeof file> => file !== null,
+    );
+    if (!validFiles.length) {
+      throw new NotFoundError("No valid files found in trash");
+    }
+
+    let totalSize = 0;
+    const allUserFileIds: string[] = [];
+    const allFileIds: string[] = [];
+    const deletedItems: Array<{
+      fileName: string;
+      size: number;
+      isFolder: boolean;
+    }> = [];
+
+    // 2. Process each file/folder
+    for (const currentFile of validFiles) {
+      if (currentFile.userFile.isDir) {
+        // Handle folder
+        const result = await dbService?.files.getTrashFolderSize(
+          currentFile.userFile.id,
+          userId,
+        );
+
+        if (result) {
+          allUserFileIds.push(...result.userFileIds);
+          allFileIds.push(...result.fileIds);
+          totalSize += result.totalSize;
+          deletedItems.push({
+            fileName: currentFile.userFile.name ?? "",
+            size: result.totalSize,
+            isFolder: true,
+          });
+        }
+      } else {
+        // Handle single file
+        allUserFileIds.push(currentFile.userFile.id);
+        if (currentFile.file?.id) {
+          allFileIds.push(currentFile.file.id);
+        }
+        const fileSize = currentFile?.file?.size || 0;
+        totalSize += fileSize;
+        deletedItems.push({
+          fileName: currentFile.userFile.name ?? "",
+          size: fileSize,
+          isFolder: false,
+        });
+      }
+    }
+
+    // 3. Batch delete all files
+    if (allUserFileIds.length > 0) {
+      await Promise.all(
+        allUserFileIds.map((userFileId) =>
+          dbService?.files.forceDeleteUserFile(userFileId, userId),
+        ),
+      );
+    }
+
+    // 4. Update storage log once
+    await StorageService.updateStorageWithLog({
+      userId,
+      fileId: allFileIds.join(","),
+      action: "permanent_delete",
+      size: totalSize,
+      metadata: {
+        deleteType: "batch_permanent_delete",
+        fileCount: deletedItems.length,
+        totalFiles: allUserFileIds.length,
+        itemsDetails: JSON.stringify(
+          deletedItems.map((item) => ({
+            name: item.fileName,
+            size: item.size,
+            isFolder: item.isFolder,
+          })),
+        ),
+      },
+    });
+
+    return {
+      success: true,
+      deletedCount: deletedItems.length,
+      totalSize,
+    };
+  }
+
   static async restore(fileUserId: string, userId: string) {
     // 1. Get item information
     const trashFile = await dbService?.files.getTrashFileById(
@@ -168,6 +266,12 @@ export class FileTrashService {
       return this.restoreFolder(fileUserId, userId);
     }
     return this.restoreFile(fileUserId, userId);
+  }
+
+  static async restoreBatch(fileUserIds: string[], userId: string) {
+    for (const fileUserId of fileUserIds) {
+      await this.restore(fileUserId, userId);
+    }
   }
 
   private static async restoreFile(fileUserId: string, userId: string) {

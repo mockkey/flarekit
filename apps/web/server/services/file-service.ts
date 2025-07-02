@@ -536,7 +536,11 @@ export class FileService {
   }
 
   // Batch delete files
-  static async batchDeleteFiles(userId: string, userFileIds: string[]) {
+  static async batchDeleteFiles(
+    userFileIds: string[],
+    userId: string,
+    ispermanent = false,
+  ) {
     // 1. Get all file information
     const userFileRecords = await db
       .select({
@@ -551,16 +555,24 @@ export class FileService {
 
     if (!userFileRecords.length) return;
 
-    // 2. Batch soft delete user-file associations
-    await db
-      .update(userFiles)
-      .set({
-        deletedAt: new Date(),
-        isLatestVersion: false,
-      })
-      .where(
-        and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
-      );
+    // 2. Batch delete user-file associations (soft or permanent)
+    if (ispermanent) {
+      await db
+        .delete(userFiles)
+        .where(
+          and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
+        );
+    } else {
+      await db
+        .update(userFiles)
+        .set({
+          deletedAt: new Date(),
+          isLatestVersion: false,
+        })
+        .where(
+          and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
+        );
+    }
 
     // 3. Calculate total size and update storage usage
     const totalSize = userFileRecords.reduce(
@@ -570,7 +582,7 @@ export class FileService {
     await StorageService.updateStorageWithLog({
       userId,
       fileId: "",
-      action: "delete",
+      action: ispermanent ? "permanent_delete" : "delete",
       size: totalSize,
       metadata: {
         fileCount: userFileRecords.length,
@@ -579,7 +591,7 @@ export class FileService {
       },
     });
 
-    return userFiles;
+    return userFileRecords;
   }
 
   // Restore deleted file

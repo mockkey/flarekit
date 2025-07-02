@@ -4,7 +4,6 @@ import { useConfirmDialog } from "@/lib/use-confirm-dialog";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableHead,
   TableHeader,
   TableRow,
@@ -13,10 +12,10 @@ import {
   RiArrowDownSLine,
   RiArrowUpSLine,
   RiDeleteBin2Fill,
-  RiInboxLine,
 } from "@remixicon/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { FileGridItem } from "./file-grid-item";
 import { FileListItem } from "./file-list-item";
 import { FileListSkeleton } from "./file-list-skeleton";
 import { LoadMore } from "./load-more";
@@ -28,6 +27,10 @@ interface FileListProps {
   onSortChange: (sort: string, order: "asc" | "desc") => void;
   fetchNextPage: () => void;
   hasNextPage?: boolean;
+  viewMode?: "list" | "grid";
+  onViewModeChange?: (mode: "list" | "grid") => void;
+  selectedFiles?: Set<string>;
+  onSelectionChange?: (selectedFiles: Set<string>) => void;
 }
 
 export function TrashList({
@@ -37,6 +40,9 @@ export function TrashList({
   onSortChange,
   fetchNextPage,
   hasNextPage = false,
+  viewMode = "list",
+  selectedFiles: externalSelectedFiles,
+  onSelectionChange,
 }: FileListProps) {
   const { confirm, ConfirmDialog } = useConfirmDialog();
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
@@ -45,6 +51,15 @@ export function TrashList({
     "deletedAt",
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+
+  // Use external selection state if provided, otherwise use internal state
+  const [internalSelectedFiles, setInternalSelectedFiles] = useState<
+    Set<string>
+  >(new Set());
+  const selectedFiles = externalSelectedFiles || internalSelectedFiles;
+  const setSelectedFiles = onSelectionChange || setInternalSelectedFiles;
+  const [isAllSelected, setIsAllSelected] = useState(false);
+
   const deleteFileHandle = useDeleteTrashFile();
   const restoreHandle = useRestoreFile();
 
@@ -87,7 +102,7 @@ export function TrashList({
         },
       );
     } catch {
-      // 用户取消，无需处理
+      // User cancelled, no action needed
     }
   };
 
@@ -109,6 +124,32 @@ export function TrashList({
     setSortColumn(column);
     setSortDirection(newDirection);
     onSortChange(column, newDirection);
+  };
+
+  // Files in trash do not support renaming
+  const handleRename = async (_id: string) => {
+    // Renaming is not allowed in trash
+    toast.error("Files in trash cannot be renamed");
+  };
+
+  // Selection functionality handling
+  const handleSelectAll = (checked: boolean) => {
+    setIsAllSelected(checked);
+    const newSelected = checked
+      ? new Set(files.map((file) => file.id))
+      : new Set<string>();
+    setSelectedFiles(newSelected);
+  };
+
+  const handleSelectFile = (fileId: string, checked: boolean) => {
+    const newSelected = new Set(selectedFiles);
+    if (checked) {
+      newSelected.add(fileId);
+    } else {
+      newSelected.delete(fileId);
+    }
+    setSelectedFiles(newSelected);
+    setIsAllSelected(newSelected.size === files.length && files.length > 0);
   };
 
   if (isLoading) {
@@ -137,76 +178,42 @@ export function TrashList({
     );
   }
 
-  return (
-    <>
-      <div className="space-y-4">
-        <div className="relative h-[calc(100vh-246px)] overflow-auto">
-          <Table>
-            <TableCaption className="h-auto sticky top-0  z-10">
-              <div className="pb-4 flex items-center justify-between">
-                <div className="w-full">
-                  {files.length === 0 ? (
-                    <div className="w-full py-8 flex flex-col items-center justify-center text-muted-foreground">
-                      <RiInboxLine className="size-12 mb-4 text-muted-foreground/50" />
-                      <p className="text-sm font-medium">No files found</p>
-                      <p className="text-xs mt-1 text-muted-foreground/80">
-                        Upload some files to get started
-                      </p>
-                    </div>
-                  ) : (
-                    `Found ${files.length} items`
-                  )}
-                </div>
-              </div>
-            </TableCaption>
-            <TableHeader className="sticky top-0 bg-background z-10">
-              <TableRow>
-                <TableHead className="w-[50px]">Type</TableHead>
-                <TableHead
-                  onClick={() => handleSort("name")}
-                  className="cursor-pointer"
-                >
-                  Name
-                  {sortColumn === "name" &&
-                    (sortDirection === "asc" ? (
-                      <RiArrowUpSLine className="inline-block size-4 ml-1" />
-                    ) : (
-                      <RiArrowDownSLine className="inline-block size-4 ml-1" />
-                    ))}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("size")}
-                  className="cursor-pointer"
-                >
-                  Size
-                  {sortColumn === "size" &&
-                    (sortDirection === "asc" ? (
-                      <RiArrowUpSLine className="inline-block size-4 ml-1" />
-                    ) : (
-                      <RiArrowDownSLine className="inline-block size-4 ml-1" />
-                    ))}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("deletedAt")}
-                  className="cursor-pointer"
-                >
-                  Deleted At
-                  {sortColumn === "deletedAt" &&
-                    (sortDirection === "asc" ? (
-                      <RiArrowUpSLine className="inline-block size-4 ml-1" />
-                    ) : (
-                      <RiArrowDownSLine className="inline-block size-4 ml-1" />
-                    ))}
-                </TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <FileListSkeleton />
-              ) : (
-                files?.map((file) => (
-                  <FileListItem
+  if (viewMode === "grid") {
+    return (
+      <div className="h-full flex flex-col px-3 md:px-6 py-2 md:py-3">
+        {/* Fixed Grid Header with All Checkbox */}
+        <div className="border-b pb-2 mb-2">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="rounded"
+              checked={isAllSelected}
+              onChange={(e) => handleSelectAll(e.target.checked)}
+            />
+            <span className="text-sm text-muted-foreground">All</span>
+            <span className="text-xs text-muted-foreground ml-auto">
+              {selectedFiles.size > 0
+                ? `${selectedFiles.size} selected`
+                : `${files.length} items`}
+            </span>
+          </div>
+        </div>
+
+        {/* Grid Content */}
+        <div className="flex-1 overflow-auto -webkit-overflow-scrolling-touch">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-0.5 md:gap-4 p-2 md:p-2">
+            {isLoading
+              ? Array.from({ length: 12 }).map((_, i) => (
+                  <div
+                    key={`skeleton-${String(i)}`}
+                    className="flex flex-col items-center p-4 animate-pulse"
+                  >
+                    <div className="w-16 h-16 bg-muted rounded mb-3" />
+                    <div className="h-4 w-20 bg-muted rounded" />
+                  </div>
+                ))
+              : files.map((file) => (
+                  <FileGridItem
                     key={file.id}
                     file={file}
                     actions={[
@@ -228,19 +235,132 @@ export function TrashList({
                     onFolderOpen={(id) => {
                       handleRestore(id);
                     }}
+                    onRename={handleRename}
+                    isSelected={selectedFiles.has(file.id)}
+                    onSelectChange={handleSelectFile}
                   />
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ))}
+          </div>
           <LoadMore
             onLoadMore={fetchNextPage}
             isLoading={isLoading}
             hasMore={hasNextPage}
           />
         </div>
+        {ConfirmDialog}
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full flex flex-col px-3 md:px-6 py-2 md:py-3">
+      {/* Fixed Table Header */}
+      <div className="border-b">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[50px]">
+                <input
+                  type="checkbox"
+                  className="rounded"
+                  checked={isAllSelected}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                />
+              </TableHead>
+              <TableHead
+                onClick={() => handleSort("name")}
+                className="cursor-pointer"
+              >
+                Name
+                {sortColumn === "name" &&
+                  (sortDirection === "asc" ? (
+                    <RiArrowUpSLine className="inline-block size-4 ml-1" />
+                  ) : (
+                    <RiArrowDownSLine className="inline-block size-4 ml-1" />
+                  ))}
+              </TableHead>
+              <TableHead className="w-1/12 hidden md:table-cell">
+                Type
+              </TableHead>
+              <TableHead
+                onClick={() => handleSort("size")}
+                className="cursor-pointer w-1/12 hidden md:table-cell"
+              >
+                Size
+                {sortColumn === "size" &&
+                  (sortDirection === "asc" ? (
+                    <RiArrowUpSLine className="inline-block size-4 ml-1" />
+                  ) : (
+                    <RiArrowDownSLine className="inline-block size-4 ml-1" />
+                  ))}
+              </TableHead>
+              <TableHead
+                onClick={() => handleSort("deletedAt")}
+                className="cursor-pointer w-1/6 hidden md:table-cell"
+              >
+                Deleted At
+                {sortColumn === "deletedAt" &&
+                  (sortDirection === "asc" ? (
+                    <RiArrowUpSLine className="inline-block size-4 ml-1" />
+                  ) : (
+                    <RiArrowDownSLine className="inline-block size-4 ml-1" />
+                  ))}
+              </TableHead>
+              <TableHead className="text-right w-[80px] md:w-1/12">
+                Actions
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      </div>
+
+      {/* Scrollable Table Body */}
+      <div className="flex-1 overflow-auto -webkit-overflow-scrolling-touch">
+        <Table>
+          <TableBody>
+            {isLoading ? (
+              <FileListSkeleton />
+            ) : (
+              files?.map((file) => (
+                <FileListItem
+                  key={file.id}
+                  file={file}
+                  actions={[
+                    {
+                      label: "Restore",
+                      onClick: () => handleRestore(file.id),
+                    },
+                    {
+                      label: "Permanent Delete",
+                      variant: "destructive",
+                      separator: true,
+                      onClick: () => handlePermanentDelete(file.id),
+                    },
+                  ]}
+                  renamingFileId={renamingFileId}
+                  newFileName={newFileName}
+                  setRenamingFileId={setRenamingFileId}
+                  setNewFileName={setNewFileName}
+                  onFolderOpen={(id) => {
+                    handleRestore(id);
+                  }}
+                  onRename={handleRename}
+                  showCheckbox={true}
+                  columns={["name", "type", "size", "deletedAt"]}
+                  isSelected={selectedFiles.has(file.id)}
+                  onSelectChange={handleSelectFile}
+                />
+              ))
+            )}
+          </TableBody>
+        </Table>
+        <LoadMore
+          onLoadMore={fetchNextPage}
+          isLoading={isLoading}
+          hasMore={hasNextPage}
+        />
       </div>
       {ConfirmDialog}
-    </>
+    </div>
   );
 }

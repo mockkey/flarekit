@@ -1,4 +1,4 @@
-import { fetchData, postData } from "@flarekit/common/fetch";
+import { deleteData, fetchData, postData } from "@flarekit/common/fetch";
 import {
   type InfiniteData,
   useInfiniteQuery,
@@ -15,10 +15,11 @@ export interface FileItem {
   type: "file" | "folder";
   size: number;
   mime: string | null;
-  createdAt: number | string;
+  createdAt: number;
   parentId: string | null;
   storagePath: string | null;
   url: string | null;
+  thumbnail: string;
 }
 
 interface FilesResponse {
@@ -263,6 +264,104 @@ export const useDeleteFile = () => {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["file-list", ...queryKey],
+      });
+    },
+  });
+};
+
+export const useDeleteBatchFile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (queryString: { ids: string[] }) => {
+      return deleteData<{ key: string[] }>("/rpc/files/batch", {
+        ids: queryString.ids,
+      });
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<FilesResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: items.items.filter(
+                (file) => !variables.ids.includes(file.id),
+              ),
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onError: () => {
+      console.error("rename:");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+    },
+  });
+};
+
+export const usePermanentDeleteFile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (queryString: { ids: string[] }) => {
+      return deleteData<{ key: string[] }>(
+        "/rpc/files/batch/permanent-delete",
+        {
+          ids: queryString.ids,
+        },
+      );
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<FilesResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: items.items.filter(
+                (file) => !variables.ids.includes(file.id),
+              ),
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onError: (error) => {
+      console.error("permanent delete error:", error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["file-manager"],
       });
     },
   });

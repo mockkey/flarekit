@@ -24,6 +24,10 @@ export const trashFileListquerySchema = z.object({
   order: z.enum(["asc", "desc"]).default("desc"),
 });
 
+export const transhFileIdsSchema = z.object({
+  ids: z.array(z.string()).min(1),
+});
+
 export const createFolderSchema = z.object({
   name: z.string().min(1, "Folder name is required"),
   parentId: z.string().nullable().optional(),

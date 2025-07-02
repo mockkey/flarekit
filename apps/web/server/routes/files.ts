@@ -8,6 +8,7 @@ import {
   createFolderSchema,
   fileIdSchema,
   fileListquerySchema,
+  transhFileIdsSchema,
 } from "server/types/file";
 
 export const filesServer = new Hono<HonoEnv>();
@@ -83,6 +84,34 @@ filesServer.post("/delete", zValidator("json", fileIdSchema), async (c) => {
   await FileService.delete(id, userId);
   return c.json({ success: true });
 });
+
+filesServer.delete(
+  "/batch",
+  zValidator("json", transhFileIdsSchema),
+  async (c) => {
+    const userId = c.get("userId");
+    if (!userId) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    const { ids } = c.req.valid("json");
+    await FileService.batchDeleteFiles(ids, userId);
+    return c.json({ success: true });
+  },
+);
+
+filesServer.delete(
+  "/batch/permanent-delete",
+  zValidator("json", transhFileIdsSchema),
+  async (c) => {
+    const userId = c.get("userId");
+    if (!userId) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+    const { ids } = c.req.valid("json");
+    await FileService.batchDeleteFiles(ids, userId, true);
+    return c.json({ success: true });
+  },
+);
 
 //change-name
 filesServer.post(
