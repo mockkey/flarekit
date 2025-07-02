@@ -142,7 +142,7 @@ export function FileGridItem({
           aria-label={`${file.type === "folder" ? "Open folder" : "View file"} ${file.name}`}
         >
           <div className="text-4xl md:text-8xl text-muted-foreground">
-            {getFileIcon(file)}
+            {getFileIcon(file, "size-12 md:size-16")}
           </div>
         </div>
 
