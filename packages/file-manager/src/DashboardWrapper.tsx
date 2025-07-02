@@ -24,7 +24,7 @@ function DashboardWrapper({ children }: DashboardWrapperProps) {
       queryClientRef.current = new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 1000 * 60 * 5, // 备用 QueryClient 的默认配置
+            staleTime: 1000 * 60 * 5, // Default configuration for fallback QueryClient
             refetchOnWindowFocus: true,
             retry: 3,
           },

@@ -124,6 +124,58 @@ export const useDeleteTrashFile = () => {
   });
 };
 
+export const useDeleteTrashBatchFiles = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (queryString: { ids: string[] }) => {
+      return deleteData<{ key: string }>("/rpc/files/trash/batch", {
+        ids: queryString.ids,
+      });
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<TrashListResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: items.items.filter(
+                (file) => !variables.ids.includes(file.id),
+              ),
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onError: () => {
+      console.error("rename:");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["file-manager"],
+      });
+    },
+  });
+};
+
 export const useRestoreFile = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -147,6 +199,55 @@ export const useRestoreFile = () => {
             const newPages = oldData.pages.map((items) => ({
               ...items,
               items: items.items.filter((file) => file.id !== variables.id),
+            }));
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          },
+        );
+      });
+      return { previousFilesData };
+    },
+    onError: () => {
+      console.error("rename:");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["file-list", ...queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKey],
+      });
+    },
+  });
+};
+
+export const useRestoreBatchFiles = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (queryString: { ids: string[] }) => {
+      return postData<{ key: string }>("/rpc/files/trash/restore/batch", {
+        ids: queryString.ids,
+      });
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+      const previousFilesData = queryClient.getQueriesData({
+        queryKey: ["file-list", ...queryKey],
+      });
+      previousFilesData.map((previousFilesItem) => {
+        queryClient.setQueryData<InfiniteData<TrashListResponse>>(
+          [...previousFilesItem[0]],
+          (oldData) => {
+            if (!oldData) {
+              return { pages: [], pageParams: [] };
+            }
+            const newPages = oldData.pages.map((items) => ({
+              ...items,
+              items: items.items.filter(
+                (file) => !variables.ids.includes(file.id),
+              ),
             }));
             return {
               ...oldData,
