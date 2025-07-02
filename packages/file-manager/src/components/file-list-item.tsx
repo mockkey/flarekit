@@ -101,7 +101,22 @@ export function FileListItem({
         return (
           <TableCell className="max-w-[200px] md:max-w-none" key="name">
             <div className="flex items-center gap-3">
-              {getFileIcon(file)}
+              <div
+                className="cursor-pointer hover:opacity-75 transition-opacity"
+                onClick={handleClick}
+                onDoubleClick={handleDoubleClick}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleDoubleClick();
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                title={`${file.type === "folder" ? "Open folder" : "View file"} ${file.name}`}
+              >
+                {getFileIcon(file)}
+              </div>
               {renamingFileId === file.id ? (
                 <div className="flex items-center gap-2">
                   <Input
