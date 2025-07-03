@@ -352,16 +352,16 @@ const Dashboard = ({
               onClick={() => setShowUploadDialog(true)}
             >
               <RiFileUploadLine className="size-4 mr-1" />
-              <span className="xs:inline">Upload</span>
+              <span className="hidden sm:inline">Upload</span>
             </Button>
             <Button
               variant="outline"
               size="sm"
-              className="h-8 md:h-8 text-xs flex-shrink-0 hidden sm:flex"
+              className="h-8 md:h-8 text-xs flex-shrink-0 sm:flex"
               onClick={() => setShowCreateFolderDialog(true)}
             >
               <RiFolderAddLine className="size-4 mr-1" />
-              New Folder
+              <span className="hidden sm:inline"> New Folder</span>
             </Button>
             <Button
               variant="outline"
@@ -374,7 +374,7 @@ const Dashboard = ({
               <span className="hidden sm:inline">
                 Delete ({selectedFiles.size})
               </span>
-              <span className="sm:hidden">Del</span>
+              {/* <span className="sm:hidden">Del</span> */}
             </Button>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">

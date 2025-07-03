@@ -116,7 +116,7 @@ export class StorageService {
         newUsage = Math.max(0, oldUsage - params.size);
         break;
       case "restore":
-        newUsage = oldUsage + params.size;
+        newUsage = oldUsage;
         break;
       case "create_folder":
         newUsage = oldUsage;

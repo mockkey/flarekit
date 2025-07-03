@@ -455,6 +455,7 @@ export class FileService {
     return {
       folder,
       userFileIds,
+      fileIds,
       totalSize,
       fileCount: allItemIds.length,
     };
@@ -541,57 +542,74 @@ export class FileService {
     userId: string,
     ispermanent = false,
   ) {
-    // 1. Get all file information
-    const userFileRecords = await db
-      .select({
-        file: file,
-        userFile: userFiles,
-      })
-      .from(userFiles)
-      .leftJoin(file, eq(file.id, userFiles.fileId))
-      .where(
-        and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
-      );
+    if (!userFileIds.length) return [];
 
-    if (!userFileRecords.length) return;
+    const results = [];
+    let totalSize = 0;
+    let totalFileCount = 0;
+    const allFileIds: string[] = [];
+    const deletedItems: Array<{
+      name: string;
+      size: number;
+      isFolder: boolean;
+    }> = [];
 
-    // 2. Batch delete user-file associations (soft or permanent)
-    if (ispermanent) {
-      await db
-        .delete(userFiles)
-        .where(
-          and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
-        );
-    } else {
-      await db
-        .update(userFiles)
-        .set({
-          deletedAt: new Date(),
-          isLatestVersion: false,
-        })
-        .where(
-          and(inArray(userFiles.id, userFileIds), eq(userFiles.userId, userId)),
-        );
+    // Process each item individually to handle folders properly
+    for (const userFileId of userFileIds) {
+      try {
+        const result = await this.delete(userFileId, userId, ispermanent);
+        results.push(result);
+
+        if (result && "totalSize" in result) {
+          // This is a folder result
+          totalSize += result.totalSize;
+          totalFileCount += result.fileCount;
+          if (result.fileIds) {
+            // For folders, we use fileIds for storage logging
+            allFileIds.push(
+              ...result.fileIds.split(",").filter((id: string) => id),
+            );
+          }
+          deletedItems.push({
+            name: result.folder.name || "",
+            size: result.totalSize,
+            isFolder: true,
+          });
+        } else if (result && "file" in result) {
+          // This is a single file result
+          const fileSize = result.file?.size || 0;
+          totalSize += fileSize;
+          totalFileCount += 1;
+          if (result.file?.id) {
+            allFileIds.push(result.file.id);
+          }
+          deletedItems.push({
+            name: result.userFile.name || "",
+            size: fileSize,
+            isFolder: false,
+          });
+        }
+      } catch (error) {
+        console.error(`Failed to delete item ${userFileId}:`, error);
+        // Continue with other items even if one fails
+      }
     }
 
-    // 3. Calculate total size and update storage usage
-    const totalSize = userFileRecords.reduce(
-      (sum, item) => sum + (item.file?.size ?? 0),
-      0,
-    );
+    // Single storage log entry for the entire batch operation
     await StorageService.updateStorageWithLog({
       userId,
-      fileId: "",
+      fileId: allFileIds.join(","),
       action: ispermanent ? "permanent_delete" : "delete",
       size: totalSize,
       metadata: {
-        fileCount: userFileRecords.length,
         deleteType: "batch_delete",
-        fileIds: userFileIds.join(","),
+        fileCount: totalFileCount,
+        itemCount: userFileIds.length,
+        itemsDetails: JSON.stringify(deletedItems),
       },
     });
 
-    return userFileRecords;
+    return results;
   }
 
   // Restore deleted file
