@@ -193,14 +193,21 @@ export function FileList({
       return (
         <div className="h-full flex flex-col">
           <div className="flex-1 overflow-auto p-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-              {Array.from({ length: 12 }).map((_, i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={`skeleton-${String(i)}`}
-                  className="flex flex-col items-center p-4 animate-pulse"
+                  className="aspect-square rounded-lg border bg-card animate-pulse"
                 >
-                  <div className="w-16 h-16 bg-muted rounded mb-3" />
-                  <div className="h-4 w-20 bg-muted rounded" />
+                  <div className="h-full flex flex-col">
+                    <div className="flex-1 p-4 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-muted rounded" />
+                    </div>
+                    <div className="p-3 border-t">
+                      <div className="h-4 w-20 bg-muted rounded mb-2" />
+                      <div className="h-3 w-16 bg-muted rounded" />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -250,7 +257,7 @@ export function FileList({
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              className="rounded"
+              className="rounded size-4 md:size-5"
               checked={isAllSelected}
               onChange={(e) => handleSelectAll(e.target.checked)}
             />
@@ -264,7 +271,7 @@ export function FileList({
         </div>
 
         <div className="flex-1 overflow-auto -webkit-overflow-scrolling-touch">
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-0.5 md:gap-4 p-2 md:p-2">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 p-4 md:p-6">
             {files.map((file) => (
               <FileGridItem
                 key={file.id}
@@ -330,6 +337,7 @@ export function FileList({
           onOpenChange={setViewerOpen}
           imageUrl={currentImage || ""}
         />
+        {DeleteConfirmDialog}
       </div>
     );
   }

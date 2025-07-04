@@ -10,6 +10,7 @@ import { Input } from "@flarekit/ui/components/ui/input";
 import { RiCheckLine, RiMore2Fill } from "@remixicon/react";
 
 import type { FileItem } from "@/types";
+import { formatBytes } from "@flarekit/common/utils";
 import { type ContextMenuAction, FileContextMenu } from "./context-menu";
 import { getFileIcon } from "./file-icon";
 
@@ -50,21 +51,8 @@ export function FileGridItem({
   let clickTimeout: NodeJS.Timeout | null = null;
   let lastTap = 0;
 
-  const handleClick = () => {
-    if (clickTimeout) {
-      clearTimeout(clickTimeout);
-      clickTimeout = null;
-      return; // This is the second click of a double-click, ignore it
-    }
-
-    clickTimeout = setTimeout(() => {
-      // Single click to select file
-      onSelectChange?.(file.id, !isSelected);
-      clickTimeout = null;
-    }, 250); // Increased to 250ms for better mobile experience
-  };
-
   const handleDoubleClick = () => {
+    // Clear any pending single click
     if (clickTimeout) {
       clearTimeout(clickTimeout);
       clickTimeout = null;
@@ -83,6 +71,12 @@ export function FileGridItem({
     }
   };
 
+  const handleNameDoubleClick = () => {
+    // Double click on name to enter edit mode
+    setRenamingFileId?.(file.id);
+    setNewFileName?.(file.name);
+  };
+
   // Mobile double-tap handling
   const handleTouchEnd = () => {
     const currentTime = new Date().getTime();
@@ -90,9 +84,6 @@ export function FileGridItem({
     if (tapLength < 500 && tapLength > 0) {
       // Double tap
       handleDoubleClick();
-    } else {
-      // Single tap
-      handleClick();
     }
     lastTap = currentTime;
   };
@@ -107,47 +98,104 @@ export function FileGridItem({
 
   return (
     <FileContextMenu actions={contextMenuActions}>
-      <div className="group relative flex flex-col items-center p-1.5 md:p-4 rounded-lg hover:bg-muted/50 transition-colors min-h-[120px] md:min-h-[160px]">
-        {/* Checkbox - Only show when selected */}
-        {isSelected && (
-          <div className="absolute top-0.5 left-0.5 md:top-2 md:left-2 z-10">
-            <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center bg-primary rounded-full">
-              <input
-                type="checkbox"
-                className="rounded w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-white"
-                checked={isSelected}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onSelectChange?.(file.id, e.target.checked);
-                }}
-              />
-            </div>
+      <div className="group">
+        {/* Square Card Container */}
+        <div className="relative rounded-lg border bg-card hover:bg-accent/50 transition-colors aspect-square overflow-hidden">
+          {/* Checkbox - Always visible on mobile for easy selection */}
+          <div className="absolute top-2 left-2 md:top-3 md:left-3 z-10">
+            <input
+              type="checkbox"
+              className={`rounded cursor-pointer transition-opacity size-4 md:size-5 ${
+                isSelected
+                  ? "opacity-100"
+                  : "md:opacity-0 md:group-hover:opacity-100 opacity-100"
+              }`}
+              checked={isSelected}
+              onChange={(e) => {
+                e.stopPropagation();
+                onSelectChange?.(file.id, e.target.checked);
+              }}
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+              }}
+              style={{
+                WebkitTapHighlightColor: "transparent",
+                touchAction: "manipulation",
+              }}
+              aria-label={`Select ${file.name}`}
+            />
           </div>
-        )}
 
-        {/* File Icon - Smaller and more refined on mobile */}
-        <div
-          className="mb-1 md:mb-3 cursor-pointer flex-1 flex items-center justify-center"
-          onClick={handleClick}
-          onDoubleClick={handleDoubleClick}
-          onTouchEnd={handleTouchEnd}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              handleDoubleClick();
-            }
-          }}
-          tabIndex={0}
-          role="button"
-          aria-label={`${file.type === "folder" ? "Open folder" : "View file"} ${file.name}`}
-        >
-          <div className="text-4xl md:text-8xl text-muted-foreground">
-            {getFileIcon(file, "size-12 md:size-16")}
+          {/* Actions Menu - Always visible on mobile, show on hover on desktop */}
+          <div className="absolute top-2 right-2 md:top-3 md:right-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 md:h-8 md:w-8 bg-background/80 hover:bg-muted pointer-events-auto"
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => e.stopPropagation()}
+                >
+                  <RiMore2Fill className="size-4 md:size-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {actions.map((action) => (
+                  <div key={action.label}>
+                    {action.separator && <DropdownMenuSeparator />}
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        action.onClick();
+                      }}
+                      variant={action.variant}
+                    >
+                      {action.label}
+                    </DropdownMenuItem>
+                  </div>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Main Content Area */}
+          <div
+            className="flex flex-col h-full cursor-pointer"
+            onDoubleClick={handleDoubleClick}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* File Icon/Preview - Full card content */}
+            <div className="h-full flex items-center justify-center p-4">
+              {file.type === "file" &&
+              file.mime?.startsWith("image/") &&
+              file.url ? (
+                <div className="w-full h-full overflow-hidden rounded-md">
+                  <img
+                    src={file.thumbnail || file.url}
+                    alt={file.name}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      // Fallback to icon if image fails to load
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove(
+                        "hidden",
+                      );
+                    }}
+                  />
+                </div>
+              ) : null}
+              <div
+                className={`text-9xl md:text-[8rem] text-muted-foreground ${file.type === "file" && file.mime?.startsWith("image/") && file.url ? "hidden" : ""}`}
+              >
+                {getFileIcon(file, "size-24 md:size-32")}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* File Name */}
-        <div className="w-full text-center">
+        {/* File Info - Outside the card */}
+        <div className="mt-2 px-1">
           {renamingFileId === file.id ? (
             <div className="flex items-center gap-2">
               <Input
@@ -161,70 +209,47 @@ export function FileGridItem({
                     setNewFileName("");
                   }
                 }}
-                className="text-center text-sm"
+                className="text-sm flex-1"
               />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => onRename(file.id)}
+                className="h-6 w-6"
               >
-                <RiCheckLine className="size-4" />
+                <RiCheckLine className="size-3" />
               </Button>
             </div>
           ) : (
-            <span
-              className={`text-xs md:text-sm text-center block truncate max-w-[75px] md:max-w-[120px] leading-tight px-1 ${
-                file.type === "folder" && onFolderOpen !== undefined
-                  ? "cursor-pointer hover:text-blue-500"
-                  : file.type === "file" &&
-                      String(file.mime).indexOf("image") >= 0
-                    ? "cursor-pointer hover:text-blue-500"
-                    : ""
-              }`}
-              title={file.name}
-              onClick={handleClick}
-              onDoubleClick={handleDoubleClick}
-              onTouchEnd={handleTouchEnd}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleDoubleClick();
-                }
-              }}
-              tabIndex={0}
-              role="button"
-            >
-              {file.name}
-            </span>
-          )}
-        </div>
-
-        {/* Actions Menu - Always visible on mobile, show on hover on desktop */}
-        <div className="absolute top-0.5 right-0.5 md:top-2 md:right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 md:h-6 md:w-6 bg-background/80 md:bg-transparent hover:bg-muted"
+            <>
+              <div
+                className="font-medium text-sm leading-tight cursor-pointer mb-1 truncate"
+                title={file.name}
+                onDoubleClick={handleNameDoubleClick}
+                onTouchEnd={handleTouchEnd}
               >
-                <RiMore2Fill className="size-2.5 md:size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" forceMount>
-              {actions.map((action) => (
-                <div key={action.label}>
-                  {action.separator && <DropdownMenuSeparator />}
-                  <DropdownMenuItem
-                    onClick={action.onClick}
-                    variant={action.variant}
-                  >
-                    {action.label}
-                  </DropdownMenuItem>
+                {file.name}
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/40" />
+                  <span>
+                    {file.type === "file"
+                      ? file.mime?.startsWith("image/")
+                        ? "Image"
+                        : file.mime || "File"
+                      : "Folder"}
+                  </span>
                 </div>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {file.type === "file" && file.size && (
+                  <div className="flex items-center gap-1">
+                    <span>•</span>
+                    <span>{formatBytes(file.size)}</span>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </FileContextMenu>

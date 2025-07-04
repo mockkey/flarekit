@@ -376,6 +376,7 @@ export class FileService {
     folderId: string,
     userId: string,
     ispermanent = false,
+    skipStorageLog = false,
   ) {
     // 1. Get folder information
     const folder = await db
@@ -439,19 +440,21 @@ export class FileService {
         })
         .where(inArray(userFiles.id, allItemIds));
     }
-    await StorageService.updateStorageWithLog({
-      userId,
-      fileId: folderId,
-      action: ispermanent ? "permanent_delete" : "delete",
-      size: totalSize,
-      metadata: {
-        folderName: !folder.name,
-        deleteType: "folder_delete",
-        fileCount: allItemIds.length,
-        totalFolders: allItemIds.length,
-        fileIds: fileIds,
-      },
-    });
+    if (!skipStorageLog) {
+      await StorageService.updateStorageWithLog({
+        userId,
+        fileId: folderId,
+        action: ispermanent ? "permanent_delete" : "delete",
+        size: totalSize,
+        metadata: {
+          folderName: !folder.name,
+          deleteType: "folder_delete",
+          fileCount: allItemIds.length,
+          totalFolders: allItemIds.length,
+          fileIds: fileIds,
+        },
+      });
+    }
     return {
       folder,
       userFileIds,
@@ -462,7 +465,12 @@ export class FileService {
   }
 
   // Common delete method that handles both files and folders
-  static async delete(itemId: string, userId: string, ispermanent = false) {
+  static async delete(
+    itemId: string,
+    userId: string,
+    ispermanent = false,
+    skipStorageLog = false,
+  ) {
     // 1. Get item information
     const item = await db
       .select({
@@ -487,9 +495,9 @@ export class FileService {
     }
 
     if (item.isDir) {
-      return this.deleteFolder(itemId, userId, ispermanent);
+      return this.deleteFolder(itemId, userId, ispermanent, skipStorageLog);
     }
-    return this.deleteFile(itemId, userId, ispermanent);
+    return this.deleteFile(itemId, userId, ispermanent, skipStorageLog);
   }
 
   // Delete single file
@@ -497,6 +505,7 @@ export class FileService {
     userFileId: string,
     userId: string,
     ispermanent = false,
+    skipStorageLog = false,
   ) {
     // 1. Get file information
     const userFile = await db
@@ -522,17 +531,19 @@ export class FileService {
         .where(eq(userFiles.id, userFileId));
     }
 
-    // 3. Update storage usage and log
-    await StorageService.updateStorageWithLog({
-      userId,
-      fileId: userFile.file?.id || "",
-      action: ispermanent ? "permanent_delete" : "delete",
-      size: userFile?.file?.size || 0,
-      metadata: {
-        fileName: !userFile.userFile.name,
-        deleteType: "user_request",
-      },
-    });
+    // 3. Update storage usage and log (skip if this is part of a batch operation)
+    if (!skipStorageLog) {
+      await StorageService.updateStorageWithLog({
+        userId,
+        fileId: userFile.file?.id || "",
+        action: ispermanent ? "permanent_delete" : "delete",
+        size: userFile?.file?.size || 0,
+        metadata: {
+          fileName: !userFile.userFile.name,
+          deleteType: "user_request",
+        },
+      });
+    }
     return userFile;
   }
 
@@ -557,7 +568,7 @@ export class FileService {
     // Process each item individually to handle folders properly
     for (const userFileId of userFileIds) {
       try {
-        const result = await this.delete(userFileId, userId, ispermanent);
+        const result = await this.delete(userFileId, userId, ispermanent, true);
         results.push(result);
 
         if (result && "totalSize" in result) {

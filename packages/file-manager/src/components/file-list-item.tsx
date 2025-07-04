@@ -61,6 +61,7 @@ export function FileListItem({
   columns = ["name", "modifiedTime", "type", "size", "createdTime"],
 }: FileListItemProps) {
   let clickTimeout: NodeJS.Timeout | null = null;
+  let lastTap = 0;
 
   const handleClick = () => {
     if (clickTimeout) {
@@ -95,6 +96,20 @@ export function FileListItem({
     }
   };
 
+  // Mobile double-tap handling
+  const handleTouchEnd = () => {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTap;
+    if (tapLength < 500 && tapLength > 0) {
+      // Double tap
+      handleDoubleClick();
+    } else {
+      // Single tap
+      handleClick();
+    }
+    lastTap = currentTime;
+  };
+
   const renderColumn = (column: string) => {
     switch (column) {
       case "name":
@@ -105,6 +120,7 @@ export function FileListItem({
                 className="cursor-pointer hover:opacity-75 transition-opacity"
                 onClick={handleClick}
                 onDoubleClick={handleDoubleClick}
+                onTouchEnd={handleTouchEnd}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -152,6 +168,7 @@ export function FileListItem({
                   }`}
                   onClick={handleClick}
                   onDoubleClick={handleDoubleClick}
+                  onTouchEnd={handleTouchEnd}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
