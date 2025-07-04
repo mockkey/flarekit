@@ -140,12 +140,15 @@ export function FileGridItem({
                   <RiMore2Fill className="size-4 md:size-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" forceMount>
+              <DropdownMenuContent align="end">
                 {actions.map((action) => (
                   <div key={action.label}>
                     {action.separator && <DropdownMenuSeparator />}
                     <DropdownMenuItem
-                      onClick={action.onClick}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        action.onClick();
+                      }}
                       variant={action.variant}
                     >
                       {action.label}

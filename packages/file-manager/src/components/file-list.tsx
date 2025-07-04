@@ -337,6 +337,7 @@ export function FileList({
           onOpenChange={setViewerOpen}
           imageUrl={currentImage || ""}
         />
+        {DeleteConfirmDialog}
       </div>
     );
   }
