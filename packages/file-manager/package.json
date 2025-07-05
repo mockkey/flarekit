@@ -29,6 +29,7 @@
     "@uppy/core": "^4.4.5",
     "@uppy/dashboard": "^4.3.4",
     "@uppy/react": "4.2.3",
+    "@vidstack/react": "^1.12.13",
     "spark-md5": "^3.0.2",
     "zustand": "^5.0.5"
   },

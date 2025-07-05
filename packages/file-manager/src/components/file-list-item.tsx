@@ -31,7 +31,7 @@ interface FileListItemProps {
   setNewFileName: (name: string) => void;
   onRename: (id: string) => Promise<void>;
   onFolderOpen?: (id: string) => void;
-  onImagePreview?: (url: string) => void;
+  onFileOpen?: (file: FileItem) => void;
   showCheckbox?: boolean;
   isSelected?: boolean;
   onSelectChange?: (fileId: string, checked: boolean) => void;
@@ -54,7 +54,7 @@ export function FileListItem({
   setNewFileName,
   onRename,
   onFolderOpen,
-  onImagePreview,
+  onFileOpen,
   showCheckbox = true,
   isSelected = false,
   onSelectChange,
@@ -83,16 +83,11 @@ export function FileListItem({
       clickTimeout = null;
     }
 
-    // Double click to open folder or view image
+    // Double click to open folder or file
     if (file.type === "folder" && onFolderOpen) {
       onFolderOpen(file.id);
-    } else if (
-      file.type === "file" &&
-      String(file.mime).indexOf("image") >= 0 &&
-      onImagePreview &&
-      file.url
-    ) {
-      onImagePreview(file.url);
+    } else if (file.type === "file" && onFileOpen && file.url) {
+      onFileOpen(file);
     }
   };
 
