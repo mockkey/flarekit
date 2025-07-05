@@ -25,6 +25,7 @@ import { FileListItem } from "./file-list-item";
 import { FileListSkeleton } from "./file-list-skeleton";
 import { LoadMore } from "./load-more";
 import { ImageViewerDialog } from "./viewer/image-viewer-dialog";
+import { VideoViewerDialog } from "./viewer/video-viewer-dialog";
 
 interface FileListProps {
   files: FileItem[];
@@ -53,6 +54,11 @@ export function FileList({
 }: FileListProps) {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [videoViewerOpen, setVideoViewerOpen] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState<{
+    url: string;
+    name: string;
+  } | null>(null);
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
   const [newFileName, setNewFileName] = useState("");
   const [sortColumn, setSortColumn] = useState<"name" | "size" | "createdAt">(
@@ -304,6 +310,21 @@ export function FileList({
                         },
                       ]
                     : []),
+                  ...(file.type === "file" &&
+                  String(file.mime).indexOf("video") >= 0
+                    ? [
+                        {
+                          label: "Play Video",
+                          onClick: () => {
+                            setCurrentVideo({
+                              url: file.url!,
+                              name: file.name,
+                            });
+                            setVideoViewerOpen(true);
+                          },
+                        },
+                      ]
+                    : []),
                   {
                     label: "Delete",
                     variant: "destructive" as const,
@@ -317,9 +338,14 @@ export function FileList({
                 setNewFileName={setNewFileName}
                 onRename={handleRename}
                 onFolderOpen={onFolderOpen}
-                onImagePreview={(url) => {
-                  setCurrentImage(url);
-                  setViewerOpen(true);
+                onFileOpen={(file) => {
+                  if (String(file.mime).indexOf("image") >= 0) {
+                    setCurrentImage(file.url!);
+                    setViewerOpen(true);
+                  } else if (String(file.mime).indexOf("video") >= 0) {
+                    setCurrentVideo({ url: file.url!, name: file.name });
+                    setVideoViewerOpen(true);
+                  }
                 }}
                 isSelected={selectedFiles.has(file.id)}
                 onSelectChange={handleSelectFile}
@@ -336,6 +362,12 @@ export function FileList({
           open={viewerOpen}
           onOpenChange={setViewerOpen}
           imageUrl={currentImage || ""}
+        />
+        <VideoViewerDialog
+          open={videoViewerOpen}
+          onOpenChange={setVideoViewerOpen}
+          videoUrl={currentVideo?.url || ""}
+          fileName={currentVideo?.name}
         />
         {DeleteConfirmDialog}
       </div>
@@ -444,6 +476,21 @@ export function FileList({
                           },
                         ]
                       : []),
+                    ...(file.type === "file" &&
+                    String(file.mime).indexOf("video") >= 0
+                      ? [
+                          {
+                            label: "Play Video",
+                            onClick: () => {
+                              setCurrentVideo({
+                                url: file.url!,
+                                name: file.name,
+                              });
+                              setVideoViewerOpen(true);
+                            },
+                          },
+                        ]
+                      : []),
 
                     {
                       label: "Delete",
@@ -458,9 +505,14 @@ export function FileList({
                   setNewFileName={setNewFileName}
                   onRename={handleRename}
                   onFolderOpen={onFolderOpen}
-                  onImagePreview={(url) => {
-                    setCurrentImage(url);
-                    setViewerOpen(true);
+                  onFileOpen={(file) => {
+                    if (String(file.mime).indexOf("image") >= 0) {
+                      setCurrentImage(file.url!);
+                      setViewerOpen(true);
+                    } else if (String(file.mime).indexOf("video") >= 0) {
+                      setCurrentVideo({ url: file.url!, name: file.name });
+                      setVideoViewerOpen(true);
+                    }
                   }}
                   isSelected={selectedFiles.has(file.id)}
                   onSelectChange={handleSelectFile}
@@ -479,6 +531,12 @@ export function FileList({
         open={viewerOpen}
         onOpenChange={setViewerOpen}
         imageUrl={currentImage || ""}
+      />
+      <VideoViewerDialog
+        open={videoViewerOpen}
+        onOpenChange={setVideoViewerOpen}
+        videoUrl={currentVideo?.url || ""}
+        fileName={currentVideo?.name}
       />
       {DeleteConfirmDialog}
     </div>

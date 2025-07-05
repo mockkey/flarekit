@@ -44,11 +44,11 @@ export class FileService {
     });
 
     return {
-      id: newFolder.id,
-      name: newFolder.name,
+      id: newFolder?.id,
+      name: newFolder?.name,
       isDir: true,
-      parentId: newFolder.parentId,
-      createdAt: newFolder.createdAt,
+      parentId: newFolder?.parentId,
+      createdAt: newFolder?.createdAt,
     };
   }
 
@@ -92,15 +92,16 @@ export class FileService {
           size: file?.size,
           mime: file?.mime,
           downloadUrl: `/files/${userFile.id}/download`,
-          url: file?.mime?.startsWith("image/")
-            ? file?.storagePath && getUrl(file.storagePath)
-            : `/viewer/${userFile.fileId}`,
+          url:
+            file?.mime?.startsWith("image/") || file?.mime?.startsWith("video/")
+              ? file?.storagePath && getUrl(file.storagePath)
+              : `/viewer/${userFile.fileId}`,
           thumbnail:
             file?.mime?.startsWith("image/") && file?.mime !== "image/svg+xml"
               ? thumbnail?.storagePath
                 ? `${env.IMAGE_URL}/${thumbnail?.storagePath}`
                 : null
-              : `/viewer/${userFile.fileId}`,
+              : null,
           createdAt: userFile.createdAt,
           updatedAt: userFile.createdAt,
         };
