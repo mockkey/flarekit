@@ -93,7 +93,9 @@ export class FileService {
           mime: file?.mime,
           downloadUrl: `/files/${userFile.id}/download`,
           url:
-            file?.mime?.startsWith("image/") || file?.mime?.startsWith("video/")
+            file?.mime?.startsWith("image/") ||
+            file?.mime?.startsWith("video/") ||
+            file?.mime?.startsWith("audio/")
               ? file?.storagePath && getUrl(file.storagePath)
               : `/viewer/${userFile.fileId}`,
           thumbnail:

@@ -18,6 +18,7 @@ import {
   RiArrowUpSLine,
   RiInboxLine,
 } from "@remixicon/react";
+import type { MediaViewType } from "@vidstack/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { FileGridItem } from "./file-grid-item";
@@ -25,7 +26,7 @@ import { FileListItem } from "./file-list-item";
 import { FileListSkeleton } from "./file-list-skeleton";
 import { LoadMore } from "./load-more";
 import { ImageViewerDialog } from "./viewer/image-viewer-dialog";
-import { VideoViewerDialog } from "./viewer/video-viewer-dialog";
+import { MediaViewerDialog } from "./viewer/media-viewer-dialog";
 
 interface FileListProps {
   files: FileItem[];
@@ -54,10 +55,11 @@ export function FileList({
 }: FileListProps) {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
-  const [videoViewerOpen, setVideoViewerOpen] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState<{
+  const [mediaViewerOpen, setMediaViewerOpen] = useState(false);
+  const [currentMedia, setCurrentMedia] = useState<{
     url: string;
     name: string;
+    type: MediaViewType;
   } | null>(null);
   const [renamingFileId, setRenamingFileId] = useState<string | null>(null);
   const [newFileName, setNewFileName] = useState("");
@@ -310,21 +312,24 @@ export function FileList({
                         },
                       ]
                     : []),
-                  ...(file.type === "file" &&
-                  String(file.mime).indexOf("video") >= 0
+                  ...((file.type === "file" &&
+                    String(file.mime).indexOf("video") >= 0) ||
+                  String(file.mime).indexOf("audio") >= 0
                     ? [
                         {
-                          label: "Play Video",
+                          label: `Play ${String(file.mime).split("/")[0]}`,
                           onClick: () => {
-                            setCurrentVideo({
+                            setCurrentMedia({
                               url: file.url!,
                               name: file.name,
+                              type: `${String(file.mime).split("/")[0]}` as MediaViewType,
                             });
-                            setVideoViewerOpen(true);
+                            setMediaViewerOpen(true);
                           },
                         },
                       ]
                     : []),
+
                   {
                     label: "Delete",
                     variant: "destructive" as const,
@@ -343,8 +348,19 @@ export function FileList({
                     setCurrentImage(file.url!);
                     setViewerOpen(true);
                   } else if (String(file.mime).indexOf("video") >= 0) {
-                    setCurrentVideo({ url: file.url!, name: file.name });
-                    setVideoViewerOpen(true);
+                    setCurrentMedia({
+                      url: file.url!,
+                      name: file.name,
+                      type: "video",
+                    });
+                    setMediaViewerOpen(true);
+                  } else if (String(file.mime).indexOf("video") >= 0) {
+                    setCurrentMedia({
+                      url: file.url!,
+                      name: file.name,
+                      type: "audio",
+                    });
+                    setMediaViewerOpen(true);
                   }
                 }}
                 isSelected={selectedFiles.has(file.id)}
@@ -363,11 +379,12 @@ export function FileList({
           onOpenChange={setViewerOpen}
           imageUrl={currentImage || ""}
         />
-        <VideoViewerDialog
-          open={videoViewerOpen}
-          onOpenChange={setVideoViewerOpen}
-          videoUrl={currentVideo?.url || ""}
-          fileName={currentVideo?.name}
+        <MediaViewerDialog
+          open={mediaViewerOpen}
+          onOpenChange={setMediaViewerOpen}
+          mediaUrl={currentMedia?.url || ""}
+          fileName={currentMedia?.name}
+          type={"video"}
         />
         {DeleteConfirmDialog}
       </div>
@@ -476,17 +493,19 @@ export function FileList({
                           },
                         ]
                       : []),
-                    ...(file.type === "file" &&
-                    String(file.mime).indexOf("video") >= 0
+                    ...((file.type === "file" &&
+                      String(file.mime).indexOf("video") >= 0) ||
+                    String(file.mime).indexOf("audio") >= 0
                       ? [
                           {
-                            label: "Play Video",
+                            label: `Play ${String(file.mime).split("/")[0]}`,
                             onClick: () => {
-                              setCurrentVideo({
+                              setCurrentMedia({
                                 url: file.url!,
                                 name: file.name,
+                                type: `${String(file.mime).split("/")[0]}` as MediaViewType,
                               });
-                              setVideoViewerOpen(true);
+                              setMediaViewerOpen(true);
                             },
                           },
                         ]
@@ -510,8 +529,19 @@ export function FileList({
                       setCurrentImage(file.url!);
                       setViewerOpen(true);
                     } else if (String(file.mime).indexOf("video") >= 0) {
-                      setCurrentVideo({ url: file.url!, name: file.name });
-                      setVideoViewerOpen(true);
+                      setCurrentMedia({
+                        url: file.url!,
+                        name: file.name,
+                        type: "video",
+                      });
+                      setMediaViewerOpen(true);
+                    } else if (String(file.mime).indexOf("audio") >= 0) {
+                      setCurrentMedia({
+                        url: file.url!,
+                        name: file.name,
+                        type: "audio",
+                      });
+                      setMediaViewerOpen(true);
                     }
                   }}
                   isSelected={selectedFiles.has(file.id)}
@@ -532,11 +562,12 @@ export function FileList({
         onOpenChange={setViewerOpen}
         imageUrl={currentImage || ""}
       />
-      <VideoViewerDialog
-        open={videoViewerOpen}
-        onOpenChange={setVideoViewerOpen}
-        videoUrl={currentVideo?.url || ""}
-        fileName={currentVideo?.name}
+      <MediaViewerDialog
+        open={mediaViewerOpen}
+        onOpenChange={setMediaViewerOpen}
+        mediaUrl={currentMedia?.url || ""}
+        fileName={currentMedia?.name}
+        type={currentMedia?.type}
       />
       {DeleteConfirmDialog}
     </div>
