@@ -354,7 +354,7 @@ export function FileList({
                       type: "video",
                     });
                     setMediaViewerOpen(true);
-                  } else if (String(file.mime).indexOf("video") >= 0) {
+                  } else if (String(file.mime).indexOf("audio") >= 0) {
                     setCurrentMedia({
                       url: file.url!,
                       name: file.name,
@@ -384,7 +384,7 @@ export function FileList({
           onOpenChange={setMediaViewerOpen}
           mediaUrl={currentMedia?.url || ""}
           fileName={currentMedia?.name}
-          type={"video"}
+          type={currentMedia?.type}
         />
         {DeleteConfirmDialog}
       </div>
