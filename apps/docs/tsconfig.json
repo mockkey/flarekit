@@ -1,0 +1,33 @@
+{
+  "extends": "@flarekit/config-typescript/base",
+  "include": [
+    "worker-configuration.d.ts",
+    "env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mdx",
+    "**/.server/**/*.ts",
+    "**/.server/**/*.tsx",
+    "**/.client/**/*.ts",
+    "**/.client/**/*.tsx"
+  ],
+  "compilerOptions": {
+    "types": [
+      "vite/client",
+      "@react-router/cloudflare",
+      "@cloudflare/workers-types"
+    ],
+    "baseUrl": ".",
+    "rootDirs": [".", "./.react-router/types"],
+    "paths": {
+      "~/*": ["./app/*"],
+      "@flarekit/ui/components/*": ["packages/ui/src/components/*"],
+      "@flarekit/ui/app.css": ["packages/ui/src/styles/app.css"]
+    },
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true
+  }
+}

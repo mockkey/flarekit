@@ -1,0 +1,45 @@
+# flarekit.mockkey.com llms.txt
+
+## 📘 Documentation
+
+- [FlareKit Overview](https://flarekit.mockkey.com/docs/introduction)  
+  Introduction to FlareKit — an open-source cloud file management platform with features, tech stack, and deployment details.
+
+- [Getting Started Guide](https://flarekit.mockkey.com/docs/getting-started)  
+  Step-by-step instructions to deploy or run FlareKit locally, including database setup.
+
+- [Documentation Home](https://flarekit.mockkey.com/docs)  
+  Centralized documentation hub for using and deploying FlareKit.
+
+## 📡 API References
+
+- [API Overview](https://flarekit.mockkey.com/docs/api)  
+  Overview of the FlareKit API for managing cloud files and folders.
+
+- [Swagger UI](https://flarekit.mockkey.com/docs/api/swagger)  
+  Interactive Swagger interface to explore and test API endpoints.
+
+- [API Getting Started Guide](https://flarekit.mockkey.com/docs/api/getting-started)  
+  Learn how to authenticate, make requests, manage files, and handle errors with the FlareKit API.
+
+- [OpenAPI JSON Spec](https://flarekit.mockkey.com/doc/api-docs)  
+  Machine-readable OpenAPI 3.0 JSON specification for use with tools like Swagger and Postman.
+
+## 🚀 Starter & Deployment
+
+- [FlareKit Starter](https://flarekit.mockkey.com)  
+  A ready-to-use starter kit with React Router and Cloudflare integration to quickly build and deploy web apps.
+
+## 🔐 Authentication
+
+- [User Login Page](https://flarekit.mockkey.com/dashboard)  
+  Login portal for Sass Inc. dashboard access via Apple, Google, GitHub, or email.
+
+- [Sign-In Page](https://flarekit.mockkey.com/auth/sign-in)  
+  Dedicated login page supporting email and social authentication.
+
+- [Sign-Up Page](https://flarekit.mockkey.com/auth/sign-up)  
+  Register a new account using GitHub or email.
+
+- [Password Reset](https://flarekit.mockkey.com/auth/reset-password)  
+  Request a password reset via email if access is lost.

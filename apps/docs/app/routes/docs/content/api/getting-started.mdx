@@ -1,0 +1,165 @@
+# Getting Started with the FlareKit API
+
+This guide will help you get started with the FlareKit API. We'll cover the basics of authentication, making your first API request, and some common use cases.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+1. A FlareKit account
+2. Your API key (you can find this in your [dashboard settings](https://flarekit.mockkey.com/dashboard/settings))
+3. Basic knowledge of HTTP requests and JSON
+
+## Authentication
+
+All API requests require authentication using a Bearer token. Include the token in your requests using the `Authorization` header:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Making Your First Request
+
+Let's try a simple example using cURL:
+
+```bash
+# List files
+curl -X GET \
+  https://flarekit.mockkey.com/api/v1/files \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+
+Or using JavaScript with fetch:
+
+```javascript
+const response = await fetch('https://flarekit.mockkey.com/api/v1/files', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+## Common Use Cases
+
+### 1. Uploading a File
+
+```javascript
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('parentId', null);
+formData.append('hash', 'xxxxxx-xxxxx-xxxxx-xxxx');
+
+const uploadResponse = await fetch('https://flarekit.mockkey.com/api/v1/file/upload', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+  },
+  body: formData
+});
+
+const { url } = await uploadResponse.json();
+console.log('File uploaded:', url);
+
+```
+
+### 2. Listing Files
+
+```javascript
+const response = await fetch('https://flarekit.mockkey.com/api/v1/files?page=1&limit=10', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const data = await response.json();
+console.log('Files:', data.items);
+```
+
+### 3. Managing Trash
+
+```javascript
+// List trash items
+const trashResponse = await fetch('https://flarekit.mockkey.com/api/v1/files/trash', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const trashData = await trashResponse.json();
+console.log('Trash items:', trashData.items);
+
+// Restore a file from trash
+const restoreResponse = await fetch(`https://flarekit.mockkey.com/api/v1/files/trash/restore/${fileId}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const restoredFile = await restoreResponse.json();
+console.log('Restored file:', restoredFile);
+
+// Permanently delete a file from trash
+const deleteResponse = await fetch(`https://flarekit.mockkey.com/api/v1/files/trash/${fileId}`, {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+});
+
+const deleteResult = await deleteResponse.json();
+console.log('Delete result:', deleteResult);
+```
+
+## Error Handling
+
+All FlareKit API endpoints return errors in a consistent JSON format. A typical error response looks like this:
+
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+Some endpoints may include additional details:
+
+```json
+{
+  "error": "Validation failed",
+  "details": {
+    "field": "name",
+    "message": "Name is required"
+  }
+}
+```
+
+- The `error` field is always a string describing the error.
+- The `details` field (if present) provides more information about the error.
+- Standard HTTP status codes are used (e.g., 400 for bad request, 401 for unauthorized, 404 for not found, 500 for server error).
+
+**Example: Unauthorized**
+
+```json
+HTTP/1.1 401 Unauthorized
+{
+  "error": "Unauthorized"
+}
+```
+
+**Example: Not Found**
+
+```json
+HTTP/1.1 404 Not Found
+{
+  "error": "File not found"
+}
+```
+
+
+
+## Next Steps
+
+1. Explore the [API Reference](/docs/api/swagger) for detailed endpoint documentation

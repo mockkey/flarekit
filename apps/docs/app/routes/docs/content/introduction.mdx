@@ -1,0 +1,52 @@
+# Introduction
+
+**FlareKit** is a fully open-source, all-in-one cloud file management SaaS platform built on top of Cloudflare's modern serverless infrastructure.
+
+## What is FlareKit?
+
+FlareKit enables you to securely store, organize, and share files and folders in the cloud. It provides a powerful RESTful API and a beautiful web interface for both developers and teams. You can use FlareKit as a backend for your own apps, as a standalone SaaS, or as a foundation for building new cloud-native products.
+
+## Key Features
+
+- 🚀 **All-in-one file management**: Upload, organize, search, and share files and folders
+- 🔑 **API-first**: Modern RESTful API for programmatic access
+- 🗑️ **Recycle Bin**: Safe deletion and easy recovery of files
+- 🛡️ **Secure & scalable**: Built on Cloudflare Workers and D1 for global performance
+- 🧩 **Extensible**: Easily integrate with your own apps or workflows
+- 🌍 **Open source**: 100% MIT licensed, free for personal and commercial use
+
+## Technology Stack
+
+FlareKit leverages a modern, high-performance tech stack:
+
+- **Frontend**: React, Vite, Tailwind CSS, shadcn/ui, TypeScript
+- **Backend/API**: Hono (TypeScript), Cloudflare Workers
+- **Database**: SQLite (local development), [Cloudflare D1](https://developers.cloudflare.com/d1/) (production)
+- **Message Queue**: [Cloudflare Queues](https://developers.cloudflare.com/queues/) for background jobs and asynchronous processing
+- **Deployment & DevOps**: Wrangler (Cloudflare CLI), pnpm (monorepo management)
+- **Validation & Docs**: Zod (schema validation), MDX (documentation)
+- **Other**: Lucide Icons, Prettier, ESLint, GitHub Actions (CI/CD)
+
+## Cloudflare Products Used
+
+FlareKit is designed to run on Cloudflare's global edge network and makes use of several Cloudflare products:
+
+- **Cloudflare Workers**: Serverless JavaScript/TypeScript runtime for backend logic and API endpoints
+- **Cloudflare D1**: Serverless SQL database for persistent storage
+- **Cloudflare Queues**: Distributed message queue for background jobs and async processing
+- **Cloudflare R2** (optional): Object storage for large file uploads (if enabled in your deployment)
+- **Cloudflare KV** (optional): Key-value storage for caching or metadata (if enabled)
+
+> _Note: Not all features require R2, KV, or Queues, but you can enable them for advanced use cases._
+
+## Cloudflare Billing & Requirements
+
+- **Cloudflare Account**: You must have a Cloudflare account to deploy FlareKit in production.
+- **Paid Plan & Credit Card**: Some Cloudflare products (such as D1, R2, and Queues) may require you to add a credit card and enable a paid plan, even for development or testing. Please check [Cloudflare's pricing](https://www.cloudflare.com/plans/) and [product documentation](https://developers.cloudflare.com/) for details.
+- **API Tokens**: You will need to generate and configure your Cloudflare API token and account ID in `wrangler.jsonc` before deploying.
+- **Limits**: Be aware of Cloudflare Workers, D1, R2, and Queues [limits and quotas](https://developers.cloudflare.com/d1/platform/limits/).
+
+## Open Source & Contribution
+
+- FlareKit is released under the [MIT License](https://github.com/mockkey/flarekit/blob/main/LICENSE).
+- Contributions, bug reports, and feature requests are welcome! See our [GitHub repository](https://github.com/mockkey/flarekit) for details.
