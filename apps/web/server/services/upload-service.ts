@@ -1,15 +1,14 @@
 import { env } from "cloudflare:workers";
 import { DbService } from "@flarekit/db";
+import { ConflictError } from "server/lib/error";
 import {
   CreateMultipartUpload,
-  type S3Parts,
   createPresignedPutUrl,
   getLocalstion,
   getUrl,
   multipartComplete,
   upload,
-} from "server/lib/aws";
-import { ConflictError } from "server/lib/error";
+} from "server/lib/storage";
 import { setThumbnailFileId } from "server/routes/viewer";
 import { FileService } from "./file-service";
 import { StorageService } from "./storage-service";
@@ -25,7 +24,7 @@ export interface fileMeta {
 }
 
 const dbService = DbService(env.DB);
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+
 export class UploadService {
   static async checkFile(
     {
@@ -50,8 +49,8 @@ export class UploadService {
     const currentFile = await dbService?.files.getFileByHash(hash);
     if (
       currentFile &&
-      currentFile.file.size === size &&
-      currentFile.file.type === type
+      currentFile?.file?.size === size &&
+      currentFile.file.mime === type
     ) {
       //
       const file = await dbService?.files.createUserFile({
@@ -63,6 +62,10 @@ export class UploadService {
         deletedAt: new Date(),
         createdAt: new Date(),
       });
+
+      if (!file) {
+        return false;
+      }
 
       return {
         id: file.id,
@@ -264,7 +267,7 @@ export class UploadService {
   }: {
     key: string;
     uploadId: string;
-    parts: S3Parts[];
+    parts: { ETag: string; PartNumber: number }[];
     userId: string;
   }) {
     const location = await multipartComplete(key, uploadId, parts);

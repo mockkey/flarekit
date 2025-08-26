@@ -1,0 +1,42 @@
+{
+  "name": "@flarekit/storage",
+  "version": "1.0.0",
+  "description": "FlareKit Storage Module - Simple S3/R2 storage provider for file operations",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "aws4fetch": "^1.0.20",
+    "fast-xml-parser": "^5.2.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250528.0",
+    "@flarekit/config-typescript": "workspace:*",
+    "@types/node": "^22.13.13",
+    "typescript": "^5.1.6"
+  },
+  "keywords": [
+    "storage",
+    "s3",
+    "r2",
+    "cloudflare",
+    "aws",
+    "file-upload",
+    "multipart"
+  ],
+  "author": "",
+  "license": "ISC"
+}

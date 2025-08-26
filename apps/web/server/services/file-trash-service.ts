@@ -1,12 +1,11 @@
 import { env } from "cloudflare:workers";
 import { DbService } from "@flarekit/db";
-import { getUrl } from "server/lib/aws";
 import { ConflictError, NotFoundError } from "server/lib/error";
+import { getUrl } from "server/lib/storage";
 import { StorageService } from "./storage-service";
 
 const dbService = DbService(env.DB);
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class FileTrashService {
   static async getList(
     query: {

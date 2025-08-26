@@ -1,15 +1,14 @@
 import { env } from "cloudflare:workers";
 import { DbService } from "@flarekit/db";
 import { and, eq, inArray, isNull, ne, sql } from "drizzle-orm";
-import { getDownloadPresignedUrl, getUrl } from "server/lib/aws";
 import { ConflictError, NotFoundError } from "server/lib/error";
+import { getDownloadPresignedUrl, getUrl } from "server/lib/storage";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
 import { StorageService } from "./storage-service";
 
 const dbService = DbService(env.DB);
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class FileService {
   static async createFolder(
     userId: string,

@@ -4,7 +4,6 @@ import type { Theme } from "server/types/setting";
 
 const dbService = DbService(env.DB);
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class SettingService {
   static async setTheme(userId: string, theme: Theme) {
     return dbService?.appearances.setTheme(userId, theme);

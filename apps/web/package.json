@@ -30,6 +30,7 @@
     "@flarekit/email": "workspace:*",
     "@flarekit/file-manager": "workspace:*",
     "@flarekit/ui": "workspace:*",
+    "@flarekit/storage": "workspace:*",
     "@hono/zod-openapi": "^0.19.8",
     "@hookform/resolvers": "^4.1.3",
     "@mdx-js/react": "^3.1.0",

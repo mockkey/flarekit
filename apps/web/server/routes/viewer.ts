@@ -2,7 +2,7 @@ import { PhotonImage, SamplingFilter, resize } from "@cf-wasm/photon";
 import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
-import { aws, upload } from "server/lib/aws";
+import { getResource, upload } from "server/lib/storage";
 import { db } from "~/db/db.server";
 import { file, fileThumbnail } from "~/db/schema";
 
@@ -15,27 +15,13 @@ viewerServer.get("/:key", async (c) => {
   });
 
   if (existingFile?.storagePath) {
-    const signed = await aws.sign(
-      new Request(existingFile?.storagePath, {
-        method: "GET",
-      }),
-      {
-        aws: { signQuery: true },
-      },
-    );
-    const res = await fetch(signed.url, signed);
-    if (!res.ok) {
+    const res = await getResource(existingFile?.storagePath);
+    if (!res) {
       return c.json({ error: "Not found" }, 404);
     }
-
-    const contentType =
-      res.headers.get("Content-Type") || "application/octet-stream";
-
-    const body = await res.arrayBuffer();
-
-    c.header("Content-Type", contentType);
+    const { body, type } = res;
+    c.header("Content-Type", type);
     c.header("Cache-Control", "public, max-age=31536000");
-
     return c.body(body);
   }
 
@@ -48,17 +34,12 @@ viewerServer.get("/resize/:key", async (c) => {
     where: eq(file.id, key),
   });
   if (existingFile?.storagePath) {
-    const signed = await aws.sign(
-      new Request(existingFile?.storagePath, {
-        method: "GET",
-      }),
-      {
-        aws: { signQuery: true },
-      },
-    );
-    const inputBytes = await fetch(signed.url, signed)
-      .then((res) => res.arrayBuffer())
-      .then((buffer) => new Uint8Array(buffer));
+    const res = await getResource(existingFile?.storagePath);
+    if (!res) {
+      return c.json({ error: "Not found" }, 404);
+    }
+    const resBuffer = res.body;
+    const inputBytes = new Uint8Array(resBuffer);
     const inputImage = PhotonImage.new_from_byteslice(inputBytes);
     const maxDimension = 300;
     const width = inputImage.get_width();
@@ -104,17 +85,12 @@ export async function getBytesWebpByFileId(
   if (!existingFile || !existingFile.storagePath) {
     return Promise.reject(new Error("File not found or storage path is null"));
   }
-  const signed = await aws.sign(
-    new Request(existingFile?.storagePath, {
-      method: "GET",
-    }),
-    {
-      aws: { signQuery: true },
-    },
-  );
-  const inputBytes = await fetch(signed.url, signed)
-    .then((res) => res.arrayBuffer())
-    .then((buffer) => new Uint8Array(buffer));
+  const res = await getResource(existingFile?.storagePath);
+  if (!res) {
+    return Promise.reject(new Error("File not found or storage path is null"));
+  }
+  const resBuffer = res.body;
+  const inputBytes = new Uint8Array(resBuffer);
   const inputImage = PhotonImage.new_from_byteslice(inputBytes);
   const maxDimension = 300;
   const originWidth = inputImage.get_width();

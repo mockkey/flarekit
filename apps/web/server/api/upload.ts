@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import type { HonoEnv } from "load-context";
-import { deleteMultipart, getMultipart } from "server/lib/aws";
+import { deleteMultipart, getMultipart } from "server/lib/storage";
 import { UploadService } from "server/services/upload-service";
 import {
   checkFileSchema,

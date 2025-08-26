@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { getS3Resource } from "server/lib/aws";
+import { getResource } from "server/lib/storage";
 import { db } from "~/db/db.server";
 import { file, userFiles } from "~/db/schema";
 import { StorageService } from "./storage-service";
@@ -27,7 +27,7 @@ export async function getS3LinkEtag({
     .get();
 
   if (currentFile) {
-    const s3res = await getS3Resource(location);
+    const s3res = await getResource(location);
     await db
       .update(userFiles)
       .set({

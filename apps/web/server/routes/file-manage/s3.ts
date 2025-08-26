@@ -9,7 +9,7 @@ import {
   getMultipart,
   getmultipartSign,
   multipartComplete,
-} from "server/lib/aws";
+} from "server/lib/storage";
 import { getS3LinkEtag } from "server/services/file";
 import { FileService } from "server/services/file-service";
 import type { fileMeta } from "server/types/file";
@@ -94,6 +94,7 @@ S3Server.post(
     }
     const key = `${S3_KEY_PREFIX}/${hash}/${name}`;
     const newuploadId = await CreateMultipartUpload(key, type);
+
     if (newuploadId) {
       await c.env.APP_KV.put(
         newuploadId,

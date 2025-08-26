@@ -5,7 +5,6 @@ import { storageUsageLogs, userStorage } from "~/db/schema";
 
 const FREE_STORAGE_LIMIT = Number(env.FREE_STORAGE_LIMIT) * 1024 * 1024;
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class StorageService {
   static async initializeUserStorage(userId: string) {
     const existingStorage = await db
